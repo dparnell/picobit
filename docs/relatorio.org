@@ -2,11 +2,33 @@
 #+AUTHOR: Cecília Carneiro e Silva
 #+DATE:
 
-* TODO PICOBIT - pdf
+* TEMA
+
+  Maquina virtual em sitemas embacados
+
+* TITULO
+
+  Sistema de virtualização para sistemas embarcados, utilizando a linguagem de programação Scheme.
+
+* OBJETIVO GERAL
+  
+  
+* SCHEME
+  
+  Scheme
+
+Scheme is a statically scoped and properly tail-recursive dialect of the Lisp programming language invented by Guy Lewis Steele Jr. and Gerald Jay Sussman. It was designed to have an exceptionally clear and simple semantics and few different ways to form expressions. A wide variety of programming paradigms, including imperative, functional, and message passing styles, find convenient expression in Scheme.
+
+Scheme was one of the first programming languages to incorporate first class procedures as in the lambda calculus, thereby proving the usefulness of static scope rules and block structure in a dynamically typed language. Scheme was the first major dialect of Lisp to distinguish procedures from lambda expressions and symbols, to use a single lexical environment for all variables, and to evaluate the operator position of a procedure call in the same way as an operand position. By relying entirely on procedure calls to express iteration, Scheme emphasized the fact that tail-recursive procedure calls are essentially goto's that pass arguments. Scheme was the first widely used programming language to embrace first class escape procedures, from which all previously known sequential control structures can be synthesized. More recently, building upon the design of generic arithmetic in Common Lisp, Scheme introduced the concept of exact and inexact numbers. Scheme is also the first programming language to support hygienic macros, which permit the syntax of a block-structured language to be extended reliably.
+
+
+* DONE PICOBIT - pdf
 
   Terminar de ler o artigo oficial do picobit.
   
-** TODO Foto folha
+** DONE Foto folha
+
+- GOOGLE-PHOTOS
 
    Tirar foto da folha.
 
@@ -72,7 +94,6 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 - ligth version = 8-bit-encoding
 - Unbounded precision integer type são providos, So unbounded in this context means bounded only by the availability of system resources; there is no hard-coded limit to the number of digits in the value that an unbounded-precision integer type an represent. Permite que o PICOBIT implemente protocolos de redes que necessitam, por exemplo, do MAC adress (48 bits) ou  SHA criptografia.
 
-
 * TODO R5RS
 
   Descrição da linguagem de programação Scheme. Linguagem fracamente tipada, ou dinamicamente tipada, latent type.
@@ -82,6 +103,41 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
   Scheme por definição é uma linguage weak, não lazy.
 
   Scheme programms manipulam objetos também conhecidos como valores. 
+
+* TODO Compiler files study
+  Estudo e análise dos codigos do compilador PICOBIT, scheme to bytecode.
+
+** TODO Objective
+   Primeiro objetivo é atualizar para a versão 6.6 do Racket. Atualmente está rodando na versão 6.2 do racket, com modificação no arquivo port.rkt, unstable.
+
+** Utilities
+
+- SRFI/4 = vetores numéricos homogênios
+         = Marc Feeley
+         = vetores numericos em que todos os elementos tem o mesmo tipo.
+         = vetores homogenios devem ser usado em comunicação com bibliotecas de baixo nível.
+         = 8 tipos de vetores homogênios inteiros, 2 tipos de ponto flutuante.
+
+- todas funções visiveis fora do arquivo.
+- parameterize = cria um novo thread com aquela variável.
+
+** Env
+
+- require: utilities.rkt
+- provide all.
+- Toda estruturação das variaveis e funcoes. Enfim estruturação do ambiente de compilação.
+
+** Ast
+- require utilities.rkt env.rkt
+- provide all.
+- objetos com multiplas relações, defs, refs, sets e prcs.
+
+*** TODO unstable/match
+    
+    Tirar isso, tornar estavel, compartivel com a ultima versão do racket.
+
+- entre outras coisas, verifica se a variavel é mutável ou nao.
+
 
 * TODO ARM - livro
 
