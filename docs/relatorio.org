@@ -138,6 +138,10 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 
 - entre outras coisas, verifica se a variavel é mutável ou nao.
 
+** MODIFICAÇÕES
+
+- ast.rkt=> unstable/match -> racket/matck
+- primitives.rkt=> unstable/sequence -> unstable/sequence e racket/sequence, a biblioteca sequence foi mudado para racket/sequence com excessão: in-pairs, in-sequence-forever, sequence-lift. Então será feita a inclusão dos dois pacotes.
 
 * TODO ARM - livro
 
