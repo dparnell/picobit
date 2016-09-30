@@ -1,4 +1,4 @@
-% Created 2016-09-15 Qui 09:21
+% Created 2016-09-23 Sex 14:32
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -29,23 +29,49 @@
 \tableofcontents
 
 
-\section{{\bfseries\sffamily DONE} PICOBIT - pdf}
+\section{TEMA}
 \label{sec-1}
+
+Maquina virtual em sitemas embacados
+
+\section{TITULO}
+\label{sec-2}
+
+Sistema de virtualização para sistemas embarcados, utilizando a linguagem de programação Scheme.
+
+\section{OBJETIVO GERAL}
+\label{sec-3}
+
+
+\section{SCHEME}
+\label{sec-4}
+
+Scheme
+
+Scheme is a statically scoped and properly tail-recursive dialect of the Lisp programming language invented by Guy Lewis Steele Jr. and Gerald Jay Sussman. It was designed to have an exceptionally clear and simple semantics and few different ways to form expressions. A wide variety of programming paradigms, including imperative, functional, and message passing styles, find convenient expression in Scheme.
+
+Scheme was one of the first programming languages to incorporate first class procedures as in the lambda calculus, thereby proving the usefulness of static scope rules and block structure in a dynamically typed language. Scheme was the first major dialect of Lisp to distinguish procedures from lambda expressions and symbols, to use a single lexical environment for all variables, and to evaluate the operator position of a procedure call in the same way as an operand position. By relying entirely on procedure calls to express iteration, Scheme emphasized the fact that tail-recursive procedure calls are essentially goto's that pass arguments. Scheme was the first widely used programming language to embrace first class escape procedures, from which all previously known sequential control structures can be synthesized. More recently, building upon the design of generic arithmetic in Common Lisp, Scheme introduced the concept of exact and inexact numbers. Scheme is also the first programming language to support hygienic macros, which permit the syntax of a block-structured language to be extended reliably.
+
+
+\section{{\bfseries\sffamily DONE} PICOBIT - pdf}
+\label{sec-5}
 
 Terminar de ler o artigo oficial do picobit.
 
-\subsection{{\bfseries\sffamily TODO} Foto folha}
-\label{sec-1-1}
+\subsection{{\bfseries\sffamily DONE} Foto folha}
+\label{sec-5-1}
+
+\begin{itemize}
+\item GOOGLE-PHOTOS
 
 Tirar foto da folha.
 
-\begin{itemize}
 \item SIXPIC C compiler é somente para PIC18.
 \item Nesse caso vamos usar o cross-compiler: arm-none-eabi-gcc.
 \end{itemize}
 
 \subsection{{\bfseries\sffamily TODO} Comentarios}
-\label{sec-1-2}
+\label{sec-5-2}
 
 \begin{itemize}
 \item Por causa do ambiente com tamanho de codigo limitado, todo projeto foi voltado a gerar bytecode compact code.
@@ -67,7 +93,7 @@ Tirar foto da folha.
 \end{itemize}
 
 \subsubsection{{\bfseries\sffamily DONE} PICOBIT-SCHEME compiler}
-\label{sec-1-2-1}
+\label{sec-5-2-1}
 
 Compilador Scheme especializado em gerar bytecode otimizado. Programa acoplado com a biblioteca, então o bytecode é gerado dos dois juntos resultando em um bytecode mais compacto quando comparado a versão separada.
 
@@ -80,7 +106,7 @@ Conjunto de instações compartilhadas pelo compiler e pela VM, criado e planeja
 \end{itemize}
 
 \subsubsection{{\bfseries\sffamily TODO} PICOBIT bytecode}
-\label{sec-1-2-2}
+\label{sec-5-2-2}
 
 \begin{itemize}
 \item PICOBIT é uma maquina virtual de pilha (stack-based virtual machine).
@@ -88,7 +114,7 @@ Conjunto de instações compartilhadas pelo compiler e pela VM, criado e planeja
 \end{itemize}
 
 \subsubsection{{\bfseries\sffamily TODO} PICOBIT-virtual machine}
-\label{sec-1-2-3}
+\label{sec-5-2-3}
 
 É a parte do picobit voltada ao microcontrolador. É o interpletador do bytecode gerado pelo scheme compiler.
 
@@ -100,7 +126,7 @@ Conjunto de instações compartilhadas pelo compiler e pela VM, criado e planeja
 
 \begin{enumerate}
 \item Mark-and-Sweep Garbage Collection
-\label{sec-1-2-3-1}
+\label{sec-5-2-3-1}
 
 When using mark-and-sweep, unreferenced objects are not reclaimed immediately. Instead, garbage is allowed to accumulate until all available memory has been exhausted. When that happens, the execution of the program is suspended temporarily while the mark-and-sweep algorithm collects all the garbage. Once all unreferenced objects have been reclaimed, the normal execution of the program can resume.
 
@@ -109,7 +135,7 @@ The mark-and-sweep algorithm is called a tracing garbage collector because is tr
 The mark-and-sweep algorithm consists of two phases: In the first phase, it finds and marks all accessible objects. The first phase is called the mark phase. In the second phase, the garbage collection algorithm scans through the heap and reclaims all the unmarked objects. The second phase is called the sweep phase.
 
 \item Copying garbage collection
-\label{sec-1-2-3-2}
+\label{sec-5-2-3-2}
 
 Usa apenas metade da memoria, copia de uma parte para outra.
 Mais complicado q o Mark-and-sweet collection.
@@ -124,7 +150,7 @@ Mais complicado q o Mark-and-sweet collection.
 \end{enumerate}
 
 \section{{\bfseries\sffamily TODO} R5RS}
-\label{sec-2}
+\label{sec-6}
 
 Descrição da linguagem de programação Scheme. Linguagem fracamente tipada, ou dinamicamente tipada, latent type.
 
@@ -135,15 +161,15 @@ Scheme por definição é uma linguage weak, não lazy.
 Scheme programms manipulam objetos também conhecidos como valores. 
 
 \section{{\bfseries\sffamily TODO} Compiler files study}
-\label{sec-3}
+\label{sec-7}
 Estudo e análise dos codigos do compilador PICOBIT, scheme to bytecode.
 
 \subsection{{\bfseries\sffamily TODO} Objective}
-\label{sec-3-1}
+\label{sec-7-1}
 Primeiro objetivo é atualizar para a versão 6.6 do Racket. Atualmente está rodando na versão 6.2 do racket, com modificação no arquivo port.rkt, unstable.
 
 \subsection{Utilities}
-\label{sec-3-2}
+\label{sec-7-2}
 
 \begin{itemize}
 \item SRFI/4 = vetores numéricos homogênios
@@ -157,7 +183,7 @@ Primeiro objetivo é atualizar para a versão 6.6 do Racket. Atualmente está ro
 \end{itemize}
 
 \subsection{Env}
-\label{sec-3-3}
+\label{sec-7-3}
 
 \begin{itemize}
 \item require: utilities.rkt
@@ -166,7 +192,7 @@ Primeiro objetivo é atualizar para a versão 6.6 do Racket. Atualmente está ro
 \end{itemize}
 
 \subsection{Ast}
-\label{sec-3-4}
+\label{sec-7-4}
 \begin{itemize}
 \item require utilities.rkt env.rkt
 \item provide all.
@@ -174,7 +200,7 @@ Primeiro objetivo é atualizar para a versão 6.6 do Racket. Atualmente está ro
 \end{itemize}
 
 \subsubsection{{\bfseries\sffamily TODO} unstable/match}
-\label{sec-3-4-1}
+\label{sec-7-4-1}
 
 Tirar isso, tornar estavel, compartivel com a ultima versão do racket.
 
@@ -184,25 +210,25 @@ Tirar isso, tornar estavel, compartivel com a ultima versão do racket.
 
 
 \section{{\bfseries\sffamily TODO} ARM - livro}
-\label{sec-4}
+\label{sec-8}
 
 Joseph Yiu (Auth.)-The Definitive Guide to Arm® Cortex®-M3 and Cortex®-M4 Processors-Newnes (2014).pdf
 
 \section{{\bfseries\sffamily TODO} tanenbaum - book}
-\label{sec-5}
+\label{sec-9}
 
 Operating systems.
 
 \section{{\bfseries\sffamily TODO} Virtual machines}
-\label{sec-6}
+\label{sec-10}
 
 \section{{\bfseries\sffamily TODO} PICOBIT SCHEME COMPILER}
-\label{sec-7}
+\label{sec-11}
 
 \section{{\bfseries\sffamily TODO} PICOBIT VM}
-\label{sec-8}
+\label{sec-12}
 
 \section{{\bfseries\sffamily TODO} SIXPIC C COMPILER}
-\label{sec-9}
+\label{sec-13}
 % Emacs 24.5.1 (Org mode 8.2.10)
 \end{document}
