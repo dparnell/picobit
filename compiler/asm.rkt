@@ -400,8 +400,8 @@
       (let ((le-bytes (list (asm-bits-0-to-7 asm-start-pos-higher)
                             (asm-bits-8-and-up asm-start-pos-higher))))
            (if asm-big-endian?
-               (print-line 3 0 (reverse le-bytes))
-               (print-line 3 0 le-bytes))))
+               (print-line 4 0 (reverse le-bytes))
+               (print-line 4 0 le-bytes))))
 
   (let loop ((lst (cdr asm-code-stream))
              (pos asm-start-pos)

@@ -181,7 +181,6 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 
 ;; pode ser esse o problema
 
-
 ** Assemble.rkt
 
 - mais configurações, max-fixnum, min-rom-encoding, min-ram-encoding
