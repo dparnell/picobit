@@ -459,3 +459,4 @@ PRIMITIVE(send-packet-from-u8vector, send_packet_from_u8vector, 2)
 
 	arg2 = OBJ_FALSE;
 }
+

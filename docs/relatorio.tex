@@ -1,4 +1,4 @@
-% Created 2016-09-23 Sex 14:32
+% Created 2016-10-12 Qua 11:14
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -208,6 +208,13 @@ Tirar isso, tornar estavel, compartivel com a ultima versão do racket.
 \item entre outras coisas, verifica se a variavel é mutável ou nao.
 \end{itemize}
 
+\subsection{MODIFICAÇÕES}
+\label{sec-7-5}
+
+\begin{itemize}
+\item ast.rkt=> unstable/match -> racket/matck
+\item primitives.rkt=> unstable/sequence -> unstable/sequence e racket/sequence, a biblioteca sequence foi mudado para racket/sequence com excessão: in-pairs, in-sequence-forever, sequence-lift. Então será feita a inclusão dos dois pacotes.
+\end{itemize}
 
 \section{{\bfseries\sffamily TODO} ARM - livro}
 \label{sec-8}

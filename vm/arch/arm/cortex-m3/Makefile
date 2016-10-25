@@ -18,4 +18,4 @@ picobit.hex: picobit.elf
 	$(CROSS)objcopy -O ihex $^ $@
 
 picobit.elf: $(obj-y) .config
-	$(CROSS)cc $(CFLAGS) -o $@ $(obj-y)
+	$(CROSS)gcc $(CFLAGS) -o $@ $(obj-y)

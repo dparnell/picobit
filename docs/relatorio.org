@@ -158,3 +158,122 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 * TODO PICOBIT VM
 
 * TODO SIXPIC C COMPILER
+* TODO Comparation picobit - picoufu
+** Analysis.rkt
+
+- require: +primitives.rkt
+- provide: -less things
+- mudou a forma de marcar variáveis mutáveis e não mutavéis
+
+- nada q implique em mudaças no assembly
+
+** Asm.rkt
+
+(if asm-big-endian?
+    ;;picobit
+    (print-line 3 0 (reverse le-bytes))
+    (print-line 3 0 le-bytes)
+    ;;picoufu
+    (print-line 4 0 (reverse le-bytes))
+    (print-line 4 0 le-bytes))
+
+(print-line type addr bytes) 
+
+;; pode ser esse o problema
+
+
+** Assemble.rkt
+
+- mais configurações, max-fixnum, min-rom-encoding, min-ram-encoding
+
+** Ast.rkt
+
+- require: syntax/parse, racket/match, racket/syntax
+- AST: abstract syntax tree.
+- Compilador, nao tem ligação direta com o assebly
+
+** Back-end.rkt
+
+- nenhuma mudança.
+
+** Code-gen.rkt
+
+- nenhuma mudança.
+
+** Comp.rkt
+
+- mudanças fruto das mudanças no analysis.rkt, pricipalmente nome de funções.
+
+** Env.rkt
+
+- mudanças organizacionais do environment.
+- nao implica em mudança no assembly (diretamente).
+
+** Front-end.rkt
+
+- mudou mto, pelo nome e analise superficial, são mudanças no comp, redução beta e tals.
+- não afeta diretamento o assembly.
+
+** Gen.config.rkt
+
+- tiraram coisa e colocaram no assemble.rkt.
+- max-fix-num igual
+
+;;picoufu
+- code-start #x8000
+- min-rom-encoding 261
+- max-rom-encoding 6220
+- min-ram-encoding 6221
+
+;;picobit 
+- code-start #x8008000
+- min-ram-encoding 1280
+- min-rom-encoding (+ min-fixnum-encoding (- max-fixnum min-fixnum) 1)
+
+- isso também pode ser responsável por não funcionar.
+
+** Gen.library.rkt
+
+- mudou o caminho, mas ta certo.
+
+** Gen.primitives.rkt
+
+- funções geradas diferentes, normal.
+
+** Ir.rkt
+
+- arquivos identicos.
+
+** Library.scm
+
+- arquivos identicos.
+
+** Parser.rkt
+
+- mudou mto, afeta compilador.
+- acho q não é o problema.
+
+** Picobit.rkt
+
+- reflete as mudanças no compilador causada pelos arquivos anteriores.
+
+** Primitives.rkt
+
+- mudou mto.
+
+** Reader.rkt
+
+- mudanças de organização.
+
+** Scheduling.rkt
+
+- arquivos iguais.
+
+** Tree-shaker.rkt
+
+- arquivos identicos.
+
+** Utilities.rkt
+
+- mudou a forma de imprimir os erros do picobit.
+
