@@ -1,4 +1,20 @@
 choice
+	prompt "Compiler"
+
+	config ARM_COMPILER_GCC
+	bool "GCC"
+
+	config ARM_COMPILER_KEIL
+	bool "Keil (cc only)"
+endchoice
+
+if ARM_COMPILER_KEIL
+	config ARM_KEIL_PATH
+	string "Path to Keil in Wine"
+	default "c:\\Keil\\ARM\\BIN40"
+endif
+
+choice
 	prompt "Processor model"
 
 	config ARM_CPU_STM32F100RB

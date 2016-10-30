@@ -107,7 +107,7 @@ PRIMITIVE_UNSPEC(#%set-outputA!, arch_set_outputA, 1)
 }
 
 
-int main ()
+void main ()
 {
        RCC->APB2ENR = 0
 	 // Turn on IO Port A
@@ -117,42 +117,41 @@ int main ()
 	 // Turn on IO Port C
 	 //| RCC_APB2ENR_IOPCEN
 	 | IOPAEN
-	 //| IOPBEN
 	 | IOPCEN
 	 | AFIOEN
 	 ;
        
-       GPIOC->CRH = 0x44444411;
-       GPIOA->CRL     |= BIT(7);//CNF1
-       GPIOA->CRL     |= BIT(5);
-              
+       //GPIOC->CRH = 0x44444411;
+       GPIOC->CRH     |= BIT(0) | BIT(1);
+       GPIOC->CRH     |= BIT(7);//CNF1
+       GPIOC->CRH     |= BIT(4) | BIT(5);
+       GPIOA->ODR     |= BIT(0);
+       
        AFIO->EVCR     |= EVOE;
-       AFIO->EVCR     |= PORT(000); 
-       AFIO->EVCR     |= PIN(0001); 
-       AFIO->MAPR     |= TIM2_REMAP(00);
-       GPIOA->ODR     |= BIT(1);
+       AFIO->EVCR     |= PORT(010); 
+       AFIO->EVCR     |= PIN(1001); 
+       AFIO->MAPR     |= TIM2_REMAP(11); 
        //pwm
-       RCC->APB1ENR   |= TIM2EN;
+       RCC->APB1ENR   |= TIM3EN;
 
-       TIM2->PSC       = 23;
-       TIM2->ARR       = 19999; 
-       TIM2->CCMR1    |= TIM_OC2M(110); //mode1
-       TIM2->CCMR1    |= TIM_OC2PE;
-       TIM2->CR1      |= TIM_ARPE;
-       TIM2->CCER     |= TIM_CC2P;
-       TIM2->CCER     |= TIM_CC2E;
-       TIM2->CCR2      = 6000;
-       TIM2->EGR      |= TIM_UG;
-       TIM2->SR       &= ~TIM_UIF;
-       TIM2->CR1      |= TIM_DIR;
-       TIM2->CR1      |= TIM_CEN;
+       TIM3->PSC       = 23;
+       TIM3->ARR       = 19999; 
+       TIM3->CCMR1    |= TIM_OC4M(110); //mode1
+       TIM3->CCMR1    |= TIM_OC4PE;
+       TIM3->CR1      |= TIM_ARPE;
+       TIM3->CCER     |= TIM_CC4P;
+       TIM3->CCER     |= TIM_CC4E;
+       TIM3->CCR2      = 6000;
+       TIM3->EGR      |= TIM_UG;
+       TIM3->SR       &= ~TIM_UIF;
+       TIM3->CR1      |= TIM_DIR;
+       TIM3->CR1      |= TIM_CEN;
        
        //PC9
-       GPIOC->ODR     |= BIT(9);
+       //GPIOC->ODR     |= BIT(9);
               
        //GPIOA->CRL = 0x00000000;
        
        
        interpreter();
-       return 0;
 }

@@ -1,4 +1,4 @@
-% Created 2016-10-12 Qua 11:14
+% Created 2016-10-27 Qui 19:25
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -237,5 +237,188 @@ Operating systems.
 
 \section{{\bfseries\sffamily TODO} SIXPIC C COMPILER}
 \label{sec-13}
+\section{{\bfseries\sffamily TODO} Comparation picobit - picoufu}
+\label{sec-14}
+\subsection{Analysis.rkt}
+\label{sec-14-1}
+
+\begin{itemize}
+\item require: +primitives.rkt
+\item provide: -less things
+\item mudou a forma de marcar variáveis mutáveis e não mutavéis
+
+\item nada q implique em mudaças no assembly
+\end{itemize}
+
+\subsection{Asm.rkt}
+\label{sec-14-2}
+
+(if asm-big-endian?
+    ;;picobit
+    (print-line 3 0 (reverse le-bytes))
+    (print-line 3 0 le-bytes)
+    ;;picoufu
+    (print-line 4 0 (reverse le-bytes))
+    (print-line 4 0 le-bytes))
+
+(print-line type addr bytes) 
+
+;; pode ser esse o problema
+
+\subsection{Assemble.rkt}
+\label{sec-14-3}
+
+\begin{itemize}
+\item mais configurações, max-fixnum, min-rom-encoding, min-ram-encoding
+\end{itemize}
+
+\subsection{Ast.rkt}
+\label{sec-14-4}
+
+\begin{itemize}
+\item require: syntax/parse, racket/match, racket/syntax
+\item AST: abstract syntax tree.
+\item Compilador, nao tem ligação direta com o assebly
+\end{itemize}
+
+\subsection{Back-end.rkt}
+\label{sec-14-5}
+
+\begin{itemize}
+\item nenhuma mudança.
+\end{itemize}
+
+\subsection{Code-gen.rkt}
+\label{sec-14-6}
+
+\begin{itemize}
+\item nenhuma mudança.
+\end{itemize}
+
+\subsection{Comp.rkt}
+\label{sec-14-7}
+
+\begin{itemize}
+\item mudanças fruto das mudanças no analysis.rkt, pricipalmente nome de funções.
+\end{itemize}
+
+\subsection{Env.rkt}
+\label{sec-14-8}
+
+\begin{itemize}
+\item mudanças organizacionais do environment.
+\item nao implica em mudança no assembly (diretamente).
+\end{itemize}
+
+\subsection{Front-end.rkt}
+\label{sec-14-9}
+
+\begin{itemize}
+\item mudou mto, pelo nome e analise superficial, são mudanças no comp, redução beta e tals.
+\item não afeta diretamento o assembly.
+\end{itemize}
+
+\subsection{Gen.config.rkt}
+\label{sec-14-10}
+
+\begin{itemize}
+\item tiraram coisa e colocaram no assemble.rkt.
+\item max-fix-num igual
+\end{itemize}
+
+;;picoufu
+\begin{itemize}
+\item code-start \#x8000
+\item min-rom-encoding 261
+\item max-rom-encoding 6220
+\item min-ram-encoding 6221
+\end{itemize}
+
+;;picobit 
+\begin{itemize}
+\item code-start \#x8008000
+\item min-ram-encoding 1280
+\item min-rom-encoding (+ min-fixnum-encoding (- max-fixnum min-fixnum) 1)
+
+\item isso também pode ser responsável por não funcionar.
+\end{itemize}
+
+\subsection{Gen.library.rkt}
+\label{sec-14-11}
+
+\begin{itemize}
+\item mudou o caminho, mas ta certo.
+\end{itemize}
+
+\subsection{Gen.primitives.rkt}
+\label{sec-14-12}
+
+\begin{itemize}
+\item funções geradas diferentes, normal.
+\end{itemize}
+
+\subsection{Ir.rkt}
+\label{sec-14-13}
+
+\begin{itemize}
+\item arquivos identicos.
+\end{itemize}
+
+\subsection{Library.scm}
+\label{sec-14-14}
+
+\begin{itemize}
+\item arquivos identicos.
+\end{itemize}
+
+\subsection{Parser.rkt}
+\label{sec-14-15}
+
+\begin{itemize}
+\item mudou mto, afeta compilador.
+\item acho q não é o problema.
+\end{itemize}
+
+\subsection{Picobit.rkt}
+\label{sec-14-16}
+
+\begin{itemize}
+\item reflete as mudanças no compilador causada pelos arquivos anteriores.
+\end{itemize}
+
+\subsection{Primitives.rkt}
+\label{sec-14-17}
+
+\begin{itemize}
+\item mudou mto.
+\end{itemize}
+
+\subsection{Reader.rkt}
+\label{sec-14-18}
+
+\begin{itemize}
+\item mudanças de organização.
+\end{itemize}
+
+\subsection{Scheduling.rkt}
+\label{sec-14-19}
+
+\begin{itemize}
+\item arquivos iguais.
+\end{itemize}
+
+\subsection{Tree-shaker.rkt}
+\label{sec-14-20}
+
+\begin{itemize}
+\item arquivos identicos.
+\end{itemize}
+
+\subsection{Utilities.rkt}
+\label{sec-14-21}
+
+\begin{itemize}
+\item mudou a forma de imprimir os erros do picobit.
+\end{itemize}
 % Emacs 24.5.1 (Org mode 8.2.10)
 \end{document}

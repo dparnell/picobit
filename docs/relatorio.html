@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>TCC</title>
+<!-- 2016-10-27 Qui 19:25 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Cecília Carneiro e Silva" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">TCC</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. TEMA</a></li>
+<li><a href="#sec-2">2. TITULO</a></li>
+<li><a href="#sec-3">3. OBJETIVO GERAL</a></li>
+<li><a href="#sec-4">4. SCHEME</a></li>
+<li><a href="#sec-5">5. <span class="done DONE">DONE</span> PICOBIT - pdf</a>
+<ul>
+<li><a href="#sec-5-1">5.1. <span class="done DONE">DONE</span> Foto folha</a></li>
+<li><a href="#sec-5-2">5.2. <span class="todo TODO">TODO</span> Comentarios</a>
+<ul>
+<li><a href="#sec-5-2-1">5.2.1. <span class="done DONE">DONE</span> PICOBIT-SCHEME compiler</a></li>
+<li><a href="#sec-5-2-2">5.2.2. <span class="todo TODO">TODO</span> PICOBIT bytecode</a></li>
+<li><a href="#sec-5-2-3">5.2.3. <span class="todo TODO">TODO</span> PICOBIT-virtual machine</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-6">6. <span class="todo TODO">TODO</span> R5RS</a></li>
+<li><a href="#sec-7">7. <span class="todo TODO">TODO</span> Compiler files study</a>
+<ul>
+<li><a href="#sec-7-1">7.1. <span class="todo TODO">TODO</span> Objective</a></li>
+<li><a href="#sec-7-2">7.2. Utilities</a></li>
+<li><a href="#sec-7-3">7.3. Env</a></li>
+<li><a href="#sec-7-4">7.4. Ast</a>
+<ul>
+<li><a href="#sec-7-4-1">7.4.1. <span class="todo TODO">TODO</span> unstable/match</a></li>
+</ul>
+</li>
+<li><a href="#sec-7-5">7.5. MODIFICAÇÕES</a></li>
+</ul>
+</li>
+<li><a href="#sec-8">8. <span class="todo TODO">TODO</span> ARM - livro</a></li>
+<li><a href="#sec-9">9. <span class="todo TODO">TODO</span> tanenbaum - book</a></li>
+<li><a href="#sec-10">10. <span class="todo TODO">TODO</span> Virtual machines</a></li>
+<li><a href="#sec-11">11. <span class="todo TODO">TODO</span> PICOBIT SCHEME COMPILER</a></li>
+<li><a href="#sec-12">12. <span class="todo TODO">TODO</span> PICOBIT VM</a></li>
+<li><a href="#sec-13">13. <span class="todo TODO">TODO</span> SIXPIC C COMPILER</a></li>
+<li><a href="#sec-14">14. <span class="todo TODO">TODO</span> Comparation picobit - picoufu</a>
+<ul>
+<li><a href="#sec-14-1">14.1. Analysis.rkt</a></li>
+<li><a href="#sec-14-2">14.2. Asm.rkt</a></li>
+<li><a href="#sec-14-3">14.3. Assemble.rkt</a></li>
+<li><a href="#sec-14-4">14.4. Ast.rkt</a></li>
+<li><a href="#sec-14-5">14.5. Back-end.rkt</a></li>
+<li><a href="#sec-14-6">14.6. Code-gen.rkt</a></li>
+<li><a href="#sec-14-7">14.7. Comp.rkt</a></li>
+<li><a href="#sec-14-8">14.8. Env.rkt</a></li>
+<li><a href="#sec-14-9">14.9. Front-end.rkt</a></li>
+<li><a href="#sec-14-10">14.10. Gen.config.rkt</a></li>
+<li><a href="#sec-14-11">14.11. Gen.library.rkt</a></li>
+<li><a href="#sec-14-12">14.12. Gen.primitives.rkt</a></li>
+<li><a href="#sec-14-13">14.13. Ir.rkt</a></li>
+<li><a href="#sec-14-14">14.14. Library.scm</a></li>
+<li><a href="#sec-14-15">14.15. Parser.rkt</a></li>
+<li><a href="#sec-14-16">14.16. Picobit.rkt</a></li>
+<li><a href="#sec-14-17">14.17. Primitives.rkt</a></li>
+<li><a href="#sec-14-18">14.18. Reader.rkt</a></li>
+<li><a href="#sec-14-19">14.19. Scheduling.rkt</a></li>
+<li><a href="#sec-14-20">14.20. Tree-shaker.rkt</a></li>
+<li><a href="#sec-14-21">14.21. Utilities.rkt</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> TEMA</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Maquina virtual em sitemas embacados
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> TITULO</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Sistema de virtualização para sistemas embarcados, utilizando a linguagem de programação Scheme.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> OBJETIVO GERAL</h2>
+</div>
+
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> SCHEME</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Scheme
+</p>
+
+<p>
+Scheme is a statically scoped and properly tail-recursive dialect of the Lisp programming language invented by Guy Lewis Steele Jr. and Gerald Jay Sussman. It was designed to have an exceptionally clear and simple semantics and few different ways to form expressions. A wide variety of programming paradigms, including imperative, functional, and message passing styles, find convenient expression in Scheme.
+</p>
+
+<p>
+Scheme was one of the first programming languages to incorporate first class procedures as in the lambda calculus, thereby proving the usefulness of static scope rules and block structure in a dynamically typed language. Scheme was the first major dialect of Lisp to distinguish procedures from lambda expressions and symbols, to use a single lexical environment for all variables, and to evaluate the operator position of a procedure call in the same way as an operand position. By relying entirely on procedure calls to express iteration, Scheme emphasized the fact that tail-recursive procedure calls are essentially goto's that pass arguments. Scheme was the first widely used programming language to embrace first class escape procedures, from which all previously known sequential control structures can be synthesized. More recently, building upon the design of generic arithmetic in Common Lisp, Scheme introduced the concept of exact and inexact numbers. Scheme is also the first programming language to support hygienic macros, which permit the syntax of a block-structured language to be extended reliably.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> <span class="done DONE">DONE</span> PICOBIT - pdf</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Terminar de ler o artigo oficial do picobit.
+</p>
+</div>
+
+<div id="outline-container-sec-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> <span class="done DONE">DONE</span> Foto folha</h3>
+<div class="outline-text-3" id="text-5-1">
+<ul class="org-ul">
+<li>GOOGLE-PHOTOS
+
+<p>
+Tirar foto da folha.
+</p>
+</li>
+
+<li>SIXPIC C compiler é somente para PIC18.
+</li>
+<li>Nesse caso vamos usar o cross-compiler: arm-none-eabi-gcc.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> <span class="todo TODO">TODO</span> Comentarios</h3>
+<div class="outline-text-3" id="text-5-2">
+<ul class="org-ul">
+<li>Por causa do ambiente com tamanho de codigo limitado, todo projeto foi voltado a gerar bytecode compact code.
+</li>
+<li>O bytecode resultante da scheme compiler é menor q o machine code, ou seja, o tamanho da entrada da VM é menor q a saída.
+</li>
+<li>Como o projeto tem total controle, virtual machine e C compiler, podemos adaptar um ao outro.
+</li>
+<li>A maquina virtual é escrita em C, tornando fácil a portabilidade entre hardwares, esse trabalho: STM32F1 e STM32F4.
+</li>
+</ul>
+
+
+<div class="figure">
+<p><img src="stm32f1.png" alt="stm32f1.png" />
+</p>
+</div>
+
+
+
+<div class="figure">
+<p><img src="stm32f4.png" alt="stm32f4.png" />
+</p>
+</div>
+
+<ul class="org-ul">
+<li>Implementação do R5RS, tem: macros, closures, listas, gerenciamento de memória, predicados de alta ordem, inteiros de precisão, strings, etc.
+</li>
+<li>Não foi implementado (visando ser mais compacto, são coisa não uteis em Embedded Systems-ES): ponto flutuante, file I/O, eval, rational, complex numbers, symbol-&gt;string, string-&gt;symbol.
+</li>
+<li>Suporte à listas.
+</li>
+<li>The term continuations can also be used to refer to first-class continuations, which are constructs that give a programming language the ability to save the execution state at any point and return to that point at a later point in the program, possibly multiple times.
+</li>
+</ul>
+</div>
+
+<div id="outline-container-sec-5-2-1" class="outline-4">
+<h4 id="sec-5-2-1"><span class="section-number-4">5.2.1</span> <span class="done DONE">DONE</span> PICOBIT-SCHEME compiler</h4>
+<div class="outline-text-4" id="text-5-2-1">
+<p>
+Compilador Scheme especializado em gerar bytecode otimizado. Programa acoplado com a biblioteca, então o bytecode é gerado dos dois juntos resultando em um bytecode mais compacto quando comparado a versão separada.
+</p>
+
+<p>
+Conjunto de instações compartilhadas pelo compiler e pela VM, criado e planejado para essa aplicação, todos optimizações voltadas a isso.
+</p>
+
+<ul class="org-ul">
+<li>Para diminuir as alocações em tempo de execução (alocações dinamicas), toda analise de mutabilidade é feita em tempo de compilação, variáveis que nao alteram o valor não são alocadas na memória.   &#x2013;   startup.s    
+</li>
+<li>Enfim, compiler e linker são feitos na mesma etapa.
+</li>
+<li>Branchs consecutivos são pulandos, importando apenas o final.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-5-2-2" class="outline-4">
+<h4 id="sec-5-2-2"><span class="section-number-4">5.2.2</span> <span class="todo TODO">TODO</span> PICOBIT bytecode</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<ul class="org-ul">
+<li>PICOBIT é uma maquina virtual de pilha (stack-based virtual machine).
+</li>
+<li>Não entendi mto bem nao.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-5-2-3" class="outline-4">
+<h4 id="sec-5-2-3"><span class="section-number-4">5.2.3</span> <span class="todo TODO">TODO</span> PICOBIT-virtual machine</h4>
+<div class="outline-text-4" id="text-5-2-3">
+<p>
+É a parte do picobit voltada ao microcontrolador. É o interpletador do bytecode gerado pelo scheme compiler.
+</p>
+
+<ul class="org-ul">
+<li>Pensanda para ser o mais compacta possível.
+</li>
+<li>Inclui coletor de lixo, número com precisão e suporte a estruturas de dados.
+</li>
+<li>Stack based, cons of cells.
+</li>
+</ul>
+</div>
+
+<ol class="org-ol"><li><a id="sec-5-2-3-1" name="sec-5-2-3-1"></a>Mark-and-Sweep Garbage Collection<br  /><div class="outline-text-5" id="text-5-2-3-1">
+<p>
+When using mark-and-sweep, unreferenced objects are not reclaimed immediately. Instead, garbage is allowed to accumulate until all available memory has been exhausted. When that happens, the execution of the program is suspended temporarily while the mark-and-sweep algorithm collects all the garbage. Once all unreferenced objects have been reclaimed, the normal execution of the program can resume.
+</p>
+
+<p>
+The mark-and-sweep algorithm is called a tracing garbage collector because is traces out the entire collection of objects that are directly or indirectly accessible by the program. The objects that a program can access directly are those objects which are referenced by local variables on the processor stack as well as by any static variables that refer to objects. In the context of garbage collection, these variables are called the roots . An object is indirectly accessible if it is referenced by a field in some other (directly or indirectly) accessible object. An accessible object is said to be live . Conversely, an object which is not live is garbage.
+</p>
+
+<p>
+The mark-and-sweep algorithm consists of two phases: In the first phase, it finds and marks all accessible objects. The first phase is called the mark phase. In the second phase, the garbage collection algorithm scans through the heap and reclaims all the unmarked objects. The second phase is called the sweep phase.
+</p>
+</div>
+</li>
+
+<li><a id="sec-5-2-3-2" name="sec-5-2-3-2"></a>Copying garbage collection<br  /><div class="outline-text-5" id="text-5-2-3-2">
+<p>
+Usa apenas metade da memoria, copia de uma parte para outra.
+Mais complicado q o Mark-and-sweet collection.
+</p>
+
+<ul class="org-ul">
+<li>Normalmente os microcontroladores tem mais ROM quem RAM, então é interessante passar td que é possivel para a ROM, deixando na RAM somente os dados mutáveis.
+</li>
+<li>Variaves com valor conhecido em compile-time são colocados na ROM, PICOBIT consegue manipular obbjetos tanto da ROM quanto da RAM.
+</li>
+<li>full version = 13-bit encoding
+</li>
+<li>ligth version = 8-bit-encoding
+</li>
+<li>Unbounded precision integer type são providos, So unbounded in this context means bounded only by the availability of system resources; there is no hard-coded limit to the number of digits in the value that an unbounded-precision integer type an represent. Permite que o PICOBIT implemente protocolos de redes que necessitam, por exemplo, do MAC adress (48 bits) ou  SHA criptografia.
+</li>
+</ul>
+</div>
+</li></ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> R5RS</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Descrição da linguagem de programação Scheme. Linguagem fracamente tipada, ou dinamicamente tipada, latent type.
+</p>
+
+<p>
+Scheme was one of the first languages to support procedures as objects in their own right. Procedures can be created dynamically, stored in data structures, returned as results of procedures, and so on. Other languages with these properties include Common Lisp, Haskell, ML, Ruby, and Smalltalk.
+</p>
+
+<p>
+Scheme por definição é uma linguage weak, não lazy.
+</p>
+
+<p>
+Scheme programms manipulam objetos também conhecidos como valores. 
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> Compiler files study</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Estudo e análise dos codigos do compilador PICOBIT, scheme to bytecode.
+</p>
+</div>
+
+<div id="outline-container-sec-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> <span class="todo TODO">TODO</span> Objective</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+Primeiro objetivo é atualizar para a versão 6.6 do Racket. Atualmente está rodando na versão 6.2 do racket, com modificação no arquivo port.rkt, unstable.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-7-2" class="outline-3">
+<h3 id="sec-7-2"><span class="section-number-3">7.2</span> Utilities</h3>
+<div class="outline-text-3" id="text-7-2">
+<ul class="org-ul">
+<li>SRFI/4 = vetores numéricos homogênios
+= Marc Feeley
+= vetores numericos em que todos os elementos tem o mesmo tipo.
+= vetores homogenios devem ser usado em comunicação com bibliotecas de baixo nível.
+= 8 tipos de vetores homogênios inteiros, 2 tipos de ponto flutuante.
+</li>
+
+<li>todas funções visiveis fora do arquivo.
+</li>
+<li>parameterize = cria um novo thread com aquela variável.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-7-3" class="outline-3">
+<h3 id="sec-7-3"><span class="section-number-3">7.3</span> Env</h3>
+<div class="outline-text-3" id="text-7-3">
+<ul class="org-ul">
+<li>require: utilities.rkt
+</li>
+<li>provide all.
+</li>
+<li>Toda estruturação das variaveis e funcoes. Enfim estruturação do ambiente de compilação.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-7-4" class="outline-3">
+<h3 id="sec-7-4"><span class="section-number-3">7.4</span> Ast</h3>
+<div class="outline-text-3" id="text-7-4">
+<ul class="org-ul">
+<li>require utilities.rkt env.rkt
+</li>
+<li>provide all.
+</li>
+<li>objetos com multiplas relações, defs, refs, sets e prcs.
+</li>
+</ul>
+</div>
+
+<div id="outline-container-sec-7-4-1" class="outline-4">
+<h4 id="sec-7-4-1"><span class="section-number-4">7.4.1</span> <span class="todo TODO">TODO</span> unstable/match</h4>
+<div class="outline-text-4" id="text-7-4-1">
+<p>
+Tirar isso, tornar estavel, compartivel com a ultima versão do racket.
+</p>
+
+<ul class="org-ul">
+<li>entre outras coisas, verifica se a variavel é mutável ou nao.
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-7-5" class="outline-3">
+<h3 id="sec-7-5"><span class="section-number-3">7.5</span> MODIFICAÇÕES</h3>
+<div class="outline-text-3" id="text-7-5">
+<ul class="org-ul">
+<li>ast.rkt=&gt; unstable/match -&gt; racket/matck
+</li>
+<li>primitives.rkt=&gt; unstable/sequence -&gt; unstable/sequence e racket/sequence, a biblioteca sequence foi mudado para racket/sequence com excessão: in-pairs, in-sequence-forever, sequence-lift. Então será feita a inclusão dos dois pacotes.
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> ARM - livro</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Joseph Yiu (Auth.)-The Definitive Guide to Arm® Cortex®-M3 and Cortex®-M4 Processors-Newnes (2014).pdf
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> <span class="todo TODO">TODO</span> tanenbaum - book</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+Operating systems.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> <span class="todo TODO">TODO</span> Virtual machines</h2>
+</div>
+
+<div id="outline-container-sec-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> <span class="todo TODO">TODO</span> PICOBIT SCHEME COMPILER</h2>
+</div>
+
+<div id="outline-container-sec-12" class="outline-2">
+<h2 id="sec-12"><span class="section-number-2">12</span> <span class="todo TODO">TODO</span> PICOBIT VM</h2>
+</div>
+
+<div id="outline-container-sec-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> <span class="todo TODO">TODO</span> SIXPIC C COMPILER</h2>
+</div>
+<div id="outline-container-sec-14" class="outline-2">
+<h2 id="sec-14"><span class="section-number-2">14</span> <span class="todo TODO">TODO</span> Comparation picobit - picoufu</h2>
+<div class="outline-text-2" id="text-14">
+</div><div id="outline-container-sec-14-1" class="outline-3">
+<h3 id="sec-14-1"><span class="section-number-3">14.1</span> Analysis.rkt</h3>
+<div class="outline-text-3" id="text-14-1">
+<ul class="org-ul">
+<li>require: +primitives.rkt
+</li>
+<li>provide: -less things
+</li>
+<li>mudou a forma de marcar variáveis mutáveis e não mutavéis
+</li>
+
+<li>nada q implique em mudaças no assembly
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-2" class="outline-3">
+<h3 id="sec-14-2"><span class="section-number-3">14.2</span> Asm.rkt</h3>
+<div class="outline-text-3" id="text-14-2">
+<p>
+(if asm-big-endian?
+    ;;picobit
+    (print-line 3 0 (reverse le-bytes))
+    (print-line 3 0 le-bytes)
+    ;;picoufu
+    (print-line 4 0 (reverse le-bytes))
+    (print-line 4 0 le-bytes))
+</p>
+
+<p>
+(print-line type addr bytes) 
+</p>
+
+<p>
+;; pode ser esse o problema
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-14-3" class="outline-3">
+<h3 id="sec-14-3"><span class="section-number-3">14.3</span> Assemble.rkt</h3>
+<div class="outline-text-3" id="text-14-3">
+<ul class="org-ul">
+<li>mais configurações, max-fixnum, min-rom-encoding, min-ram-encoding
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-4" class="outline-3">
+<h3 id="sec-14-4"><span class="section-number-3">14.4</span> Ast.rkt</h3>
+<div class="outline-text-3" id="text-14-4">
+<ul class="org-ul">
+<li>require: syntax/parse, racket/match, racket/syntax
+</li>
+<li>AST: abstract syntax tree.
+</li>
+<li>Compilador, nao tem ligação direta com o assebly
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-5" class="outline-3">
+<h3 id="sec-14-5"><span class="section-number-3">14.5</span> Back-end.rkt</h3>
+<div class="outline-text-3" id="text-14-5">
+<ul class="org-ul">
+<li>nenhuma mudança.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-6" class="outline-3">
+<h3 id="sec-14-6"><span class="section-number-3">14.6</span> Code-gen.rkt</h3>
+<div class="outline-text-3" id="text-14-6">
+<ul class="org-ul">
+<li>nenhuma mudança.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-7" class="outline-3">
+<h3 id="sec-14-7"><span class="section-number-3">14.7</span> Comp.rkt</h3>
+<div class="outline-text-3" id="text-14-7">
+<ul class="org-ul">
+<li>mudanças fruto das mudanças no analysis.rkt, pricipalmente nome de funções.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-8" class="outline-3">
+<h3 id="sec-14-8"><span class="section-number-3">14.8</span> Env.rkt</h3>
+<div class="outline-text-3" id="text-14-8">
+<ul class="org-ul">
+<li>mudanças organizacionais do environment.
+</li>
+<li>nao implica em mudança no assembly (diretamente).
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-9" class="outline-3">
+<h3 id="sec-14-9"><span class="section-number-3">14.9</span> Front-end.rkt</h3>
+<div class="outline-text-3" id="text-14-9">
+<ul class="org-ul">
+<li>mudou mto, pelo nome e analise superficial, são mudanças no comp, redução beta e tals.
+</li>
+<li>não afeta diretamento o assembly.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-10" class="outline-3">
+<h3 id="sec-14-10"><span class="section-number-3">14.10</span> Gen.config.rkt</h3>
+<div class="outline-text-3" id="text-14-10">
+<ul class="org-ul">
+<li>tiraram coisa e colocaram no assemble.rkt.
+</li>
+<li>max-fix-num igual
+</li>
+</ul>
+
+<p>
+;;picoufu
+</p>
+<ul class="org-ul">
+<li>code-start #x8000
+</li>
+<li>min-rom-encoding 261
+</li>
+<li>max-rom-encoding 6220
+</li>
+<li>min-ram-encoding 6221
+</li>
+</ul>
+
+<p>
+;;picobit 
+</p>
+<ul class="org-ul">
+<li>code-start #x8008000
+</li>
+<li>min-ram-encoding 1280
+</li>
+<li>min-rom-encoding (+ min-fixnum-encoding (- max-fixnum min-fixnum) 1)
+</li>
+
+<li>isso também pode ser responsável por não funcionar.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-11" class="outline-3">
+<h3 id="sec-14-11"><span class="section-number-3">14.11</span> Gen.library.rkt</h3>
+<div class="outline-text-3" id="text-14-11">
+<ul class="org-ul">
+<li>mudou o caminho, mas ta certo.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-12" class="outline-3">
+<h3 id="sec-14-12"><span class="section-number-3">14.12</span> Gen.primitives.rkt</h3>
+<div class="outline-text-3" id="text-14-12">
+<ul class="org-ul">
+<li>funções geradas diferentes, normal.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-13" class="outline-3">
+<h3 id="sec-14-13"><span class="section-number-3">14.13</span> Ir.rkt</h3>
+<div class="outline-text-3" id="text-14-13">
+<ul class="org-ul">
+<li>arquivos identicos.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-14" class="outline-3">
+<h3 id="sec-14-14"><span class="section-number-3">14.14</span> Library.scm</h3>
+<div class="outline-text-3" id="text-14-14">
+<ul class="org-ul">
+<li>arquivos identicos.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-15" class="outline-3">
+<h3 id="sec-14-15"><span class="section-number-3">14.15</span> Parser.rkt</h3>
+<div class="outline-text-3" id="text-14-15">
+<ul class="org-ul">
+<li>mudou mto, afeta compilador.
+</li>
+<li>acho q não é o problema.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-16" class="outline-3">
+<h3 id="sec-14-16"><span class="section-number-3">14.16</span> Picobit.rkt</h3>
+<div class="outline-text-3" id="text-14-16">
+<ul class="org-ul">
+<li>reflete as mudanças no compilador causada pelos arquivos anteriores.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-17" class="outline-3">
+<h3 id="sec-14-17"><span class="section-number-3">14.17</span> Primitives.rkt</h3>
+<div class="outline-text-3" id="text-14-17">
+<ul class="org-ul">
+<li>mudou mto.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-18" class="outline-3">
+<h3 id="sec-14-18"><span class="section-number-3">14.18</span> Reader.rkt</h3>
+<div class="outline-text-3" id="text-14-18">
+<ul class="org-ul">
+<li>mudanças de organização.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-19" class="outline-3">
+<h3 id="sec-14-19"><span class="section-number-3">14.19</span> Scheduling.rkt</h3>
+<div class="outline-text-3" id="text-14-19">
+<ul class="org-ul">
+<li>arquivos iguais.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-20" class="outline-3">
+<h3 id="sec-14-20"><span class="section-number-3">14.20</span> Tree-shaker.rkt</h3>
+<div class="outline-text-3" id="text-14-20">
+<ul class="org-ul">
+<li>arquivos identicos.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14-21" class="outline-3">
+<h3 id="sec-14-21"><span class="section-number-3">14.21</span> Utilities.rkt</h3>
+<div class="outline-text-3" id="text-14-21">
+<ul class="org-ul">
+<li>mudou a forma de imprimir os erros do picobit.
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Cecília Carneiro e Silva</p>
+<p class="date">Created: 2016-10-27 Qui 19:25</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
