@@ -121,22 +121,26 @@ provide-macro = @echo "(define $(1) $(call fetch-macro,$(2),$(3)))" >>$@; \
 
 .PHONY: ../compiler/gen.config.rkt
 ../compiler/gen.config.rkt:
-	@echo "#lang racket" >$@
-	@echo "" >>$@
-	@echo "(define code-start $(load-address))" >>$@
-	@echo "(provide code-start)" >>$@
+	echo "#lang racket" >$@
+	echo "" >>$@
+	echo "(define code-start $(load-address))" >>$@
+	echo "(provide code-start)" >>$@
 	$(call provide-macro,max-fixnum,heap.h,MAX_FIXNUM)
 	$(call provide-macro,min-rom-encoding,heap.h,MIN_ROM_ENCODING)
 	$(call provide-macro,max-rom-encoding,heap.h,MAX_ROM_ENCODING)
 	$(call provide-macro,min-ram-encoding,heap.h,MIN_RAM_ENCODING)
 
 ../compiler/gen.library.scm: .config $(arch)/Makefile
+	echo >$@
 	for scm in $(scm-y); do \
 		echo "(include \"vm/$${scm}\")" >>$@; \
 	done
 
 all: include/arch .primitives.p ../compiler/gen.config.rkt \
 	../compiler/gen.library.scm arch-all
+	if [ -e picobit.elf ]; then \
+		CROSS="$(CROSS)" CPPFLAGS="$(CPPFLAGS)" scripts/check-encoding.sh; \
+	fi
 
 endif # $(dot-config)
 
@@ -144,7 +148,7 @@ endif # $(config-targets)
 endif # $(mixed-targets)
 
 clean: FORCE
-	rm -f   picobit-vm picobit.elf picobit.hex \
+	rm -f include/arch picobit-vm picobit.elf picobit.hex \
 		.primitives.p ../compiler/gen.* include/gen.* \
 		core/gen.* *.o
 

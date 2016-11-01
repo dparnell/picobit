@@ -22,9 +22,4 @@ typedef signed char  s8;
 #define R_BITS(v, s, e) (((v) & MASK(e - s + 1)) >> s)
 #define W_BITS(v, x, s, e) (v) = ((v) & ~(MASK(e - s + 1) << s)) | BITS(x, s, e)
 
-// Acrescentado em 26/06/2012
-#define  RCC_APB2ENR_IOPAEN                  ((u16)0x0004)            /*!< I/O port A clock enable */
-#define  RCC_APB2ENR_IOPBEN                  ((u16)0x0008)            /*!< I/O port B clock enable */
-#define  RCC_APB2ENR_IOPCEN                  ((u16)0x0010)            /*!< I/O port C clock enable */
-
 #endif

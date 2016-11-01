@@ -4,3 +4,4 @@ picobit-vm
 picobit.hex
 picobit.elf
 .primitives.p
+*.o

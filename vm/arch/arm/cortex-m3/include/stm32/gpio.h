@@ -4,13 +4,13 @@
 #include <arch/stm32/bits.h>
 
 struct regs_GPIO {
-  reg CRL;
-  reg CRH;
-  reg IDR;
-  reg ODR;
-  reg BSRR;
-  reg BRR;
-  reg LCKR;
+	reg CRL;
+	reg CRH;
+	reg IDR;
+	reg ODR;
+	reg BSRR;
+	reg BRR;
+	reg LCKR;
 };
 
 CONFIG_AREA(regs_GPIO, GPIOA, 0x40010800);

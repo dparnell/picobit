@@ -202,8 +202,10 @@ integer shr (integer x)   // TODO have shift_right
 	//  by the original x, so we're good. Same situation in most other
 	//  bignum operations.
 
-	bignum_tmp1 = OBJ_FALSE;
 	digit d;
+	obj tmp;
+
+	bignum_tmp1 = OBJ_FALSE;
 
 	for (;;) {
 		if (obj_eq (x, ZERO) || obj_eq (x, NEG1)) {
@@ -220,7 +222,7 @@ integer shr (integer x)   // TODO have shift_right
 	}
 
 	// clear the root then return
-	obj tmp = bignum_tmp1;
+	tmp = bignum_tmp1;
 	bignum_tmp1 = OBJ_FALSE;
 	return tmp;
 }
@@ -243,9 +245,10 @@ integer shl (integer x)
 	// Same for other negc variables in other operations.
 	integer negc = ZERO; /* negative carry */
 	integer temp;
+	digit d;
+	obj tmp;
 
 	bignum_tmp1 = OBJ_FALSE;
-	digit d;
 
 	for (;;) {
 		if (obj_eq (x, negc)) {
@@ -262,7 +265,7 @@ integer shl (integer x)
 	}
 
 	// clear the root then return
-	obj tmp = bignum_tmp1;
+	tmp = bignum_tmp1;
 	bignum_tmp1 = OBJ_FALSE;
 	return tmp;
 }
@@ -270,6 +273,7 @@ integer shl (integer x)
 integer shift_left (integer x, uint16 n)
 {
 	/* shift_left(x,n) returns the integer x shifted n bits to the left */
+	obj tmp;
 
 	if (obj_eq (x, ZERO)) {
 		return x;
@@ -288,7 +292,7 @@ integer shift_left (integer x, uint16 n)
 	}
 
 	// clear the root then return
-	obj tmp = bignum_tmp2;
+	tmp = bignum_tmp2;
 	bignum_tmp2 = OBJ_FALSE;
 	return tmp;
 }
@@ -298,9 +302,11 @@ integer add (integer x, integer y)
 	/* add(x,y) returns the sum of the integers x and y */
 
 	integer negc = ZERO; /* negative carry */
-	bignum_tmp1 = OBJ_FALSE; /* #f terminated for the norm function */
 	digit dx;
 	digit dy;
+	obj tmp;
+
+	bignum_tmp1 = OBJ_FALSE; /* nil terminated for the norm function */
 
 	for (;;) {
 		if (obj_eq (x, negc)) {
@@ -331,7 +337,7 @@ integer add (integer x, integer y)
 	}
 
 	// clear the root then return
-	obj tmp = bignum_tmp1;
+	tmp = bignum_tmp1;
 	bignum_tmp1 = OBJ_FALSE;
 	return tmp;
 }
@@ -349,9 +355,11 @@ integer sub (integer x, integer y)
 {
 	/* sub(x,y) returns the difference of the integers x and y */
 	integer negc = NEG1; /* negative carry */
-	bignum_tmp1 = OBJ_FALSE;
 	digit dx;
 	digit dy;
+	obj tmp;
+
+	bignum_tmp1 = OBJ_FALSE;
 
 	for (;;) {
 		if (obj_eq (x, negc) && (obj_eq (y, ZERO) || obj_eq (y, NEG1))) {
@@ -382,7 +390,7 @@ integer sub (integer x, integer y)
 	}
 
 	// clear the root then return
-	obj tmp = bignum_tmp1;
+	tmp = bignum_tmp1;
 	bignum_tmp1 = OBJ_FALSE;
 	return tmp; // TODO have macro for that.
 }
@@ -393,6 +401,7 @@ integer scale (digit n, integer x)
 
 	digit carry;
 	two_digit m;
+	obj tmp;
 
 	if ((n == 0) || obj_eq (x, ZERO)) {
 		return ZERO;
@@ -438,7 +447,7 @@ integer scale (digit n, integer x)
 	}
 
 	// clear the root then return
-	obj tmp = bignum_tmp1;
+	tmp = bignum_tmp1;
 	bignum_tmp1 = OBJ_FALSE;
 	return tmp;
 }
@@ -447,6 +456,7 @@ integer mulnonneg (integer x, integer y)
 {
 	/* mulnonneg(x,y) returns the product of the integers x and y
 	   where x is nonnegative */
+	obj tmp1, tmp2;
 
 	bignum_tmp3 = OBJ_FALSE;
 	bignum_tmp4 = scale (integer_lo (x), y);
@@ -465,8 +475,8 @@ integer mulnonneg (integer x, integer y)
 		bignum_tmp4 = add (bignum_tmp4, bignum_tmp2);
 	}
 
-	obj tmp1 = bignum_tmp3;
-	obj tmp2 = bignum_tmp4;
+	tmp1 = bignum_tmp3;
+	tmp2 = bignum_tmp4;
 	bignum_tmp2 = OBJ_FALSE;
 	bignum_tmp3 = OBJ_FALSE;
 	bignum_tmp4 = OBJ_FALSE;
@@ -480,12 +490,13 @@ integer divnonneg (integer x, integer y)
 
 	// x and y end up pointing to newly allocated bignums, so we need
 	// to register them with the GC.
-	bignum_tmp4 = x;
-	bignum_tmp5 = y;
-
-	bignum_tmp3 = ZERO;
 	uint16 lx = integer_length (bignum_tmp4);
 	uint16 ly = integer_length (bignum_tmp5);
+	obj tmp;
+
+	bignum_tmp3 = ZERO;
+	bignum_tmp4 = x;
+	bignum_tmp5 = y;
 
 	if (lx >= ly) {
 		lx = lx - ly;
@@ -504,7 +515,7 @@ integer divnonneg (integer x, integer y)
 		} while (lx-- != 0);
 	}
 
-	obj tmp = bignum_tmp3;
+	tmp = bignum_tmp3;
 	bignum_tmp3 = OBJ_FALSE;
 	bignum_tmp4 = OBJ_FALSE;
 	return tmp;

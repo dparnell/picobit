@@ -8,7 +8,7 @@ struct regs_AFIO {
 #define		EVOE		BIT(7)
 #define		R_PORT(v)	R_BITS(v, 4, 6)
 #define		W_PORT(v, x)	W_BITS(v, x, 4, 6)
-#define		PORT(x)		BITS(x, 4, 6)
+#define		PORT(x)		BITS(v, 4, 6)
 #define		R_PIN(v)	R_BITS(v, 0, 3)
 #define		W_PIN(v, x)	W_BITS(v, x, 0, 3)
 #define		PIN(x)		BITS(x, 0, 3)
