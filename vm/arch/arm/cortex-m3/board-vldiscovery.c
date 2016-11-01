@@ -44,19 +44,41 @@ PRIMITIVE_UNSPEC(#%set-led!, arch_set_led, 1)
   arg1 = OBJ_FALSE;
 }
 
-PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 1)
+PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 2)
 {
-  int ch;
-  
-  ch = decode_int(arg1);
+  int ch, port;
 
-  if(ch < 8){
-    GPIOC->CRL |= 0x11111111 & (0x0000000B << (4*ch));
-  }
-  else if (ch < 16){
-    GPIOC->CRH |= 0x11111111 & (0x0000000B << (4*(ch-8)));
-  }
-  
+  port = decode_int(arg1);
+  ch   = decode_int(arg2);
+
+  switch(port){
+  case 0:
+    if(ch < 8){
+      GPIOA->CRL |= 0x11111111 & (0x0000000B << (4*ch));
+    }
+    else if (ch < 16){
+      GPIOA->CRH |= 0x11111111 & (0x0000000B << (4*(ch-8)));
+    }
+    break;
+
+  case 1:
+    if(ch < 8){
+      GPIOB->CRL |= 0x11111111 & (0x0000000B << (4*ch));
+    }
+    else if (ch < 16){
+      GPIOB->CRH |= 0x11111111 & (0x0000000B << (4*(ch-8)));
+    }
+    break;
+
+  case 2:
+    if(ch < 8){
+      GPIOC->CRL |= 0x11111111 & (0x0000000B << (4*ch));
+    }
+    else if (ch < 16){
+      GPIOC->CRH |= 0x11111111 & (0x0000000B << (4*(ch-8)));
+    }
+    break;
+  }  
 }
 
 void main ()
