@@ -125,6 +125,10 @@ provide-macro = @echo "(define $(1) $(call fetch-macro,$(2),$(3)))" >>$@; \
 	@echo "" >>$@
 	@echo "(define code-start $(load-address))" >>$@
 	@echo "(provide code-start)" >>$@
+	$(call provide-macro,max-fixnum,heap.h,MAX_FIXNUM)
+	$(call provide-macro,min-rom-encoding,heap.h,MIN_ROM_ENCODING)
+	$(call provide-macro,max-rom-encoding,heap.h,MAX_ROM_ENCODING)
+	$(call provide-macro,min-ram-encoding,heap.h,MIN_RAM_ENCODING)
 
 ../compiler/gen.library.scm: .config $(arch)/Makefile
 	for scm in $(scm-y); do \

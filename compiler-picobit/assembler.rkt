@@ -8,6 +8,11 @@
 ;; These definitions must match those in the VM (in picobit-vm.h).
 (define min-fixnum-encoding 3)
 (define min-fixnum -1)
+(define max-fixnum 256)
+(define min-rom-encoding (+ min-fixnum-encoding (- max-fixnum min-fixnum) 1))
+(define min-ram-encoding 1280) ;;picobit
+
+;;(define min-ram-encoding 6221) ;;picoufu
 
 (define (predef-constants) (list))
 
@@ -124,7 +129,7 @@
     glbs))
 
 
-;-----------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 
 (define instr-table (make-hash))
 (define (inc-instr-count! k)
@@ -235,11 +240,11 @@
 
 (define (prim n) (asm-8 (+ #xc0 n)))
 
-;-----------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 
 (define (assemble-constant x constants)
   (match x
-    [`(,obj . ,(and descr `#(,d0 ,label ,d2 ,d3)))
+    [`(,obj . ,(and descr `#(,_ ,label ,_ ,d3)))
      (asm-label label)
      ;; see the vm source for a description of encodings
      (cond [(exact-integer? obj)

@@ -35,9 +35,9 @@ PRIMITIVE_UNSPEC(#%sleep, arch_sleep, 1)
 PRIMITIVE_UNSPEC(#%set-led!, arch_set_led, 1)
 {
   if (arg1 == OBJ_FALSE) {
-    GPIOC->ODR &= ~BIT(9);
+    GPIOC->ODR &= ~BIT(8);
   } else {
-    GPIOC->ODR |= BIT(9);
+    GPIOC->ODR |= BIT(8);
   }
 
   arg1 = OBJ_FALSE;
@@ -82,36 +82,26 @@ PRIMITIVE_UNSPEC(#%liga-portas!, arch_liga_portas, 2)
   GPIOA->BSRR = 1<<12; // set PA12
 */
 
-PRIMITIVE_UNSPEC(#%set-outputA!, arch_set_outputA, 1)
+PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 2)
 {
-  // Set PA8, PA9, PA11, PA12 to output
-  // Note the hexadecimal number. The binary equivalent is
-  //    0000000000000001000100000010001
-  // Each four bits you can configure one port and mode:
-  //                                 P12     P11    P10    P9    P8         
-  //             00 00 00 00 00 00  00 01   00 01  00 00 00 01  00 01
+  int ch, port;
 
-  a1 = decode_int (arg1); // port number
-	
-  if (a1 < 8) {
-    GPIOA->CRL |= 0x11111111 & (0x0000000F << (4*a1));
-  } else if (a1 < 16) {
-    GPIOA->CRH |= 0x11111111 & (0x0000000F << (4*(a1-8)));
-  } 
+  ch   = decode_int (arg1); // channel
+  port = decode_int (arg2); //port
 
-  arg1 = OBJ_FALSE;
+  if (port < 6){
+    if (ch < 8) {
+      GPIOC->CRL |= 0x11111111 & (0x0000000F << (4*ch));
+    }
+    else if (ch < 16) {
+      GPIOC->CRH |= 0x11111111 & (0x0000000F << (4*(ch-8)));
+    }
+  }
 }
-
 
 int main ()
 {
   RCC->APB2ENR = 0
-    // Turn on IO Port A
-    //| RCC_APB2ENR_IOPAEN
-    // Turn on IO Port B
-    //| RCC_APB2ENR_IOPBEN
-    // Turn on IO Port C
-    //| RCC_APB2ENR_IOPCEN
     | IOPAEN
     //| IOPBEN
     | IOPCEN
@@ -119,6 +109,10 @@ int main ()
     ;
        
   GPIOC->CRH = 0x44444411;
+  //GPIOC->CRL = 0x00000000;
+  //PC9
+  //GPIOC->ODR     |= BIT(9);
+  
   GPIOA->CRL     |= BIT(7);//CNF1
   GPIOA->CRL     |= BIT(5);
               
@@ -143,9 +137,6 @@ int main ()
   TIM2->CR1      |= TIM_DIR;
   TIM2->CR1      |= TIM_CEN;
        
-  //PC9
-  GPIOC->ODR     |= BIT(9);
-              
   //GPIOA->CRL = 0x00000000;
        
        

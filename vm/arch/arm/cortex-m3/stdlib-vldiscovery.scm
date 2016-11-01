@@ -10,3 +10,6 @@
   (lambda (value)
     (#%sleep value)))
 
+(define GPIO-output
+  (lambda (ch port)
+    (#%GPIO-output ch port)))
