@@ -8,8 +8,8 @@
            (#%GPIO-output 2 channel)] )) )
 
 (define set-led!
-  (lambda (value)
-    (#%set-led! value)))
+  (lambda (led value)
+    (#%set-led! led value)))
 
 (define sleep
   (lambda (value)

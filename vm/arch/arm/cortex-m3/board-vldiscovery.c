@@ -33,15 +33,20 @@ PRIMITIVE_UNSPEC(#%sleep, arch_sleep, 1)
   arg1 = OBJ_FALSE;
 }
 
-PRIMITIVE_UNSPEC(#%set-led!, arch_set_led, 1)
+PRIMITIVE_UNSPEC(#%set-led!, arch_set_led, 2)
 {
-  if (arg1 == OBJ_FALSE) {
-    GPIOC->ODR &= ~BIT(9);
-  } else {
-    GPIOC->ODR |= BIT(9);
+  int led;
+
+  led = decode_int(arg1);
+
+  if(led == 8 || led == 9){
+    if (arg2 == OBJ_FALSE) {
+      GPIOC->ODR &= ~BIT(led);
+    } else {
+      GPIOC->ODR |= BIT(led);
+    }
   }
 
-  arg1 = OBJ_FALSE;
 }
 
 PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 2)
