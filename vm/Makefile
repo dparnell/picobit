@@ -138,9 +138,6 @@ provide-macro = @echo "(define $(1) $(call fetch-macro,$(2),$(3)))" >>$@; \
 
 all: include/arch .primitives.p ../compiler/gen.config.rkt \
 	../compiler/gen.library.scm arch-all
-	if [ -e picobit.elf ]; then \
-		CROSS="$(CROSS)" CPPFLAGS="$(CPPFLAGS)" scripts/check-encoding.sh; \
-	fi
 
 endif # $(dot-config)
 
