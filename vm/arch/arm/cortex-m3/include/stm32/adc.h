@@ -110,6 +110,23 @@ struct regs_GPIO {
 #define        SQ3(x)           BITS(x, 10, 14)
 #define        SQ2(x)           BITS(x, 5, 9)
 #define        SQ1(x)           BITS(x, 0, 4)
+
+  //injected sequence register
+  reg JSQR;
+#define        JL(x)            BITS(x, 20, 21)
+#define        JSQ4(x)          BITS(x, 15, 19)
+#define        JSQ3(x)          BITS(x, 10, 14)
+#define        JSQ2(x)          BITS(x, 5, 9)
+#define        JSQ1(x)          BITS(x, 0, 4)
+
+  //injected data register x
+  reg JDR;
+#define        JDATA(x)         BITS(x, 0, 15)
+
+  //regular data register
+  reg DR;
+#define        ADC2DATA(x)      BITS(x, 16, 31)
+#define        DATA(x)          BITS(x, 0, 15)
 };
 
 CONFIG_AREA(regs_ADC, ADC1, 0x40012400);
