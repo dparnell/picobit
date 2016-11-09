@@ -3,7 +3,7 @@
 
 #include <arch/stm32/bits.h>
 
-struct regs_GPIO {
+struct regs_ADC {
 
   //status register
   reg SR;

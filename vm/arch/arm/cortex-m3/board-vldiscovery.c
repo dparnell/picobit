@@ -2,6 +2,7 @@
 #include <dispatch.h>
 #include <arch/stm32/rcc.h>
 #include <arch/stm32/gpio.h>
+#include <arch/stm32/adc.h>
 #include <primitives.h>
 #include <bignum.h>
 
@@ -86,9 +87,21 @@ PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 2)
   }  
 }
 
+PRIMITIVE(#%ADC-read, arch_ADC_read, 0)
+{
+  int data;
+  
+  ADC2->CR2  |= ADON;
+
+  while(ADC2->SR){}
+  data = ADC2->DR;
+
+  arg1 = encode_int(data);
+}
+
 void main ()
 {
-  RCC->APB2ENR |= IOPCEN;
+  RCC->APB2ENR |= IOPCEN | ADC2EN;
 
   GPIOC->CRL = 0x00000000;
   GPIOC->CRH = 0x00000000;

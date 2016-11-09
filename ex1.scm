@@ -4,7 +4,8 @@
    (if (> n 0) (pause (- n 1)))) 
 
 (define (config)
-  (GPIO-output "C" 8))
+  (GPIO-output "C" 8)
+  (GPIO-output "C" 9))
 
 (define (loop)
   (set-led! 8 #t)
@@ -15,6 +16,7 @@
 
 (define (main)
   (config)
+  (if (null? '()) (set-led! 9 #t))
   (loop))
 
 (main)
