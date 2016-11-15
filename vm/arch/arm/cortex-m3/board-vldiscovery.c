@@ -25,9 +25,6 @@ PRIMITIVE_UNSPEC(#%sleep, arch_sleep, 1)
       __asm__ __volatile__("nop");
 #endif
 
-#if defined(CONFIG_ARM_COMPILER_KEIL)
-      __nop();
-#endif
     }
   }
 
@@ -90,22 +87,45 @@ PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 2)
 PRIMITIVE(#%ADC-read, arch_ADC_read, 0)
 {
   int data;
-  
-  ADC2->CR2  |= ADON;
 
-  while(ADC2->SR){}
-  data = ADC2->DR;
+  while(ADC1->SR){}
+  data = ADC1->DR;
 
   arg1 = encode_int(data);
 }
 
 void main ()
 {
-  RCC->APB2ENR |= IOPCEN | ADC2EN;
+  int c=0;
+  RCC->APB2ENR |= IOPCEN | ADC1EN;
 
   GPIOC->CRL = 0x00000000;
   GPIOC->CRH = 0x00000000;
   GPIOC->ODR = 0x00000000;
 
+  ADC1->CR2  |= ADON;
+  while(c!=2)
+    c++;
+
+  ADC1->CR2  |= RSTCAL;
+  ADC1->CR2  |= CAL;
+  c=0;
+  while(c!=4)
+    c++;
+  
+  //while cal==set wait
+  
+  ADC1->CR2  |= EXTTRIG;
+  ADC1->CR2  |= EXTSEL(7);
+  
+  ADC1->CR2  |= CONT;
+
+  //temp
+  ADC1->CR2  |= TSVREFE;
+  
+  ADC1->SQR3 |= SQ1(16);
+
+  ADC1->CR2  |= SWSTART;
+  
   interpreter();
 }

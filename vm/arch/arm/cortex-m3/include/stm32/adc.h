@@ -119,18 +119,27 @@ struct regs_ADC {
 #define        JSQ2(x)          BITS(x, 5, 9)
 #define        JSQ1(x)          BITS(x, 0, 4)
 
-  //injected data register x
-  reg JDR;
+  //injected data register 1
+  reg JDR1;
+#define        JDATA(x)         BITS(x, 0, 15)
+
+  //injected data register 2
+  reg JDR2;
+#define        JDATA(x)         BITS(x, 0, 15)
+
+  //injected data register 3
+  reg JDR3;
+#define        JDATA(x)         BITS(x, 0, 15)
+
+  //injected data register 4
+  reg JDR4;
 #define        JDATA(x)         BITS(x, 0, 15)
 
   //regular data register
   reg DR;
-#define        ADC2DATA(x)      BITS(x, 16, 31)
 #define        DATA(x)          BITS(x, 0, 15)
 };
 
 CONFIG_AREA(regs_ADC, ADC1, 0x40012400);
-CONFIG_AREA(regs_ADC, ADC2, 0x40012800);
-CONFIG_AREA(regs_ADC, ADC3, 0x40013C00);
 
 #endif
