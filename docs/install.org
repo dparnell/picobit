@@ -1,0 +1,84 @@
+#+TITLE: PICOBIT - Linux
+#+AUTHOR: Cecília Carneiro e Silva - Laboratório de Inteligência Artificial
+#+DATE: setembro/2016
+
+* PICOBIT
+
+** Requisitos
+
+*** Arm-none-eabi
+
+    Cross compiler para ARM.
+
+https://launchpad.net/gcc-arm-embedded/+download
+
+Versão: Linux installation tarball
+
+#+BEGIN_SRC shell
+$ tar xfj gcc-arm-none-eabi-5_2-2015q4-20151219-linux.tar.bz2 
+#+END_SRC
+
+*** STLINK
+
+#+BEGIN_SRC shell
+$ git clone https://github.com/texane/stlink
+$ cd stlink
+$ ./autogen.sh
+$ ./configure
+$ make
+$ sudo make install
+#+END_SRC   
+ 
+*** Bibliotecas
+
+#+BEGIN_SRC shell
+$ sudo apt-get install flex bison libgmp3-dev libmpfr-dev  libncurses5-dev libmpc-dev autoconf texinfo build-essential libftdi-dev
+$ sudo apt-get install libusb-1.0-0-dev
+$ sudo apt-get install lib32z1 lib32ncurses5
+#+END_SRC
+
+    GAWK:
+
+#+BEGIN_SRC shell
+$ sudo apt-get install gawk
+#+END_SRC
+
+*** Driver
+
+   Crie nova regra no udev:
+
+#+BEGIN_SRC shell
+$ sudo emacs /etc/udev/rules/45-usb-stlink-v2.rules
+
+Conteúdo:
+SUBSYSTEM=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="3748", MODE="0666"
+#+END_SRC
+
+   Restart a placa e digite:
+
+#+BEGIN_SRC shell
+sudo service udev restart
+#+END_SRC
+
+*** Racket Language
+
+    Instalando o Racket
+
+**** Atual Racket-6.2
+**** TODO Mudar Racket-6.6
+
+    Install Racket - source
+       https://download.racket-lang.org/racket-v6.2.html
+       
+    Descompacte.
+       
+    Quick instructions:
+    From this directory (where the `configure' file is), run the following
+    commands:
+
+#+BEGIN_SRC shell
+    $ ../configure --prefix=/usr/local/
+    $ make
+    $ sudo make install
+#+END_SRC
+    

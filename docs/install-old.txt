@@ -1,0 +1,314 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Gist
+ @ceciliacsilva
+  Unwatch 1
+    Star 0
+      Fork 21 ceciliacsilva/picobit
+      forked from stamourv/picobit
+       Code  Pull requests 0  Projects 0  Wiki  Pulse  Graphs  Settings
+       Branch: racket6.6 Find file Copy pathpicobit/docs/install-old.txt
+       f96e1cc  on 10 Oct
+       @ceciliacsilva ceciliacsilva docs/install.org
+       1 contributor
+       RawBlameHistory
+       297 lines (202 sloc)  8.72 KB
+               Universidade Federal de Uberlândia
+	                Faculdade de Engenharia Elétrica
+			      Laboratório de Inteligência Artificial
+			                   Junia Magalhães Rocha
+
+                   28/06/2012
+
+              Adaptado em: 27/02/2014
+
+             Tutorial: ARM para Linux
+
+----------------------------------------------------------------------------
+
+Instalaçao das Ferramentas necessárias
+
+----------------------------------------------------------------------------
+CONFIGURANDO PROXY
+
+Caso utilize proxy é necessário modificar o arquivo /etc/wgetrc
+para as configurações do seu proxy.
+
+      # You can set the default proxies for Wget to use for http, https, and ftp.
+            # They will override the value in the environment.
+	          https_proxy = http://proxy.dr.ufu.br:3128/
+		        http_proxy = http://proxy.dr.ufu.br:3128/
+			      ftp_proxy = http://proxy.dr.ufu.br:3128/
+
+      # If you do not want to use proxy at all, set this to off.
+            use_proxy = on
+
+Modifique o arquivo /etc/apt/apt.conf
+
+Acquire::http::Proxy "http://proxy.ufu.br:3128";
+Acquire::ftp::Proxy "http://proxy.ufu.br:3128";
+Acquire::https::Proxy "http://proxy.ufu.br:3128";
+
+----------------------------------------------------------------------------
+
+GCC
+
+* É necessário ter o GCC versão 4.6 ou posterior.
+  Caso não tenha:
+        # sudo apt-get install gcc
+
+----------------------------------------------------------------------------
+
+GIT
+
+* É necessário ter o git.
+  Disponível em: http://git-scm.com/book/en/Getting-Started-Installing-Git
+
+* É necessário ter os seguintes pacotes: libmpc, libmpfr, libgmp3.
+
+      # sudo apt-get install flex bison libgmp3-dev libmpfr-dev libncurses5-dev
+               libmpc-dev autoconf texinfo build-essential libftdi-dev
+	             # sudo apt-get build-dep gcc-4.5 git zlib1g-dev python-yaml
+
+OBS: Caso a versão do gcc seja superior a 4.5, substitua a linha anterior
+com a versão correta.
+
+----------------------------------------------------------------------------
+
+SUMMON-ARM-TOOLCHAIN
+
+Obtenha o script para instalar o GNU ToolChain para ARM. Ele é chamado
+summon-arm-toolchain.
+
+OBS: Para mais informações, acesse: https://github.com/esden/summon-arm-toolchain
+
+      # cd ~
+            # mkdir arm
+	          # cd arm
+		        # git clone git://github.com/esden/summon-arm-toolchain
+			      # cd summon-arm-toolchain
+			            # git checkout remotes/origin/dev
+				          # sudo apt-get install libexpat1 libexpat1-dev
+					        # sudo ./summon-arm-toolchain PREFIX=/usr/local/ OOCD_EN=0 TARGET=arm-none-eabi LIBSTM32_EN=1 USE_LINARO=1 CPUS=2
+						      # sudo ldconfig
+
+						      EM CASO DE ERRO:
+						      	      	 O pacote libopencm3 está obsoleto. Faça o download do novo pacote em:
+
+								   	  	     	  	    https://github.com/libopencm3/libopencm3
+
+														Compacte-o como tar.bz2 no diretório: /home/ed/arm/summon-arm-toolchain/sources
+
+For XML support in gdb you may want to install libexpat1 and libexpat1-dev too.
+
+Note: The PREFIX is the installation directory which must be writable by the user. You can use a folder in you home dir (~/arm). It must be created before executing the commands above. What I do is the following: Create the install dir (as root) somewhere under /opt/ARM/ so that all users will be able to use it. Before compiling, I chown it to my primary user UID and GID. After compiling, I recursively chown -R all the PREFIX back to root.
+
+----------------------------------------------------------------------------
+
+Instalando o STLINK
+
+Para mais informações, acesse: https://github.com/texane/stlink
+
+  É necessário a biblioteca libusb-1.0.
+        # apt-get install libusb-1.0-0-dev
+
+  [junia@junia arm]# pwd
+    /home/junia/arm
+
+  Instalação
+         # git clone https://github.com/texane/stlink stlink.git
+	        Modifique o nome do diretório de stlink.git para stlink
+		       # mv stlink.git stlink
+		              # cd stlink
+			             # ./autogen.sh
+				            # ./configure
+					           # make
+
+----------------------------------------------------------------------------
+
+RACKET
+
+Instalando o Racket
+
+   Install Racket (needed to run the bytecode compiler)
+          http://racket-lang.org/download/
+
+   Descompacte.
+
+   Quick instructions:
+      	   From this directory (where the `configure' file is), run the following
+	   	   commands
+   # mkdir build
+   # cd build
+   # ../configure
+   # make
+   # sudo make install
+
+Caso apareça um erro por não encontrar o arquivo libjpeg.so.62, baixe o arquivo em:
+							              http://pkgs.org/ubuntu-12.04/ubuntu-main-i386/libjpeg62_6b1-2ubuntu1_i386.deb/download/
+Execute-o. Repita o make install.
+
+  This will create an in-place installation of Racket and store the
+  results of C/C++ compilation in a separate "build" subdirectory, which
+  is useful if you need to update your sources, delete the build, and
+  start from scratch.
+  You can also run the typical `./configure && make && make install' if
+  you don't anticipate updating/rebuilding, but it will be harder to
+  restart from scratch should you need to.
+
+----------------------------------------------------------------------------
+
+MAQUINA VIRTUAL PICOUFU
+
+Build the Virtual Machine:
+
+      # sudo apt-get install gawk
+
+     Copie o diretório picoufu. Caso a VM já foi compilado, recomenda-se recompilá-la.
+
+     # pwd
+       ~/lisp/picoufu
+	make
+
+     This will build the VM with the default configuration (workstation,
+          no debugging). To configure the VM for another architecture, or with
+	       different options, run
+	       		        make help
+				     from the `vm' directory.
+
+     Note: gawk is required to build the VM.
+
+    Para recompilar a máquina virtual, faça:
+
+    # pwd
+         ~/lisp/picoufu
+	     # make clean
+	         # rm -rf compiler/compiled/*.*
+		     # make
+
+   Caso tenha erro no diretório arch.
+
+   #pwd
+      picoufu/vm/include
+
+   Modifique: ln -s ../arch/arm/cortex-m3/include/
+
+   É necessário acrescentar as variaveis:
+
+    # nano /home/junia/.bashrc
+        export PATH=$PATH:/home/junia/lisp/racket/racket-5.2.1/bin
+
+-------------------------------------------------------------------------
+
+TESTANDO O HARDWARE STM32
+
+1 - Probe the stm32VLDiscovery.
+
+    # sudo su -c "modprobe -r usb-storage && modprobe usb-storage quirks=483:3744:lrwsro"
+
+2 - Connect the stm32VLDiscovery to the USB, and wait activation.
+
+
+3- Put the server up and running.
+
+    # sudo ./st-util -1
+
+4- Open another terminal, in order to load the picobit virtual machine.
+
+   # cd ~/lisp/picoufu/vm
+      Compile o programa, exemplo:
+         # ./picobit pisca.scm
+
+-------------------------------------------------------------------------
+EM CASO DE ERRO NO PASSO 4 - Compilação de programas
+
+O compilador de programas picobit utiliza uma versão unstable de port.
+As novas versões do Racket não tem port como uma versão unstable. Assim,
+no diretório /usr/local/racket/collects/unstable crie o arquivo port.rkt
+com o seguinte conteúdo.
+
+
+#lang racket/base
+(require racket/match
+         racket/contract/base
+	          syntax/srcloc)
+
+(define (port->srcloc port [source (object-name port)] [span 0])
+  (let*-values ([(line col pos) (port-next-location port)])
+      (make-srcloc source line col pos span)))
+
+(define read-all
+  (case-lambda
+      [() (read-all read)]
+          [(reader)
+	       (let loop ()
+	              (match (reader)
+		               [(? eof-object?) null]
+			                [term (cons term (loop))]))]
+					    [(reader port)
+					         (parameterize ([current-input-port port])
+						        (read-all reader))]))
+
+(define read-all-syntax
+  (case-lambda
+      [() (read-all-syntax read-syntax)]
+          [(reader) (read-all-syntax reader (current-input-port))]
+	      [(reader port)
+	           (define start (port->srcloc port))
+		        (define terms (read-all reader port))
+			     (define end (port->srcloc port))
+			          (datum->syntax #f terms (build-source-location-list start end))]))
+
+(provide/contract
+ [read-all (->* [] [(-> any/c) input-port?] list?)]
+  [read-all-syntax
+    (->* [] [(-> (or/c syntax? eof-object?)) input-port?]
+           (syntax/c list?))])
+
+
+-------------------------------------------------------------------------
+
+4.1 Open the GDB.
+   # arm-none-eabi-gdb
+
+4.2 Connect the GDB to the server.
+
+   (gdb) target remote localhost:4242
+
+4.3 Load the virtual machine to the stm32VLDiscovery
+
+     (gdb) cd vm
+        (gdb) load picobit.elf
+	   Loading section .bss, size 0x134 lma 0x20000000
+	      Loading section .vectors, size 0x8 lma 0x8000000
+	         Loading section .text, size 0x1f94 lma 0x8000100
+		    Start address 0x8001fdd, load size 8400
+		       Transfer rate: 4 KB/sec, 2800 bytes/write.
+
+5. Load the compiled Scheme ex1.hex program.
+
+   (gdb)  cd ..
+       Working directory /home/moi/lisp/picoufu
+          (gdb) load pisca.hex
+	     Loading section .sec1, size 0x21 lma 0x8008000
+	        Start address 0x0, load size 33
+		   Transfer rate: 122 bytes/sec, 33 bytes/write.
+
+6. Start up the virtual machine.
+
+   (gdb) continue
+      Continuing.
+         Cannot access memory at address 0x7e4fe3fe
+
+7. Parar máquina:
+
+   monitor halt
+
+8. reset da máquina.
+
+   monitor reset
+   Contact GitHub API Training Shop Blog About
+   © 2016 GitHub, Inc. Terms Privacy Security Status Help

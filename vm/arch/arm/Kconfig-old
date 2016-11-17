@@ -5,9 +5,16 @@ config CROSS_COMPILER
 choice
 	prompt "Processor core type"
 
+	config ARM_CORTEX_M3
+	bool "Cortex-M3"
+
 	config CMSIS_ARM_CORTEX_M3
 	bool "Cortex-M3-CMSIS"
 endchoice
+
+if ARM_CORTEX_M3
+source "arch/arm/cortex-m3/Kconfig"
+endif
 
 if CMSIS_ARM_CORTEX_M3
 source "arch/arm/cortex-m3-CMSIS/Kconfig"

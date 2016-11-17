@@ -1,5 +1,6 @@
 (define (config)
-  (GPIO-output "C" 9))
+  (GPIO-output "C" 9)
+  (ADC-config))
 
 (define (main)
   (config)
