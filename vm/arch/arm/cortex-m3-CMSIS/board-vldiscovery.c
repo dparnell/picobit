@@ -9,6 +9,8 @@
 #include <primitives.h>
 #include <bignum.h>
 
+uint32_t tim_arr, tim_cnt;
+
 void halt_with_error ()
 {
   GPIOC->ODR |= BIT(8);
@@ -47,7 +49,6 @@ PRIMITIVE_UNSPEC(#%set-led!, arch_set_led, 2)
       GPIOC->ODR |= BIT(led);
     }
   }
-
 }
 
 PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 2)
@@ -84,7 +85,7 @@ PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 2)
       GPIOC->CRH |= 0x11111111 & (0x0000000B << (4*(ch-8)));
     }
     break;
-  }  
+  }
 }
 
 PRIMITIVE(#%ADC-read, arch_ADC_read, 0)
@@ -116,38 +117,36 @@ PRIMITIVE_UNSPEC(#%ADC-config, arch_ADC_config, 0)
 
 void main ()
 {
-  //int c=0;
-  RCC->APB2ENR |= IOPCEN | ADC1EN;
+  RCC->APB2ENR |= IOPCEN | ADC1EN;// | AFIOEN ;
+  //RCC->APB1ENR |= TIM3EN;
 
   GPIOC->CRL = 0x00000000;
   GPIOC->CRH = 0x00000000;
   GPIOC->ODR = 0x00000000;
 
+  GPIOC->CRH |= 0x0000000B;
+  GPIOC->ODR |= BIT(8);
+
+  GPIOC->CRH |= 0x000000B0;
+  GPIOC->ODR |= BIT(9);
+  
+  tim_arr = GPIOC->CRH;
+  tim_cnt = GPIOC->ODR;
+  //AFIO->MAPR  |= AFIO_MAPR_TIM3_REMAP_FULLREMAP; //tim3_ch4 pc9
   /*
-  ADC1->CR2  |= ADON;
-  while(c!=2)
-    c++;
+  TIM3->ARR    = 19999;
+  TIM3->PSC    = 23;
+  TIM3->CCMR2 |= TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4PE;
 
-  ADC1->CR2  |= RSTCAL;
-  ADC1->CR2  |= CAL;
-  c=0;
-  while(c!=4)
-    c++;
-  
-  //while cal==set wait
-  
-  ADC1->CR2  |= EXTTRIG;
-  ADC1->CR2  |= EXTSEL(7);
-  
-  ADC1->CR2  |= CONT;
+  TIM3->CR1   |= TIM_CR1_ARPE;
 
-  //temp
-  ADC1->CR2  |= TSVREFE;
-  
-  ADC1->SQR3 |= SQ1(16);
+  TIM3->CCER  |= TIM_CCER_CC4E;
+  TIM3->CCR4   = 18000;
 
-  ADC1->CR2  |= SWSTART;
+  TIM3->CR1   |= TIM_CR1_CEN;
+ 
+  tim_arr = TIM3->ARR;
+  tim_cnt = TIM3->CNT;
   */
-  
   interpreter();
 }
