@@ -9,11 +9,11 @@
 
 (define set-led!
   (lambda (led value)
-    (#%set-led! led value)))
+    (#%set-led! led value) ))
 
 (define sleep
   (lambda (value)
-    (#%sleep value)))
+    (#%sleep value) ))
 
 (define ADC-read
   (lambda ()
@@ -24,4 +24,8 @@
 
 (define ADC-config
   (lambda ()
-    (#%ADC-config)))
+    (#%ADC-config) ))
+
+(define PWM-config
+  (lambda ()
+    (#%PWM-config) ))

@@ -60,28 +60,28 @@ PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 2)
   switch(port){
   case 0:
     if(ch < 8){
-      GPIOA->CRL |= 0x11111111 & (0x0000000B << (4*ch));
+      GPIOA->CRL |= 0x11111111 & (0x00000003 << (4*ch));
     }
     else if (ch < 16){
-      GPIOA->CRH |= 0x11111111 & (0x0000000B << (4*(ch-8)));
+      GPIOA->CRH |= 0x11111111 & (0x00000003 << (4*(ch-8)));
     }
     break;
 
   case 1:
     if(ch < 8){
-      GPIOB->CRL |= 0x11111111 & (0x0000000B << (4*ch));
+      GPIOB->CRL |= 0x11111111 & (0x00000003 << (4*ch));
     }
     else if (ch < 16){
-      GPIOB->CRH |= 0x11111111 & (0x0000000B << (4*(ch-8)));
+      GPIOB->CRH |= 0x11111111 & (0x00000003 << (4*(ch-8)));
     }
     break;
 
   case 2:
     if(ch < 8){
-      GPIOC->CRL |= 0x11111111 & (0x0000000B << (4*ch));
+      GPIOC->CRL |= 0x11111111 & (0x00000003 << (4*ch));
     }
     else if (ch < 16){
-      GPIOC->CRH |= 0x11111111 & (0x0000000B << (4*(ch-8)));
+      GPIOC->CRH |= 0x11111111 & (0x00000003 << (4*(ch-8)));
     }
     break;
   }  
@@ -114,40 +114,52 @@ PRIMITIVE_UNSPEC(#%ADC-config, arch_ADC_config, 0)
   ADC1->CR2   |= ADC_CR2_SWSTART;
 }
 
+PRIMITIVE_UNSPEC(#%PWM-config, arch_PWM_config, 0)
+{
+  GPIOB->CRL   |= 0x000003B3;
+  //GPIOB->ODR   |= GPIO_ODR_ODR0 | GPIO_ODR_ODR2;
+
+  AFIO->MAPR   |= AFIO_MAPR_TIM3_REMAP_NOREMAP;
+  
+  TIM3->ARR     = 19999;
+  TIM3->PSC     = 23;
+
+  TIM3->CCMR2  |= TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4PE;
+
+  TIM3->CR1    |= TIM_CR1_ARPE;
+  TIM3->CCER   |= TIM_CCER_CC4E;
+
+  TIM3->CCR4    = 10000;
+
+  TIM3->EGR    |= TIM_EGR_UG;
+  TIM3->SR     &= ~TIM_SR_UIF;
+}
+
 void main ()
 {
-  //int c=0;
-  RCC->APB2ENR |= IOPCEN | ADC1EN;
-
+  RCC->APB2ENR |= IOPCEN | ADC1EN | AFIOEN | IOPBEN;
+  RCC->APB1ENR |= TIM3EN;
+  
   GPIOC->CRL = 0x00000000;
   GPIOC->CRH = 0x00000000;
   GPIOC->ODR = 0x00000000;
+  
+  GPIOB->CRL = 0x00000000;
+  GPIOB->CRH = 0x00000000;
+  GPIOB->ODR = 0x00000000;
 
-  /*
-  ADC1->CR2  |= ADON;
-  while(c!=2)
-    c++;
+  ADC1->CR2   |= ADC_CR2_ADON;
+  ADC1->CR2   |= ADC_CR2_RSTCAL;
+  ADC1->CR2   |= ADC_CR2_CAL;
 
-  ADC1->CR2  |= RSTCAL;
-  ADC1->CR2  |= CAL;
-  c=0;
-  while(c!=4)
-    c++;
-  
-  //while cal==set wait
-  
-  ADC1->CR2  |= EXTTRIG;
-  ADC1->CR2  |= EXTSEL(7);
-  
-  ADC1->CR2  |= CONT;
+  ADC1->CR2   |= ADC_CR2_EXTTRIG;
+  ADC1->CR2   |= ADC_CR2_EXTSEL_0 | ADC_CR2_EXTSEL_1 | ADC_CR2_EXTSEL_2;
 
-  //temp
-  ADC1->CR2  |= TSVREFE;
-  
-  ADC1->SQR3 |= SQ1(16);
+  ADC1->CR2   |= ADC_CR2_CONT;
 
-  ADC1->CR2  |= SWSTART;
-  */
-  
+  ADC1->SQR3  |= ADC_SQR3_SQ1_1 | ADC_SQR3_SQ1_3;
+
+  ADC1->CR2   |= ADC_CR2_SWSTART;
+
   interpreter();
 }
