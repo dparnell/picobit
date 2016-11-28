@@ -1,0 +1,35 @@
+#+TITLE: Compiler Design Implementation - Comentarios
+#+AUTHOR: Cecília Carneiro e Silva
+#+DATE:
+
+* Compiladores
+
+  São softwares que traduzem linguagens de alto nível para codigos objeto ou linguagem de máquina, para execução em um computador. A definição pode ser expandida para: compiladores são programas que traduzem de linguagens de alto nível para linguagens de alto nível, linguagens de máquina para linguagens de máquina, ou de alguma para um nível intermadiário.
+
+** Analisador lexico
+
+   Pega a string de entrada e divide em tokens, esses tokens devem pertencer ao vocabulário da linguagem. 
+
+** Analise sintatica ou parser
+
+   Processo em que a lista de tokens é analisada, o resultado é a parse-tree ou sequential intermediate code. Tem uma tabela de símbolos para armazenar os identificados e seus argumentos. 
+
+** Analise semântica
+
+   Analise de sentido, pega o codigo intermediário e a tabela de simbolos, analisa se o programa satisfaz as propriedades requiridas no codigo.
+
+** Code genetation
+
+   Transforma o codigo intermediario em codigo de maquina, na forma de modulo de objetos realocavéis ou diretamente em codigo executável.
+
+Além dessas 4 etapas os compiladores de rotinas de acesso aos recursos do SO e as interfaces do usuários (tipo ler e escrever em arquivos, pegar e devolver dados aos usuários). Pode-se fazer de modo a permitir que o compilador execute sobre varios sistemas operacionais diferentes. 
+
+** Stack mode
+
+   Fortran, C, Pascal
+
+** Other
+
+   C++, Ada, Modula-2.
+
+

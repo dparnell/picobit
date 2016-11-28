@@ -97,6 +97,16 @@ PRIMITIVE(#%ADC-read, arch_ADC_read, 0)
   arg1 = encode_int(data);
 }
 
+PRIMITIVE_UNSPEC(#%make-button, arch_make_button, 0)
+{
+  
+}
+
+PRIMITIVE(#%read-button, arch_read_button, 0)
+{
+  
+}
+
 PRIMITIVE_UNSPEC(#%ADC-config, arch_ADC_config, 0)
 {
   ADC1->CR2   |= ADC_CR2_ADON;

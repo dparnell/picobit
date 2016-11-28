@@ -140,7 +140,7 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 
 ** MODIFICAÇÕES
 
-- ast.rkt=> unstable/match -> racket/matck
+- ast.rkt=> unstable/match -> racket/match
 - primitives.rkt=> unstable/sequence -> unstable/sequence e racket/sequence, a biblioteca sequence foi mudado para racket/sequence com excessão: in-pairs, in-sequence-forever, sequence-lift. Então será feita a inclusão dos dois pacotes.
 
 * TODO ARM - livro
@@ -311,3 +311,5 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 
   ADC1->CR2  |= SWSTART;
   */
+* Datasheet = en.CD00251732.pdf
+* Manual = en.CD00246267.pdf
