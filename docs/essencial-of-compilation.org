@@ -1,0 +1,11 @@
+#+TITLE: Essencial of compilation
+#+AUTHOR: Cecília Carneiro e Silva
+#+DATE:
+
+* Preliminaries
+
+- AST: abstract syntax tree;
+
+Use AST in a form of S-expression to represents programs.
+
+AST são completamente recursivas.

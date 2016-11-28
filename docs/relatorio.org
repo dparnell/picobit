@@ -140,7 +140,7 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 
 ** MODIFICAÇÕES
 
-- ast.rkt=> unstable/match -> racket/matck
+- ast.rkt=> unstable/match -> racket/match
 - primitives.rkt=> unstable/sequence -> unstable/sequence e racket/sequence, a biblioteca sequence foi mudado para racket/sequence com excessão: in-pairs, in-sequence-forever, sequence-lift. Então será feita a inclusão dos dois pacotes.
 
 * TODO ARM - livro
@@ -316,3 +316,33 @@ tirei o cortex-m3 do Kconfig, esta somente o cortex-m3-CMSIS
   
 
 
+* ADC main using adc.h
+
+  /*
+  int c=0;
+  ADC1->CR2  |= ADON;
+  while(c!=2)
+    c++;
+
+  ADC1->CR2  |= RSTCAL;
+  ADC1->CR2  |= CAL;
+  c=0;
+  while(c!=4)
+    c++;
+  
+  //while cal==set wait
+  
+  ADC1->CR2  |= EXTTRIG;
+  ADC1->CR2  |= EXTSEL(7);
+  
+  ADC1->CR2  |= CONT;
+
+  //temp
+  ADC1->CR2  |= TSVREFE;
+  
+  ADC1->SQR3 |= SQ1(16);
+
+  ADC1->CR2  |= SWSTART;
+  */
+* Datasheet = en.CD00251732.pdf
+* Manual = en.CD00246267.pdf
