@@ -2,7 +2,7 @@
 
 (require racket/mpair)
 
-;;(require unstable/sequence) ;;old
+(require unstable/sequence) ;;old
 (require racket/sequence)
 
 (require srfi/4)
