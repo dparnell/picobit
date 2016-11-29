@@ -1,9 +1,8 @@
 #lang racket
 
 (require racket/mpair)
-
-(require unstable/sequence) ;;old
 (require racket/sequence)
+(require "sequence.rkt")
 
 (require srfi/4)
 (require "env.rkt"

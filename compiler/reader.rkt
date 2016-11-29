@@ -1,6 +1,6 @@
 #lang racket
 
-(require (only-in unstable/port read-all)
+(require (only-in "port.rkt" read-all)
          racket/runtime-path
          srfi/4)
 
