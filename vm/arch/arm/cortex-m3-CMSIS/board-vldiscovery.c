@@ -127,13 +127,10 @@ PRIMITIVE_UNSPEC(#%ADC-config, arch_ADC_config, 0)
 
 PRIMITIVE_UNSPEC(#%PWM-config, arch_PWM_config, 0)
 {
-<<<<<<< HEAD
   RCC->APB2ENR |= IOPCEN | ADC1EN;// | AFIOEN ;
   //RCC->APB1ENR |= TIM3EN;
-=======
   GPIOB->CRL   |= 0x000003B3;
   //GPIOB->ODR   |= GPIO_ODR_ODR0 | GPIO_ODR_ODR2;
->>>>>>> aux
 
   AFIO->MAPR   |= AFIO_MAPR_TIM3_REMAP_NOREMAP;
   
@@ -164,7 +161,6 @@ void main ()
   GPIOB->CRH = 0x00000000;
   GPIOB->ODR = 0x00000000;
 
-<<<<<<< HEAD
   GPIOC->CRH |= 0x0000000B;
   GPIOC->ODR |= BIT(8);
 
@@ -189,7 +185,7 @@ void main ()
   tim_arr = TIM3->ARR;
   tim_cnt = TIM3->CNT;
   */
-=======
+
   ADC1->CR2   |= ADC_CR2_ADON;
   ADC1->CR2   |= ADC_CR2_RSTCAL;
   ADC1->CR2   |= ADC_CR2_CAL;
@@ -203,6 +199,5 @@ void main ()
 
   ADC1->CR2   |= ADC_CR2_SWSTART;
 
->>>>>>> aux
   interpreter();
 }

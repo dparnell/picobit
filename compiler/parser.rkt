@@ -158,7 +158,6 @@
             [r     (make-seq #f exprs)])
        (for-each (lambda (x) (set-node-parent! x r)) exprs)
        r)]
-    ;;[`(define 
     [`(let ,(? symbol? id) ((,ks ,vs) ...) . ,body) ; named let
      (parse use
             `(letrec ([,id (lambda ,ks ,@body)])
