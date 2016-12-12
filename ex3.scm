@@ -8,7 +8,7 @@
 
 (define (loop)
   (set-led! 8 #t)
-  (sleep 400)
+  (sleep 2)
   (set-led! 8 #f)
   (pause 2)
   (loop))

@@ -9,7 +9,7 @@
 #include <primitives.h>
 #include <bignum.h>
 
-uint32_t tim_arr, tim_cnt;
+//uint32_t tim_arr, tim_cnt;
 
 void halt_with_error ()
 {
@@ -127,25 +127,28 @@ PRIMITIVE_UNSPEC(#%ADC-config, arch_ADC_config, 0)
 
 PRIMITIVE_UNSPEC(#%PWM-config, arch_PWM_config, 0)
 {
-  RCC->APB2ENR |= IOPCEN | ADC1EN;// | AFIOEN ;
-  //RCC->APB1ENR |= TIM3EN;
   GPIOB->CRL   |= 0x000003B3;
-  //GPIOB->ODR   |= GPIO_ODR_ODR0 | GPIO_ODR_ODR2;
+  GPIOB->ODR   |= GPIO_ODR_ODR0 | GPIO_ODR_ODR2;
 
   AFIO->MAPR   |= AFIO_MAPR_TIM3_REMAP_NOREMAP;
   
-  TIM3->ARR     = 19999;
-  TIM3->PSC     = 23;
-
-  TIM3->CCMR2  |= TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4PE;
-
   TIM3->CR1    |= TIM_CR1_ARPE;
+  TIM3->CR1    |= TIM_CR1_CEN;
+  
+  //TIM3->ARR     = 19999; //50Hz
+  TIM3->ARR     = 49999; //20Hz
+  
+  TIM3->PSC     = 24-1;
+
+  TIM3->CCMR2  |= TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_0 | TIM_CCMR2_OC4PE;
+  //TIM3->CCMR2  |= TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_0 | TIM_CCMR2_OC4PE;
+
   TIM3->CCER   |= TIM_CCER_CC4E;
 
   TIM3->CCR4    = 10000;
 
   TIM3->EGR    |= TIM_EGR_UG;
-  TIM3->SR     &= ~TIM_SR_UIF;
+  //IM3->SR     &= ~TIM_SR_UIF;
 }
 
 void main ()
@@ -161,16 +164,17 @@ void main ()
   GPIOB->CRH = 0x00000000;
   GPIOB->ODR = 0x00000000;
 
-  GPIOC->CRH |= 0x0000000B;
-  GPIOC->ODR |= BIT(8);
+  //GPIOC->CRH |= 0x0000000B;
+  //GPIOC->ODR |= BIT(8);
 
-  GPIOC->CRH |= 0x000000B0;
-  GPIOC->ODR |= BIT(9);
+  //GPIOC->CRH |= 0x000000B0;
+  //GPIOC->ODR |= BIT(9);
   
+  /*
   tim_arr = GPIOC->CRH;
   tim_cnt = GPIOC->ODR;
   //AFIO->MAPR  |= AFIO_MAPR_TIM3_REMAP_FULLREMAP; //tim3_ch4 pc9
-  /*
+
   TIM3->ARR    = 19999;
   TIM3->PSC    = 23;
   TIM3->CCMR2 |= TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4PE;
@@ -184,7 +188,6 @@ void main ()
  
   tim_arr = TIM3->ARR;
   tim_cnt = TIM3->CNT;
-  */
 
   ADC1->CR2   |= ADC_CR2_ADON;
   ADC1->CR2   |= ADC_CR2_RSTCAL;
@@ -198,6 +201,6 @@ void main ()
   ADC1->SQR3  |= ADC_SQR3_SQ1_1 | ADC_SQR3_SQ1_3;
 
   ADC1->CR2   |= ADC_CR2_SWSTART;
-
+  */
   interpreter();
 }

@@ -21,6 +21,9 @@ Scheme is a statically scoped and properly tail-recursive dialect of the Lisp pr
 
 Scheme was one of the first programming languages to incorporate first class procedures as in the lambda calculus, thereby proving the usefulness of static scope rules and block structure in a dynamically typed language. Scheme was the first major dialect of Lisp to distinguish procedures from lambda expressions and symbols, to use a single lexical environment for all variables, and to evaluate the operator position of a procedure call in the same way as an operand position. By relying entirely on procedure calls to express iteration, Scheme emphasized the fact that tail-recursive procedure calls are essentially goto's that pass arguments. Scheme was the first widely used programming language to embrace first class escape procedures, from which all previously known sequential control structures can be synthesized. More recently, building upon the design of generic arithmetic in Common Lisp, Scheme introduced the concept of exact and inexact numbers. Scheme is also the first programming language to support hygienic macros, which permit the syntax of a block-structured language to be extended reliably.
 
+* DONE change to racket-6.7 
+
+  Brach newPicobit.
 
 * DONE PICOBIT - pdf
 
@@ -282,8 +285,6 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 - kconfig, não ta funcionando para o cortex-m3-CMSIS. Não gera o .config e o include/auto.conf correto, falta gcc e placa.
 Resolvido com:
 tirei o cortex-m3 do Kconfig, esta somente o cortex-m3-CMSIS
-
-- Arrumar o CMSIS.
 
 * ADC main using adc.h
 
