@@ -90,9 +90,9 @@ PRIMITIVE_UNSPEC(#%GPIO-output, arch_GPIO_output, 2)
 
 PRIMITIVE(#%ADC-read, arch_ADC_read, 0)
 {
-  int data;
+  uint16_t data;
 
-  while(ADC1->SR){}
+  //while(ADC1->SR){}
   data = ADC1->DR;
 
   arg1 = encode_int(data);
@@ -118,10 +118,14 @@ PRIMITIVE_UNSPEC(#%ADC-config, arch_ADC_config, 0)
   ADC1->CR2   |= ADC_CR2_EXTSEL_0 | ADC_CR2_EXTSEL_1 | ADC_CR2_EXTSEL_2;
 
   ADC1->CR2   |= ADC_CR2_CONT;
-  ADC1->CR2   |= ADC_CR2_TSVREFE;
 
-  ADC1->SQR3  |= ADC_SQR3_SQ1_4;
+  //ADC1->CR2   |= ADC_CR2_TSVREFE; //sensor-temp
+  //ADC1->SQR3  |= ADC_SQR3_SQ1_4; //IN16
 
+  //ADC1->SQR3  |= ADC_SQR3_SQ1_0 | ADC_SQR3_SQ1_2; //PA5-IN5
+
+  ADC1->SQR3  |= ADC_SQR3_SQ1_3 | ADC_SQR3_SQ1_1; //PC0-IN10
+  
   ADC1->CR2   |= ADC_CR2_SWSTART;
 }
 
@@ -153,7 +157,7 @@ PRIMITIVE_UNSPEC(#%PWM-config, arch_PWM_config, 0)
 
 void main ()
 {
-  RCC->APB2ENR |= IOPCEN | ADC1EN | AFIOEN | IOPBEN;
+  RCC->APB2ENR |= IOPCEN | ADC1EN | AFIOEN | IOPBEN | IOPAEN;
   RCC->APB1ENR |= TIM3EN;
   
   GPIOC->CRL = 0x00000000;
@@ -163,6 +167,10 @@ void main ()
   GPIOB->CRL = 0x00000000;
   GPIOB->CRH = 0x00000000;
   GPIOB->ODR = 0x00000000;
+
+  GPIOA->CRL = 0x00000000;
+  GPIOA->CRH = 0x00000000;
+  GPIOA->ODR = 0x00000000;
 
   //GPIOC->CRH |= 0x0000000B;
   //GPIOC->ODR |= BIT(8);

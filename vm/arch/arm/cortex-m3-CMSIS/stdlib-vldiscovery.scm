@@ -15,12 +15,17 @@
   (lambda (value)
     (#%sleep value) ))
 
-(define ADC-read
+#|(define ADC-read
   (lambda ()
     (let ((value (#%ADC-read)))
       (if (= value 0)
           (set-led! 9 #t)
-          (set-led! 9 #f)) )))
+          (set-led! 9 #f)) )))|#
+
+(define ADC-read
+  (lambda()
+    (let ((value (#%ADC-read)))
+      value) ))
 
 (define ADC-config
   (lambda ()
