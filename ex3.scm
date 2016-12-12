@@ -1,3 +1,7 @@
+;;PWM - PB1
+;;frequencia definida
+;;TIM3->ARR e TIM3->PSC
+
 
 (define (pause n)
    (sleep 1000)

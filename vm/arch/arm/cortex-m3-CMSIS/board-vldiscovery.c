@@ -98,6 +98,18 @@ PRIMITIVE(#%ADC-read, arch_ADC_read, 0)
   arg1 = encode_int(data);
 }
 
+PRIMITIVE_UNSPEC(#%set-duty, arch_set_duty, 1)
+{
+  uint16_t adc_value;
+  uint16_t duty_cicle;
+    
+  adc_value  = decode_int(arg1);
+
+  duty_cicle = (uint16_t) adc_value*19999/4095;
+
+  TIM3->CCR4 = duty_cicle; 
+}
+
 PRIMITIVE_UNSPEC(#%make-button, arch_make_button, 0)
 {
   
@@ -139,8 +151,8 @@ PRIMITIVE_UNSPEC(#%PWM-config, arch_PWM_config, 0)
   TIM3->CR1    |= TIM_CR1_ARPE;
   TIM3->CR1    |= TIM_CR1_CEN;
   
-  //TIM3->ARR     = 19999; //50Hz
-  TIM3->ARR     = 49999; //20Hz
+  TIM3->ARR     = 19999; //50Hz
+  //TIM3->ARR     = 49999; //20Hz
   
   TIM3->PSC     = 24-1;
 

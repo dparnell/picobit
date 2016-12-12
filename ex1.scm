@@ -1,3 +1,5 @@
+;;GPIO config-LED
+;;PC8 piscando
 
 (define (pause n)
    (sleep 1000)

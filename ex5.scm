@@ -1,10 +1,12 @@
 ;;PC0 - ADC1-IN10
-;;acima de 2000 apaga LED
-;;abaixo desliga o LED
+;;ADC dimerizando PB1
+;;lendo PC0 controlando PB1
+
 
 (define (config)
   (GPIO-output "C" 9)
-  (ADC-config))
+  (ADC-config)
+  (PWM-config))
 
 (define (main)
   (config)
@@ -12,9 +14,7 @@
   (sleep 4000)
   
   (let loop ((adc-value (ADC-read)))
-    (if (> adc-value 2000)
-        (set-led! 9 #t)
-        (set-led! 9 #f))
+    (set-duty adc-value)
     (loop (ADC-read)) )
   )
 

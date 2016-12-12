@@ -34,3 +34,7 @@
 (define PWM-config
   (lambda ()
     (#%PWM-config) ))
+
+(define set-duty
+  (lambda (value)
+    (#%set-duty value) ))
