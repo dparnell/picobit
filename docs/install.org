@@ -18,17 +18,12 @@ Versão: Linux installation tarball
 $ tar xfj gcc-arm-none-eabi-5_2-2015q4-20151219-linux.tar.bz2 
 #+END_SRC
 
-*** STLINK
+No .bashrc
 
 #+BEGIN_SRC shell
-$ git clone https://github.com/texane/stlink
-$ cd stlink
-$ ./autogen.sh
-$ ./configure
-$ make
-$ sudo make install
-#+END_SRC   
- 
+export PATH="/<caminho-arm-gcc>/bin:$PATH"
+#+END_SRC
+
 *** Bibliotecas
 
 #+BEGIN_SRC shell
@@ -43,6 +38,27 @@ $ sudo apt-get install lib32z1 lib32ncurses5
 $ sudo apt-get install gawk
 #+END_SRC
 
+*** STLINK
+
+#+BEGIN_SRC shell
+$ git clone https://github.com/texane/stlink
+$ cd stlink
+$ sudo apt-get install cmake
+$ mkdir build && cd build
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
+$ make
+#+END_SRC   
+
+
+#+BEGIN_SRC shell
+$ git clone https://github.com/texane/stlink
+$ cd stlink
+$ ./autogen.sh
+$ ./configure
+$ make
+$ sudo make install
+#+END_SRC   
+ 
 *** Driver
 
    Crie nova regra no udev:
