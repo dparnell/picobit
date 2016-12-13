@@ -2,7 +2,6 @@
 ;;ADC dimerizando PB1
 ;;lendo PC0 controlando PB1
 
-
 (define (config)
   (GPIO-output "C" 9)
   (ADC-config)

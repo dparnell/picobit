@@ -110,6 +110,24 @@ PRIMITIVE_UNSPEC(#%set-duty, arch_set_duty, 1)
   TIM3->CCR4 = duty_cicle; 
 }
 
+PRIMITIVE_UNSPEC(#%set-arr, arch_set_arr, 1)
+{
+  uint16_t arr_value;
+    
+  arr_value  = decode_int(arg1);
+
+  TIM3->ARR = arr_value; 
+}
+
+PRIMITIVE_UNSPEC(#%set-psc, arch_set_psc, 1)
+{
+  uint16_t psc_value;
+    
+  psc_value  = decode_int(arg1);
+
+  TIM3->ARR = psc_value; 
+}
+
 PRIMITIVE_UNSPEC(#%make-button, arch_make_button, 0)
 {
   

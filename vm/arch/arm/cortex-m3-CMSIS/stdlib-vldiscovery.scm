@@ -38,3 +38,11 @@
 (define set-duty
   (lambda (value)
     (#%set-duty value) ))
+
+(define set-arr
+  (lambda (value)
+    (#%set-arr value) ))
+
+(define set-psc
+  (lambda (value)
+    (#%set-psc value) ))
