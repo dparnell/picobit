@@ -1,5 +1,4 @@
 #include <stdint.h>
-
 #include <picobit.h>
 #include <dispatch.h>
 #include <arch/stm32/rcc.h>
@@ -187,8 +186,9 @@ PRIMITIVE_UNSPEC(#%PWM-config, arch_PWM_config, 0)
 
 void main ()
 {
+  volatile uint8_t data;
   RCC->APB2ENR |= IOPCEN | ADC1EN | AFIOEN | IOPBEN | IOPAEN;
-  RCC->APB1ENR |= TIM3EN;
+  RCC->APB1ENR |= TIM3EN | USART2EN;
   
   GPIOC->CRL = 0x00000000;
   GPIOC->CRH = 0x00000000;
@@ -202,6 +202,36 @@ void main ()
   GPIOA->CRH = 0x00000000;
   GPIOA->ODR = 0x00000000;
 
+  //USART2 - transmission
+  // Put PA2  (TX) to alternate function output push-pull at 50 MHz
+  // Put PA3 (RX) to floating input
+  GPIOA->CRL |= 0x0004B00;
+  GPIOC->CRH |= 0x00000003;
+  
+  AFIO->MAPR &= ~AFIO_MAPR_USART2_REMAP; //remap = 0
+
+  USART2->CR1  |= USART_CR1_UE; //enable usart
+  USART2->GTPR |= USART_GTPR_PSC_0; //divides the source clock by 1
+  USART2->CR1  &= ~USART_CR1_M; //word length 8
+  USART2->CR2  &= ~USART_CR2_STOP_0 & ~USART_CR2_STOP_1; //1 stop bit
+  USART2->BRR   = 0xD1;
+  USART2->CR1  |= USART_CR1_TE; //enable transmitter
+  USART2->CR1  |= USART_CR1_RE; //enable receiver
+
+  data = 65;
+  data = data;
+  while(1){
+    //while( !(USART2->SR)) {GPIOD->ODR |= BIT(8);}
+    GPIOC->ODR |= BIT(8);
+
+    while(!(USART2->SR & USART_SR_RXNE)) {}
+    data = USART2->DR;
+    
+    while(!(USART2->SR & USART_SR_TXE)) {}
+    USART2->DR = data;
+    
+    GPIOC->ODR &= ~BIT(8);
+  }
   //GPIOC->CRH |= 0x0000000B;
   //GPIOC->ODR |= BIT(8);
 
