@@ -214,23 +214,24 @@ void main ()
   USART2->GTPR |= USART_GTPR_PSC_0; //divides the source clock by 1
   USART2->CR1  &= ~USART_CR1_M; //word length 8
   USART2->CR2  &= ~USART_CR2_STOP_0 & ~USART_CR2_STOP_1; //1 stop bit
-  USART2->BRR   = 0xD1;
+  USART2->CR1  &= ~USART_CR1_OVER8; //oversampling 16
+  USART2->BRR   = 0x9C4; //USART_DIV = 156.25 baud_rate = 9600
   USART2->CR1  |= USART_CR1_TE; //enable transmitter
   USART2->CR1  |= USART_CR1_RE; //enable receiver
 
-  data = 65;
-  data = data;
   while(1){
     //while( !(USART2->SR)) {GPIOD->ODR |= BIT(8);}
     GPIOC->ODR |= BIT(8);
-
-    while(!(USART2->SR & USART_SR_RXNE)) {}
+    while(!(USART2->SR & USART_SR_RXNE)) {GPIOC->ODR &= ~BIT(8);}
     data = USART2->DR;
+    data = data;
+
+    data = 67;
+    GPIOC->ODR |= BIT(8);
+    while(!(USART2->SR & USART_SR_TXE)) {GPIOC->ODR &= ~BIT(8);}
+    USART2->DR = 0x43;
     
-    while(!(USART2->SR & USART_SR_TXE)) {}
-    USART2->DR = data;
-    
-    GPIOC->ODR &= ~BIT(8);
+    //GPIOC->ODR &= ~BIT(8);
   }
   //GPIOC->CRH |= 0x0000000B;
   //GPIOC->ODR |= BIT(8);

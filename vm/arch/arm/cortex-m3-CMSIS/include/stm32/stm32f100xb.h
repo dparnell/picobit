@@ -3479,6 +3479,7 @@ typedef struct
 #define  USART_CR1_WAKE                      ((uint32_t)0x00000800)            /*!< Wakeup method */
 #define  USART_CR1_M                         ((uint32_t)0x00001000)            /*!< Word length */
 #define  USART_CR1_UE                        ((uint32_t)0x00002000)            /*!< USART Enable */
+#define  USART_CR1_OVER8                     ((uint32_t)0x00008000)            /*!< Oversampling mode */
 
 /******************  Bit definition for USART_CR2 register  *******************/
 #define  USART_CR2_ADD                       ((uint32_t)0x0000000F)            /*!< Address of the USART node */
