@@ -211,7 +211,7 @@ void main ()
   AFIO->MAPR &= ~AFIO_MAPR_USART2_REMAP; //remap = 0
 
   USART2->CR1  |= USART_CR1_UE; //enable usart
-  USART2->GTPR |= USART_GTPR_PSC_0; //divides the source clock by 1
+  //USART2->GTPR |= USART_GTPR_PSC_0; //divides the source clock by 1
   USART2->CR1  &= ~USART_CR1_M; //word length 8
   USART2->CR2  &= ~USART_CR2_STOP_0 & ~USART_CR2_STOP_1; //1 stop bit
   USART2->CR1  &= ~USART_CR1_OVER8; //oversampling 16
