@@ -1,5 +1,9 @@
 ifdef CONFIG_ARM_CPU_STM32F100RB
-ldscript  := stm32f100rb.ld
+
+# changed here
+#ldscript  := stm32f100rb.ld
+ldscript := stm32_flash.ld
+
 ram_bytes := 0x2000
 rom_bytes := 0x20000
 endif
@@ -9,9 +13,11 @@ CPPFLAGS += -DARCH_CPU_RAM_BYTES=$(ram_bytes) \
 
 LDFLAGS  += -T$(ldscript)
 
-arch-y += init.s
+# changed here
+#arch-y += init.s
+arch-y += startup_stm32f10x_md_vl.s
 
-arch-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY)   += board-vldiscovery.c
+arch-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY)   += board-vldiscovery.c system_stm32f1xx.c
 stdlib-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY) += stdlib-vldiscovery.scm
 
 load-address := \#x8008000
