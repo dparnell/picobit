@@ -74,6 +74,7 @@
   * @{
   */
 
+#include <stdint.h> /* I changed, including stdint */
 #include "include/stm32/stm32f1xx.h" /* I changed, path  */
 
 /**
@@ -91,7 +92,6 @@
 /** @addtogroup STM32F1xx_System_Private_Defines
   * @{
   */
-
 #if !defined  (HSE_VALUE) 
   #define HSE_VALUE    ((uint32_t)8000000) /*!< Default value of the External oscillator in Hz.
                                                 This value can be provided and adapted by the user application. */

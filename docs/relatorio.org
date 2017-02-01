@@ -3,9 +3,20 @@
 #+DATE:
 
 
-* TODO Where I am
-
+* TODO primitives-numbes.c
   
+  Add bitwise-and and bitwise-not.
+
+* TODO Where I am
+- DONE Pesquisando o HAL da stm32f1 para baixar. Em todo caso, usar o do STM32F1-workarea.
+- TODO HAL files, error Makefile.
+
+- DONE voltar o linker o e startup no cortex-m3-HAL/Makefile
+- DONE roubando funciona o stm32f10x_gpio ela chama o rcc
+       Nao funciona o __I, entao provavelmente o __O __IO.  (NAO PODE SER VOLATILE)
+- TODO Makefile path to include.
+- TODO CORRIGIR ISSO TD, olha o HAL do marcelo, o _conf e tals, chamando muita coisa em lugares diferentes....
+
 
 * TEMA
 
@@ -352,6 +363,34 @@ tirei o cortex-m3 do Kconfig, esta somente o cortex-m3-CMSIS
   */
 * Datasheet = en.CD00251732.pdf
 * Manual = en.CD00246267.pdf
+* ARM Code and Size
+** Site
+  https://mcuoneclipse.com/2013/04/14/text-data-and-bss-code-and-data-size-explained/
+  
+  Informação segundo o site acima, podem mudar caso ocorra mudanças no linker.
+
+** .text
+   Coisas que serão alocadas na flash, por exemplo, funcões, constantes, vetor de interrupção.
+
+** .data
+   Variáveis inicializadas.
+
+** .bss
+   (Block Started by Symbol)
+   variáveis nao inicializadas.
+
+| Language structure                     | Binary file section   | Memory region at run-time |
+| Global un-initialized variables        | .common               | Data (SRAM)               |
+| Global initialized variables           | .data                 | Data (SRAM+Flash)         |
+| Global static un-initialized variables | .bss                  | Data (SRAM)               |
+| Global static initialized variables    | .data                 | Data (SRAM+Flash)         |
+| Local variables                        | <no specific section> | Stack or Heap (SRAM)      |
+| Local static un-initialized variables  | .bss                  | Data (SRAM)               |
+| Local static initialized variables     | .data                 | Data (SRAM+Flash)         |
+| Const data types                       | .rodata               | Code (Flash)              |
+| Const strings                          | .rodata.1             | Code (Flash)              |
+| Routines                               | .text                 | Code (Flash)              |
+
 * Comparacao startup e linker
 
 - Startup
@@ -460,7 +499,14 @@ OBS: The PLL output frequency must be in the range of 16-24 MHz.
 
 - vm/arch/arm/cortex-m3-HAL/Makefile = arch-config-arm-board (system_stm32f1xx.c)
 - vm/arch/arm/cortex-m3-HAL/include/stm32 = stm32f1xx.h
+- changed Makefile, vm/Makefile, CFLAGS.
+- symbolic link from stm32f100xb.h to stm32f1x.h
+- stm32f100xb.h, assert_param - exported macro - line 73
+- stm32-hal/inc/stm32f10x.h, assert_param - exported macro - line 110
+- arm/cortex-m3-HAL/Makefile CFLAGS+= -lm
+** TODO vm/Makefile
 
+   Usar o gawk e o Kconfig para arrumar o cflags corretamente.
 
 
 

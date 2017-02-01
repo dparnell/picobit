@@ -184,9 +184,10 @@ PRIMITIVE_UNSPEC(#%PWM-config, arch_PWM_config, 0)
   //IM3->SR     &= ~TIM_SR_UIF;
 }
 
+/*
 void main ()
 {
-  volatile uint8_t data;
+  //volatile uint8_t data;
   RCC->APB2ENR |= IOPCEN | ADC1EN | AFIOEN | IOPBEN | IOPAEN;
   RCC->APB1ENR |= TIM3EN | USART2EN;
   
@@ -201,7 +202,8 @@ void main ()
   GPIOA->CRL = 0x00000000;
   GPIOA->CRH = 0x00000000;
   GPIOA->ODR = 0x00000000;
-
+*/
+  /* USART begin:
   //USART2 - transmission
   // Put PA2  (TX) to alternate function output push-pull at 50 MHz
   // Put PA3 (RX) to floating input
@@ -233,6 +235,8 @@ void main ()
     
     //GPIOC->ODR &= ~BIT(8);
   }
+  */
+  
   //GPIOC->CRH |= 0x0000000B;
   //GPIOC->ODR |= BIT(8);
 
@@ -271,5 +275,8 @@ void main ()
 
   ADC1->CR2   |= ADC_CR2_SWSTART;
   */
+
+/*
   interpreter();
-}
+  }*/
+ 
