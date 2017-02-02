@@ -79,8 +79,10 @@
 
 //#include "include/stm32-hal/inc/stm32f10x.h" /* I changed */
 //#include "include/stm32-hal/inc/misc.h" /* I changed, path */
-#include "include/stm32-hal/inc/stm32f10x_gpio.h" /* I changed here */
-#include "include/stm32-hal/inc/stm32f10x_rcc.h" /* I changed here */
+//#include "include/stm32-hal/inc/stm32f10x_gpio.h" /* I changed here */
+//#include "include/stm32-hal/inc/stm32f10x_rcc.h" /* I changed here */
+#include <stm32f10x_gpio.h>
+#include <stm32f10x_rcc.h>
 
 #include <picobit.h>
 #include <dispatch.h>
@@ -215,10 +217,10 @@ void main(void){
 		{	
 			GPIOC->ODR |= GPIO_Pin_9;	// turn on PC9
 		}
-		Delay(1000000L);				// wait a little
+		Delay(1000000);				// wait a little
 		
 		GPIOC->ODR &= ~GPIO_Pin_9;		// clear PC8 and PC9
-		Delay(1000000L);				// wait a little
+		Delay(1000000);				// wait a little
 	}
 
   interpreter();
