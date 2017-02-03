@@ -1,10 +1,10 @@
 #include <stdint.h>
 #include <picobit.h>
 #include <dispatch.h>
-#include <arch/stm32/rcc.h>
+#include <arch/cmsis/bkp/rcc.h>
 //#include <arch/stm32/gpio.h>
 //#include <arch/stm32/adc.h>
-#include <arch/stm32/stm32f100xb.h>
+#include <arch/cmsis/bkp/stm32f100xb.h>
 #include <primitives.h>
 #include <bignum.h>
 
@@ -184,7 +184,10 @@ PRIMITIVE_UNSPEC(#%PWM-config, arch_PWM_config, 0)
   //IM3->SR     &= ~TIM_SR_UIF;
 }
 
-/*
+void SystemInit(){
+
+}
+
 void main ()
 {
   //volatile uint8_t data;
@@ -202,7 +205,7 @@ void main ()
   GPIOA->CRL = 0x00000000;
   GPIOA->CRH = 0x00000000;
   GPIOA->ODR = 0x00000000;
-*/
+
   /* USART begin:
   //USART2 - transmission
   // Put PA2  (TX) to alternate function output push-pull at 50 MHz
@@ -276,7 +279,5 @@ void main ()
   ADC1->CR2   |= ADC_CR2_SWSTART;
   */
 
-/*
   interpreter();
-  }*/
- 
+  }

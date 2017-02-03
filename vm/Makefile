@@ -80,8 +80,8 @@ include/arch: include/config/auto.conf
 	@ln -sf ../$(arch)/include/ include/arch
 
 CROSS    = $(call unquote,$(CONFIG_CROSS_COMPILER))
-CPPFLAGS = -Iinclude/ -DPICOBIT -Iarch/arm/cortex-m3-HAL/include/stm32-hal/inc/ -Iarch/arm/cortex-m3-HAL/include/stm32/
-LDFLAGS  = -nostdlib -L$(arch)/lib
+CPPFLAGS = -Iinclude/ -DPICOBIT $(INCLUDE_path)#-I$(arch)/include/stm32-hal/inc/ -I$(arch)/include/stm32/
+LDFLAGS  = -nostdlib -L$(arch)/$(LINKER_path) #-L$(arch)/lib
 
 # I changed here.
 CFLAGS   = $(CPPFLAGS)

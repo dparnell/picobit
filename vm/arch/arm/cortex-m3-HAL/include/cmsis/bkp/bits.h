@@ -4,14 +4,6 @@
 typedef volatile unsigned int   reg;
 typedef volatile unsigned short reg16;
 
-typedef unsigned int   u32;
-typedef unsigned short u16;
-typedef unsigned char  u8;
-
-typedef signed int   s32;
-typedef signed short s16;
-typedef signed char  s8;
-
 #define CONFIG_AREA(type, name, addr) \
 			static struct type* const name = (struct type*) addr;
 

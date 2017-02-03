@@ -14,9 +14,9 @@
 - DONE voltar o linker o e startup no cortex-m3-HAL/Makefile
 - DONE roubando funciona o stm32f10x_gpio ela chama o rcc
        Nao funciona o __I, entao provavelmente o __O __IO.  (NAO PODE SER VOLATILE)
-- TODO Makefile path to include.
-- TODO CORRIGIR ISSO TD, olha o HAL do marcelo, o _conf e tals, chamando muita coisa em lugares diferentes....
-
+- DONE Makefile path to include.
+- DONE (mais ou menos) CORRIGIR ISSO TD, olha o HAL do marcelo, o _conf e tals, chamando muita coisa em lugares diferentes....
+- TODO gpio_simple, working... (Estou aq)
 
 * TEMA
 
@@ -504,10 +504,14 @@ OBS: The PLL output frequency must be in the range of 16-24 MHz.
 - stm32f100xb.h, assert_param - exported macro - line 73
 - stm32-hal/inc/stm32f10x.h, assert_param - exported macro - line 110
 - arm/cortex-m3-HAL/Makefile CFLAGS+= -lm
-** TODO vm/Makefile
+** DONE vm/Makefile
 
-   Usar o gawk e o Kconfig para arrumar o cflags corretamente.
+   Usar o gawk e o Kconfig para arrumar o cflags corretamente. (ja estava feito, usei a variavel arch - $(arch))
 
 
 
  
+** TODO Kconfig
+
+- LINKER_path, arrumado em tds os makefiles.
+

@@ -167,9 +167,9 @@ typedef enum
   * @}
   */
 
-#include <arch/stm32/core_cm3.h>
-   //#include "core_cm3.h"
-#include <arch/stm32/system_stm32f1xx.h>
+//#include <core_cm3.h>
+#include "core_cm3.h"
+#include <system_stm32f1xx.h>
    //#include "system_stm32f1xx.h"
 #include <stdint.h>
 

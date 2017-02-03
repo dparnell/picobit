@@ -1,7 +1,7 @@
 #ifndef _STM32_GPIO_H_
 #define _STM32_GPIO_H_
 
-#include <arch/stm32/bits.h>
+#include <bits.h>
 
 struct regs_GPIO {
 	reg CRL;

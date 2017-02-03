@@ -4,6 +4,9 @@ ram_bytes := 0x2000
 rom_bytes := 0x20000
 endif
 
+LINKER_path  := lib/
+INCLUDE_path :=
+
 CPPFLAGS += -DARCH_CPU_RAM_BYTES=$(ram_bytes) \
 	-DARCH_CPU_ROM_BYTES=$(rom_bytes)
 
@@ -25,6 +28,7 @@ picobit.elf: $(obj-y) .config
 	$(CROSS)gcc $(CFLAGS) -o $@ $(obj-y)
 endif
 
+# CONFIG_KEIL, only for example, not use!
 ifdef CONFIG_ARM_COMPILER_KEIL
 no-gcc := 1
 

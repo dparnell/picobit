@@ -1,4 +1,4 @@
-(define GPIO-output
+#|(define GPIO-output
   (lambda (port channel)
     (cond [(equal? port "A")
            (#%GPIO-output 0 channel)]
@@ -15,12 +15,12 @@
   (lambda (value)
     (#%sleep value) ))
 
-#|(define ADC-read
+(define ADC-read
   (lambda ()
     (let ((value (#%ADC-read)))
       (if (= value 0)
           (set-led! 9 #t)
-          (set-led! 9 #f)) )))|#
+          (set-led! 9 #f)) )))
 
 (define ADC-read
   (lambda()
@@ -45,4 +45,12 @@
 
 (define set-psc
   (lambda (value)
-    (#%set-psc value) ))
+    (#%set-psc value) ))|#
+
+(define GPIO_init
+  (lambda ()
+    (#%GPIO_init)) )
+
+(define GPIO_example
+  (lambda ()
+    (#%GPIO_example)) )
