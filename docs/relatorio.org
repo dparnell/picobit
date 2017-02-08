@@ -40,6 +40,8 @@ Scheme was one of the first programming languages to incorporate first class pro
 * DONE change to racket-6.7 
 
   Brach newPicobit.
+  
+  Information on files, what change and the previous version.
 
 * DONE PICOBIT - pdf
 
@@ -174,6 +176,13 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
   
 * TODO PICOBIT SCHEME COMPILER
   
+  Utilizando o novo compilador do picobit, funcionando...
+
+  gpio-simple.scm -> gpio-simple.hex:
+
+- OLD: load size 14
+- NEW: load size 8
+
 * TODO PICOBIT VM
 
 * TODO SIXPIC C COMPILER
@@ -296,11 +305,11 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 - mudou a forma de imprimir os erros do picobit.
 
 
-* TODO Problemas
+* DONE Problemas
 
 - kconfig, não ta funcionando para o cortex-m3-CMSIS. Não gera o .config e o include/auto.conf correto, falta gcc e placa.
 Resolvido com:
-tirei o cortex-m3 do Kconfig, esta somente o cortex-m3-CMSIS
+tirei o cortex-m3 do Kconfig, esta somente o cortex-m3-CMSIS == Problema resolvido corretamte olhar modificacoes feitas perto do HAL.
 
 * ADC main using adc.h
 

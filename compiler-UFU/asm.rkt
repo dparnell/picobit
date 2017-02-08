@@ -400,7 +400,6 @@
       (let ((le-bytes (list (asm-bits-0-to-7 asm-start-pos-higher)
                             (asm-bits-8-and-up asm-start-pos-higher))))
            (if asm-big-endian?
-		;;I changed here, 3 to 4
                (print-line 4 0 (reverse le-bytes))
                (print-line 4 0 le-bytes))))
 

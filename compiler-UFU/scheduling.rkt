@@ -9,7 +9,7 @@
   (linearize (reorder! bbs)))
 
 
-;;-----------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 
 (define (reorder! bbs)
   (let* ([done (make-vector (vector-length bbs) #f)])
@@ -60,7 +60,7 @@
     (define len (vector-length bbs))
     (renumber-labels bbs (make-vector len 1) len)))
 
-;;-----------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 
 ;; State for linearize.
 ;; Ugly, but better than having everything as an internal define
@@ -79,7 +79,7 @@
   (and (mpair? r-todo)
        (if fallthrough-to-next?
            (match r-todo
-             [(mcons (and label-pos `(,label . ,_)) rest)
+             [(mcons (and label-pos `(,label . ,_)) rest )
               (unless (mpair? rest)
                 (set-mcar! todo todo))
               (set-mcdr! todo rest)

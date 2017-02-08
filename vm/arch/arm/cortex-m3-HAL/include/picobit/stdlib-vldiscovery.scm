@@ -1,3 +1,5 @@
+;;(load "teste.scm")
+
 #|(define GPIO-output
   (lambda (port channel)
     (cond [(equal? port "A")

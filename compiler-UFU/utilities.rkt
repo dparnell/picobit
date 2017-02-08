@@ -4,17 +4,11 @@
 
 (require srfi/4)
 
-(define (compiler-error msg . others)
-  (parameterize ([current-output-port (current-error-port)])
-    (printf "*** PICOBIT ERROR -- ~a" msg)
-    (for ([x (in-list others)])
-      (printf " ~a"
-              (if (identifier? x)
-                  (format "~a at ~a:~a"
-                          (syntax->datum x)
-                          (syntax-line   x)
-                          (syntax-column x))
-                  (format "~s" x))))
+(define compiler-error
+  (lambda (msg . others)
+    (display "*** PICOBIT ERROR -- ")
+    (display msg)
+    (for-each (lambda (x) (display " ") (write x)) others)
     (newline)
     (exit 1)))
 
