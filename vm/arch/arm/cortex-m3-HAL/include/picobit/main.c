@@ -6,7 +6,7 @@
 #include <bignum.h>
 
 #include <rcc.h>
-#include <gpio.h>
+//#include <gpio.h>
 #include <stm32f10x.h>
 #include <system_stm32f10x.h>
 
@@ -54,35 +54,6 @@ PRIMITIVE_UNSPEC(#%set-led!, arch_set_led, 2)
 void Delay(__IO uint32_t nCount) {
   while(nCount--) {
   }
-}
-
-/* This funcion shows how to initialize 
- * the GPIO pins on GPIOC / GPIOA and how to configure
- * them as inputs and outputs 
- */
-void GPIO_init(void){
-  
-  GPIO_InitTypeDef GPIO_InitStruct;
-  
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-    
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_8; // we want to configure all LED GPIO pins
-  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP; 	// we want the pins to be a push-pull output
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz; 	// this sets the GPIO modules clock speed
-  GPIO_Init(GPIOC, &GPIO_InitStruct); 			// this finally passes all the values to the GPIO_Init function which takes care of setting the corresponding bits.
-
-  
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_0;		  // we want to configure PA0
-  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPD; 	  // we want it to be an input with a pull-down resistor enabled
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;//this sets the GPIO modules clock speed
-  GPIO_Init(GPIOA, &GPIO_InitStruct);			  // this passes the configuration to the Init function which takes care of the low level stuff
-}
-
-PRIMITIVE_UNSPEC(#%GPIO_init, arch_GPIO_init, 0)
-{
-  GPIO_init();
 }
 
 PRIMITIVE_UNSPEC(#%GPIO_example, arch_GPIO_example, 0)

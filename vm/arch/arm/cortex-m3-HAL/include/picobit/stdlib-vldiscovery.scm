@@ -1,4 +1,5 @@
 ;;(load "teste.scm")
+;;(include "teste.scm")
 
 #|(define GPIO-output
   (lambda (port channel)

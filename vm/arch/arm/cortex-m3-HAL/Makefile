@@ -53,11 +53,12 @@ HAL-sources = include/hal/src/misc.c \
 arch-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY)   += include/picobit/main.c \
 	include/hal/src/stm32f10x_rcc.c \
 	include/hal/src/stm32f10x_gpio.c \
-	include/cmsis/device/system_stm32f10x.c 
+	include/cmsis/device/system_stm32f10x.c \
+	include/picobit/periph/gpio.c
 	#include/picobit/board-vldiscovery.c #abc.c \
 	#include/hal/src/misc.c \
 	#system_stm32f1xx.c # $(HAL-sources)
-stdlib-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY) += include/picobit/stdlib-vldiscovery.scm
+stdlib-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY) += include/picobit/main-scheme.scm #include/picobit/stdlib-vldiscovery.scm 
 
 load-address := \#x8008000
 
