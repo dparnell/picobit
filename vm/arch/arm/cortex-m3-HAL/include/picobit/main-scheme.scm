@@ -1,3 +1,11 @@
+;;File: main-scheme.scm - function in scheme
+;;Cecilia Carneiro e Silva
+
+;;SLEEP
+;;sleep
+(define (sleep time)
+  (#%sleep time))
+
 ;;GPIO - defines
 ;;GPIOs
 (define GPIOA 0)
@@ -83,7 +91,14 @@
                [(equal? mode MODE_pull-up)
                 (GPIO_config GPIOx GPIO_Mode_IPU pin speed)] )])
   )
-         
+
+;;IO_read and IO_write
+(define (IO_read gpiox pin)
+ (#%IO_read gpiox pin))
+(define (IO_write gpiox pin value)
+  (#%IO_write gpiox pin value))
+
+
 (define GPIO_example
   (lambda ()
     (#%GPIO_example)) )

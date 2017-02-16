@@ -2,6 +2,19 @@
   (GPIO_init GPIOC 'Output 'Push-pull SPEED_50 Pin_9)
   (GPIO_init GPIOC 'Output 'Push-pull SPEED_50 Pin_8)
   (GPIO_init GPIOA 'Input  'Pull-down SPEED_in Pin_0)
-  (GPIO_example))
+
+  (IO_write GPIOC Pin_9 #t)
+  (IO_write GPIOC Pin_8 #t)
+  (loop)
+  )
+
+(define (loop)
+  (if (IO_read  GPIOA Pin_0)
+      (IO_write GPIOC Pin_9 #t)
+      (IO_write GPIOC Pin_9 #f))
+  (sleep 10000)
+  (IO_write GPIOC Pin_9 #f)
+  (sleep 10000)
+  (loop) )
 
 (main)

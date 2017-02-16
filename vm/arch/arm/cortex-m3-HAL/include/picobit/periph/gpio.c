@@ -57,3 +57,70 @@ PRIMITIVE_UNSPEC(GPIO_config, arch_GPIO_config, 4)
     GPIO_Init(GPIOE, &GPIO_InitStruct);
   }
 }
+
+PRIMITIVE(#%IO_read, arch_IO_read, 2)
+{
+  GPIO_TypeDef* GPIOx; 
+  uint8_t  u8_gpiox;
+  uint16_t u16_pin;
+
+  u8_gpiox = decode_int(arg1);
+  u16_pin  = decode_int(arg2);
+  GPIOx = GPIOA;
+  if(u8_gpiox == 0){
+    GPIOx = GPIOA;
+  }
+  else if(u8_gpiox == 1){
+    GPIOx = GPIOB;
+  }
+  else if(u8_gpiox == 2){
+    GPIOx = GPIOC;
+  }
+  else if(u8_gpiox == 3){
+    GPIOx = GPIOD;
+  }
+  else if(u8_gpiox == 4){
+    GPIOx = GPIOE;
+  }
+  
+  if(GPIOx->IDR & u16_pin){
+    arg1 = OBJ_TRUE;
+  }
+  else{
+    arg1 = OBJ_FALSE;
+  }
+}
+
+PRIMITIVE_UNSPEC(#%IO_write, arch_IO_write, 3)
+{
+  GPIO_TypeDef* GPIOx; 
+  uint8_t  u8_gpiox;
+  uint16_t u16_pin;
+
+  u8_gpiox = decode_int(arg1);
+  u16_pin  = decode_int(arg2);
+  
+  GPIOx = GPIOA;
+  if(u8_gpiox == 0){
+    GPIOx = GPIOA;
+  }
+  else if(u8_gpiox == 1){
+    GPIOx = GPIOB;
+  }
+  else if(u8_gpiox == 2){
+    GPIOx = GPIOC;
+  }
+  else if(u8_gpiox == 3){
+    GPIOx = GPIOD;
+  }
+  else if(u8_gpiox == 4){
+    GPIOx = GPIOE;
+  }
+
+  if(arg3 == OBJ_FALSE){
+    GPIOx->ODR &= ~u16_pin;
+  }
+  else {
+    GPIOx->ODR |= u16_pin;
+  }
+}

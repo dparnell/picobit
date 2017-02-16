@@ -2,10 +2,13 @@
 #+AUTHOR: Cecília Carneiro e Silva
 #+DATE:
 
+* AVISO
+  
+  Erro no IF e no COND, caso tenha somente uma condição ele sempre entra.
 
 * TODO primitives-numbes.c
   
-  Add bitwise-and and bitwise-not.
+  Add bitwise-and(DONE) and bitwise-not.
 
 * TODO Where I am
 - DONE Pesquisando o HAL da stm32f1 para baixar. Em todo caso, usar o do STM32F1-workarea.
