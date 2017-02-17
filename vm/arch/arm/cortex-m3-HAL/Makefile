@@ -50,14 +50,19 @@ HAL-sources = include/hal/src/misc.c \
 	include/hal/src/stm32f10x_usart.c \
 	include/hal/src/stm32f10x_wwdg.c
 
-arch-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY)   += include/picobit/main.c \
-	include/hal/src/stm32f10x_rcc.c \
+HAL-files = include/hal/src/stm32f10x_rcc.c \
 	include/hal/src/stm32f10x_gpio.c \
+	include/hal/src/stm32f10x_adc.c \
+	include/hal/src/stm32f10x_dma.c
+
+PICOBIT-files = include/picobit/periph/gpio.c \
+	include/picobit/periph/adc.c
+
+arch-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY)   += include/picobit/main.c \
 	include/cmsis/device/system_stm32f10x.c \
-	include/picobit/periph/gpio.c
-	#include/picobit/board-vldiscovery.c #abc.c \
-	#include/hal/src/misc.c \
-	#system_stm32f1xx.c # $(HAL-sources)
+	$(HAL-files) \
+	$(PICOBIT-files)
+
 stdlib-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY) += include/picobit/main-scheme.scm #include/picobit/stdlib-vldiscovery.scm 
 
 load-address := \#x8008000

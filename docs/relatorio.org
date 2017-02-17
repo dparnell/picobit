@@ -177,6 +177,48 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
   
 * TODO Virtual machines
   
+  As Máquinas virtual são dividas em 2 grandes grupos: System Virtual Machine e Process Virtual Machines. Essa subdivição é baseada no nível de ligação com o hardware no qual elas rodam.
+
+** System VM (Hardware virtual machines)
+   Simulam o completamento o hardware no qual executam e permitem a de um sistema operacional completo.
+
+** Process VM (Software virtual machines)
+   São programas que adicionam um "layer" acima do sistema operacional, possibilitando a simulação de um ambiente de programação para execução de processos específicos. São usadas para tornar o "programming environment" independente do hardware.
+   Two of the most popular examples of process VMs are Java Virtual Machine (JVM) and Common Language Runtime; used to virtualize the Java programming language & .NET Framework programming environment respectively.
+   What should a virtual machine generally implement? It should emulate the operations carried out by a physical CPU and thus should ideally encompass the following concepts:
+
+- Compilation of source language into VM specific bytecode
+- Data structures to contains instructions and operands (the data the instructions process)
+- A call stack for function call operations
+- An ‘Instruction Pointer’ (IP) pointing to the next instruction to execute
+- A virtual ‘CPU’ – the instruction dispatcher that
+- Fetches the next instruction (addressed by the instruction pointer)
+- Decodes the operands
+- Executes the instruction.
+  
+Divididas em 2 grandes grupos: Stack based e Register based.
+
+*** Stack Based
+    Implementação básica tudo o que é necessário para ser um VM, a memória é estruturado na forma de uma pilha - stack - LIFO(Last In First Out). Por exemplo, adição de dois números:
+
+- POP 20
+- POP 7
+- ADD 20, 7, result
+- PUSH result
+
+  São usadas as operações de PUSH e POP, as VM stack based apresentam como vantagem o endereçamente implícito provido pelo Stack Pointer (ST), mais simples que Register Based. Desvantagem as operações não são atômicas, para somar 2 números por exemplo, são necessárias 4 linhas.
+
+*** Register Based
+    Baseadas nos registros de uma CPU, não há operação de POP o PUSH, os endereçamento é explicíto na instrução. Soma de 2 números:
+- ADD R1, R2, R3 ;
+
+  Instrução de adição realiza em somente uma linha. Otimização difirentes devem ser feitas em cada um dos modelos. 
+  The problem with a register based model is that the average register instruction is larger than an average stack instruction, as we need to specify the operand addresses explicitly. Whereas the instructions for a stack machine is short due to the stack pointer, the respective register machine instructions need to contain operand locations, and results in larger register code compared to stack code.
+
+** Hypervisor
+   Limitador dos recursos disponíveis para os softwares.
+   The hypervisor that takes direct control of underlying hardware is known as native or bare-metal VM; while hosted VM is distinct software layer that runs with in operating system and hence have indirect association with the underlying hardware. The system VM abstracts Instruction Set Architecture (ISA), which is bit different from that of real hardware platform. 
+
 * TODO PICOBIT SCHEME COMPILER
   
   Utilizando o novo compilador do picobit, funcionando...

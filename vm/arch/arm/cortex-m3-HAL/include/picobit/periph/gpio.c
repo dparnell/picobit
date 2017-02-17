@@ -4,6 +4,7 @@
 #include <primitives.h>
 #include <bignum.h>
 #include <stm32f10x.h>
+#include <stm32f10x_gpio.h>
 
 /* GPIOx clock enable */
 PRIMITIVE_UNSPEC(GPIOA_clock, arch_GPIOA_clock, 0)

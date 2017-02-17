@@ -89,8 +89,7 @@
                [(equal? mode MODE_pull-down)
                 (GPIO_config GPIOx GPIO_Mode_IPD pin speed)]
                [(equal? mode MODE_pull-up)
-                (GPIO_config GPIOx GPIO_Mode_IPU pin speed)] )])
-  )
+                (GPIO_config GPIOx GPIO_Mode_IPU pin speed)] )]) )
 
 ;;IO_read and IO_write
 (define (IO_read gpiox pin)
