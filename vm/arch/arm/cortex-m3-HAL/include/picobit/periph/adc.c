@@ -9,19 +9,34 @@
 
 #define ADC1_DR_Address    ((uint32_t)0x4001244C)
 
+
+//erro (provalvemente)
+__IO uint16_t ADCConvertedValue;
+
+void GPIO_Configuration(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+  /* Configure PC.04 (ADC Channel14) as analog input -------------------------*/
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+}
+
 PRIMITIVE(ADC_example, arch_ADC_example, 0)
 {
   ADC_InitTypeDef ADC_InitStructure;
   DMA_InitTypeDef DMA_InitStructure;
-  __IO uint16_t ADCConvertedValue;
-  /* Enable peripheral clocks ------------------------------------------------*/
-  /* Enable DMA1 clock */
+
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
-  /* Enable ADC1 and GPIOC clock */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOC, ENABLE);
-
-  /* DMA1 channel1 configuration ----------------------------------------------*/
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
   DMA_DeInit(DMA1_Channel1);
   DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
@@ -36,7 +51,6 @@ PRIMITIVE(ADC_example, arch_ADC_example, 0)
   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
   DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
   DMA_Init(DMA1_Channel1, &DMA_InitStructure);
-  /* Enable DMA1 channel1 */
   DMA_Cmd(DMA1_Channel1, ENABLE);
   
   ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
@@ -46,4 +60,29 @@ PRIMITIVE(ADC_example, arch_ADC_example, 0)
   ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
   ADC_InitStructure.ADC_NbrOfChannel = 1;
   ADC_Init(ADC1, &ADC_InitStructure);
+  
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_55Cycles5);
+
+  ADC_DMACmd(ADC1, ENABLE);
+  ADC_Cmd(ADC1, ENABLE);
+
+  ADC_ResetCalibration(ADC1);
+
+  while(ADC_GetResetCalibrationStatus(ADC1));
+  ADC_StartCalibration(ADC1);
+
+  while(ADC_GetCalibrationStatus(ADC1));
+
+  ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+
+  GPIO_Configuration();
+
+  GPIOC->ODR = GPIO_Pin_9;
 }
+
+
+PRIMITIVE(ADC_read, arch_ADC_read, 0)
+{
+  arg1 = encode_int(ADCConvertedValue);
+}
+

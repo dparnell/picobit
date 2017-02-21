@@ -101,3 +101,12 @@
 (define GPIO_example
   (lambda ()
     (#%GPIO_example)) )
+
+(define (ADC_testando)
+  (GPIO_init GPIOC 'Output 'Push-pull SPEED_50 Pin_8)
+  (let loop ( (ab (ADC_read)) )
+    (if (< ab 2000)
+        (IO_write GPIOC Pin_8 #f)
+        (IO_write GPIOC Pin_8 #t))
+    (loop (ADC_read)) ))
+

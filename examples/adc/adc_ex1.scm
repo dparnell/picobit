@@ -1,1 +1,11 @@
-(ADC_example)
+(define (main)
+  (ADC_example)
+  (ADC_testando) 
+  ;;(let loop ( (var-teste (ADC_read)) )
+  ;;  (if (< var-teste 2000)
+  ;;      (IO_write GPIOC Pin_9 #f)
+  ;;      (IO_write GPIOC Pin_9 #t))
+  ;;  (loop (ADC_read)) )
+  )
+
+(main)
