@@ -56,25 +56,6 @@ void Delay(__IO uint32_t nCount) {
   }
 }
 
-PRIMITIVE_UNSPEC(#%GPIO_example, arch_GPIO_example, 0)
-{
-  GPIOC->ODR = GPIO_Pin_8 | GPIO_Pin_9; // set PD8 and PC9
-    
-  while (1){
-    GPIOC->ODR |= GPIO_Pin_8; // set PC8 without affecting other bits
-    
-    if (GPIOA->IDR & GPIO_Pin_0)// check if PA0 button is pressed
-      {
-	GPIOC->ODR |= GPIO_Pin_9;// turn on PC9
-      }
-    Delay(1000000L);// wait a little
-
-    GPIOC->ODR &= ~GPIO_Pin_9;// clear PC8 and PC9
-    Delay(1000000L);// wait a little
-  }
-
-}
-
 void main ()
 {
   

@@ -80,8 +80,8 @@ include/arch: include/config/auto.conf
 	@ln -sf ../$(arch)/include/ include/arch
 
 CROSS    = $(call unquote,$(CONFIG_CROSS_COMPILER))
-CPPFLAGS = -Iinclude/ -DPICOBIT $(INCLUDE_path)#-I$(arch)/include/stm32-hal/inc/ -I$(arch)/include/stm32/
-LDFLAGS  = -nostdlib -L$(arch)/$(LINKER_path) #-L$(arch)/lib
+CPPFLAGS = -Iinclude/ -DPICOBIT $(INCLUDE_path)
+LDFLAGS  = -nostdlib -L$(arch)/$(LINKER_path)
 
 # I changed here.
 CFLAGS   = $(CPPFLAGS)

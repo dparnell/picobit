@@ -573,6 +573,43 @@ integer bitwise_xor (integer x, integer y)   // TODO similar to ior (only diff i
 	}
 }
 
+//bitwise-and
+integer bitwise_and (integer x, integer y)   // TODO similar to ior (only diff is the test), abstract ?
+{
+	/* returns the bitwise inclusive or of x and y */
+
+	bignum_tmp1 = OBJ_FALSE;
+
+	for (;;) {
+		if (obj_eq(x, ZERO)) {
+			obj tmp = bignum_tmp1;
+			bignum_tmp1 = OBJ_FALSE;
+			return norm(tmp, y);
+		}
+
+		if (obj_eq(x, NEG1)) {
+			obj tmp = bignum_tmp1;
+			bignum_tmp1 = OBJ_FALSE;
+			return norm(tmp, x);
+		}
+
+		bignum_tmp1 = make_integer(integer_lo(x) & integer_lo(y),
+		                           bignum_tmp1);
+		x = integer_hi(x);
+		y = integer_hi(y);
+	}
+}
+
+integer arithmetic_shift(integer arg1, integer arg2)
+{
+  if(arg2 < 0){
+    return (arg1 >> arg2);
+  }
+  else{
+    return (arg1 << arg2);
+  }
+}
+
 // supports up to 16 bits
 // used only in primitives that use small numbers only
 // for example, vector primitives
@@ -602,6 +639,8 @@ uint16 decode_int (obj o)
 		TYPE_ERROR("decode_int.3", "integer");
 	}
 }
+
+
 
 // same purpose as decode_int
 obj encode_int (uint16 n)

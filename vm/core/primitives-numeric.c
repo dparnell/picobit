@@ -2,6 +2,8 @@
 #include <bignum.h>
 #include <primitives.h>
 
+//TODO, bitwise-* in bignum-fixed
+
 PRIMITIVE(number?, number_p, 1)
 {
   if (arg1 >= MIN_FIXNUM_ENCODING
@@ -159,7 +161,7 @@ PRIMITIVE(bitwise-xor, bitwise_xor, 2)
 
 PRIMITIVE(bitwise-and, bitwise_and, 2)
 {
-  /*
+  
 #ifdef CONFIG_BIGNUM_LONG
   arg1 = bitwise_and(arg1, arg2);
 #else
@@ -167,10 +169,21 @@ PRIMITIVE(bitwise-and, bitwise_and, 2)
   arg1 = encode_int (a1 & a2);
 #endif
   arg2 = OBJ_FALSE;
-  */
+
   decode_2_int_args ();
   arg1 = encode_int (a1 & a2);
   arg2 = OBJ_FALSE;
+}
+
+PRIMITIVE(arithmetic-shift, arithmetic_shift, 2)
+{
+  decode_2_int_args ();
+  if(arg2 < 0){
+    arg1 = encode_int (arg1 >> arg2);
+  }
+  else{
+    arg1 = encode_int (arg1 << arg2);
+  }
 }
 
 //TODO bitwise-not
