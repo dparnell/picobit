@@ -12,7 +12,6 @@
 __IO uint16_t ADCConvertedValue;
 //ADC - basics config
 uint32_t u32_mode = ADC_Mode_Independent, u32_dataAlign = ADC_DataAlign_Right;
-uint32_t u32_scanMode, u32_contMode, u32_externalTrig, u32_nChannel;
 
 PRIMITIVE_UNSPEC(ADC1_clock, arch_ADC1_clock, 0)
 {
@@ -28,7 +27,7 @@ PRIMITIVE_UNSPEC(#%ADC_config, arch_ADC_config, 4)
 {
   ADC_InitTypeDef ADC_InitStructure;
   DMA_InitTypeDef DMA_InitStructure;
-  //uint32_t u32_scanMode, u32_contMode, u32_externalTrig, u32_nChannel;
+  uint32_t u32_scanMode, u32_contMode, u32_externalTrig, u32_nChannel;
     
   u32_scanMode     = decode_int(arg1);
   u32_contMode     = decode_int(arg2);
@@ -37,7 +36,7 @@ PRIMITIVE_UNSPEC(#%ADC_config, arch_ADC_config, 4)
 
   u32_scanMode = u32_scanMode;
   u32_contMode = u32_contMode;
-  u32_externalTrig = arithmetic_shift(u32_externalTrig, 3);
+  u32_externalTrig = u32_arithmetic_shift_left(u32_externalTrig, 12); //arithmetic_shift(u32_externalTrig, 3);
   u32_nChannel = u32_nChannel;
   
   DMA_DeInit(DMA1_Channel1);
@@ -58,7 +57,7 @@ PRIMITIVE_UNSPEC(#%ADC_config, arch_ADC_config, 4)
   ADC_InitStructure.ADC_Mode               = u32_mode;
   ADC_InitStructure.ADC_ScanConvMode       = u32_scanMode;
   ADC_InitStructure.ADC_ContinuousConvMode = u32_contMode;
-  ADC_InitStructure.ADC_ExternalTrigConv   = ADC_ExternalTrigConv_None;//u32_externalTrig;
+  ADC_InitStructure.ADC_ExternalTrigConv   = u32_externalTrig;
   ADC_InitStructure.ADC_DataAlign          = u32_dataAlign;
   ADC_InitStructure.ADC_NbrOfChannel       = u32_nChannel;
   ADC_Init(ADC1, &ADC_InitStructure);

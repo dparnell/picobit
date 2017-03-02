@@ -1,8 +1,9 @@
 #include <picobit.h>
 #include <bignum.h>
 #include <primitives.h>
+#include <stdint.h>
 
-//TODO, bitwise-* in bignum-fixed
+//TODO, bitwise-not
 
 PRIMITIVE(number?, number_p, 1)
 {
@@ -175,15 +176,35 @@ PRIMITIVE(bitwise-and, bitwise_and, 2)
   arg2 = OBJ_FALSE;
 }
 
-PRIMITIVE(arithmetic-shift, arithmetic_shift, 2)
+PRIMITIVE(arithmetic-shift-left, arithmetic_shift_left, 2)
 {
+#ifdef CONFIG_BIGNUM_LONG
+  uint16_t u16_n;
+  u16_n = decode_int(arg2);
+  arg1 = shift_left (arg1, u16_n);
+#else
   decode_2_int_args ();
-  if(arg2 < 0){
-    arg1 = encode_int (arg1 >> arg2);
-  }
-  else{
-    arg1 = encode_int (arg1 << arg2);
-  }
+
+  arg1 = encode_int (a1 << a2);
+#endif
+
+  arg2 = OBJ_FALSE;
+}
+
+PRIMITIVE(arithmetic-shift-right, arithmetic_shift_right, 2)
+{
+#ifdef CONFIG_BIGNUM_LONG
+  uint16_t u16_n;
+  //u16_n = (uint16_t) arg2;
+  u16_n = decode_int(arg2);
+  arg1 = shift_right (arg1, u16_n);
+#else
+  decode_2_int_args ();
+
+  arg1 = encode_int (a1 >> a2);
+#endif
+
+  arg2 = OBJ_FALSE;
 }
 
 //TODO bitwise-not

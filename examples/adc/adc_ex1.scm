@@ -1,20 +1,13 @@
 ;;arithmetic-shift nao ta funcionando no lado de scheme
-
 (define (main)
   (GPIO_init GPIOC 'Input 'Analog SPEED_in Pin_4)
   (GPIO_init GPIOC 'Output 'Push-pull SPEED_50 Pin_8)
   (IO_write GPIOC Pin_8 #t)
-  ;;(ADC_example)
+
   (ADC1_clock)
   (DMA1_clock)
-  (ADC_config enable enable 1 1) ;; ADC_ExternalTrigConv_None 1)
-  ;;(ADC_testando) 
-  (sleep 4000)
-  (if (= (arithmetic-shift 1 3) 8)
-      (IO_write GPIOC Pin_8 #f)
-      (IO_write GPIOC Pin_8 #t))
-  (sleep 400000)
-  
+  (ADC_config enable enable ADC_ExternalTrigConv_None 1)
+
   (let loop ( (var-teste (ADC_read)) )
     (if (< var-teste 2000)
         (IO_write GPIOC Pin_8 #f)
