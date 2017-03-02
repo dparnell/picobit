@@ -3,12 +3,37 @@ config CROSS_COMPILER
 	default "arm-none-eabi-"
 
 choice
-	prompt "Processor core type"
+	prompt "Hardware interface"
 
 	config ARM_CORTEX_M3
-	bool "Cortex-M3"
+	       bool "Cortex-M3"
+	
+	config CMSIS_ARM_CORTEX_M3
+	       bool "Cortex-M3-CMSIS"
+	       
+	config HAL_ARM_CORTEX_M3
+	       bool "Cortex-M3-HAL"
+	       	
 endchoice
 
-if ARM_CORTEX_M3
-source "arch/arm/cortex-m3/Kconfig"
-endif
+choice
+	prompt "Compilador"
+
+	config ARM_COMPILER_GCC
+	bool "GCC"
+endchoice
+
+choice
+	prompt "Processor model"
+
+	config ARM_CPU_STM32F100RB
+	bool "ST STM32F100RB"
+endchoice
+
+choice
+	prompt "Board name"
+
+	config ARM_BOARD_STM32_VLDISCOVERY
+	bool "STM32 VLDISCOVERY"
+endchoice
+

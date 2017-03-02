@@ -37,7 +37,7 @@ uint8 HAS_1_OBJECT_FIELD(uint16 visit)
 #endif
 // all composites except pairs and continuations have 1 object field
 
-#ifdef CONFIG_GC_DEBUG
+#ifdef CONFIG_GC_STATISTICS
 extern int max_live;
 #endif
 

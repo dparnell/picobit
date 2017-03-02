@@ -334,6 +334,7 @@ void compact ()
 obj alloc_vec_cell (uint16 n, obj from)
 {
 	uint8 gc_done = 0;
+	obj o;
 
 #ifdef CONFIG_GC_DEBUG
 	gc ();
@@ -345,7 +346,7 @@ obj alloc_vec_cell (uint16 n, obj from)
 	// this includes a 4-byte vector space header
 	n = ((n+3) >> 2) + 1;
 
-	while ((VEC_TO_RAM_OBJ(MAX_VEC_ENCODING) - free_vec_pointer) < n) {
+	while ((VEC_TO_RAM_OBJ(MAX_RAM_ENCODING) - free_vec_pointer) < n) {
 		// free space too small, trigger gc
 		if (gc_done) { // we gc'd, but no space is big enough for the vector
 			ERROR("alloc_vec_cell", "no room for vector");
@@ -358,7 +359,7 @@ obj alloc_vec_cell (uint16 n, obj from)
 #endif
 	}
 
-	obj o = free_vec_pointer;
+	o = free_vec_pointer;
 
 	// advance the free pointer
 	free_vec_pointer += n;

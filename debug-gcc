@@ -1,0 +1,49 @@
+- without CMSIS
+
+arm-none-eabi-gcc -Iinclude/ -DPICOBIT -DARCH_CPU_RAM_BYTES=0x2000 -DARCH_CPU_ROM_BYTES=0x20000 -mcpu=cortex-m3 -mthumb -g  -Wall -Werror -Os -nostdlib -Larch/arm/cortex-m3/lib -Tstm32f100rb.ld -Wl,-warn-common -fno-hosted -o picobit.elf core/dispatch.c core/heap.c core/gc.c core/primitives-list.c core/primitives-numeric.c core/primitives-util.c core/primitives-vector.c core/primitives-control.c core/bignum_long.c arch/arm/cortex-m3/init.s arch/arm/cortex-m3/board-vldiscovery.c
+
+- CMSIS
+
+arm-none-eabi-gcc -Iinclude/ -DPICOBIT -DARCH_CPU_RAM_BYTES= -DARCH_CPU_ROM_BYTES= -mcpu=cortex-m3 -mthumb -g  -Wall -Werror -Os -nostdlib -Larch/arm/cortex-m3-CMSIS/lib -T -Wl,-warn-common -fno-hosted -o picobit.elf core/dispatch.c core/heap.c core/gc.c core/primitives-list.c core/primitives-numeric.c core/primitives-util.c core/primitives-vector.c core/primitives-control.c core/bignum_long.c arch/arm/cortex-m3-CMSIS/init.s
+#
+# Automatically generated make config: don't edit
+# Picobit Virtual Machine Configuration
+# Wed Nov 16 13:20:21 2016
+#
+# CONFIG_ARCH_HOST is not set
+CONFIG_ARCH_ARM=y
+CONFIG_ARCH_32BIT=y
+CONFIG_ARCH="arm"
+CONFIG_CROSS_COMPILER="arm-none-eabi-"
+CONFIG_ARM_CORTEX_M3=y
+# CONFIG_ARM_CORTEX_M3_CMSIS is not set
+CONFIG_ARM_COMPILER_GCC=y
+# CONFIG_ARM_COMPILER_KEIL is not set
+CONFIG_ARM_CPU_STM32F100RB=y
+CONFIG_ARM_BOARD_STM32_VLDISCOVERY=y
+# CONFIG_BIGNUM_FIXED is not set
+CONFIG_BIGNUM_LONG=y
+# CONFIG_VM_DEBUG is not set
+# CONFIG_GC_STATISTICS is not set
+# CONFIG_GC_DEBUG is not set
+#
+# Automatically generated make config: don't edit
+# Picobit Virtual Machine Configuration
+# Wed Nov 16 13:21:12 2016
+#
+# CONFIG_ARCH_HOST is not set
+CONFIG_ARCH_ARM=y
+CONFIG_ARCH_32BIT=y
+CONFIG_ARCH="arm"
+CONFIG_CROSS_COMPILER="arm-none-eabi-"
+# CONFIG_ARM_CORTEX_M3 is not set
+CONFIG_ARM_CORTEX_M3_CMSIS=y
+# CONFIG_ARM_COMPILER_GCC is not set
+# CONFIG_ARM_COMPILER_KEIL is not set
+# CONFIG_ARM_CPU_STM32F100RB is not set
+# CONFIG_ARM_BOARD_STM32_VLDISCOVERY is not set
+# CONFIG_BIGNUM_FIXED is not set
+CONFIG_BIGNUM_LONG=y
+# CONFIG_VM_DEBUG is not set
+# CONFIG_GC_STATISTICS is not set
+# CONFIG_GC_DEBUG is not set

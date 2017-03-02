@@ -2,6 +2,29 @@
 #+AUTHOR: Cecília Carneiro e Silva
 #+DATE:
 
+* TODO FAZERRRR
+
+  Arrumar ou decode_int(return is uint16) ou arithmetic-sthif(fazer) descolar nos dois lados.
+
+* AVISO
+  
+  Erro no IF e no COND, caso tenha somente uma condição ele sempre entra.
+
+* TODO primitives-numbes.c
+  
+  Add bitwise-and(DONE) and bitwise-not.
+
+* TODO Where I am
+- DONE Pesquisando o HAL da stm32f1 para baixar. Em todo caso, usar o do STM32F1-workarea.
+- TODO HAL files, error Makefile.
+
+- DONE voltar o linker o e startup no cortex-m3-HAL/Makefile
+- DONE roubando funciona o stm32f10x_gpio ela chama o rcc
+       Nao funciona o __I, entao provavelmente o __O __IO.  (NAO PODE SER VOLATILE)
+- DONE Makefile path to include.
+- DONE (mais ou menos) CORRIGIR ISSO TD, olha o HAL do marcelo, o _conf e tals, chamando muita coisa em lugares diferentes....
+- TODO gpio_simple, working... (Estou aq)
+
 * TEMA
 
   Maquina virtual em sitemas embacados
@@ -21,6 +44,11 @@ Scheme is a statically scoped and properly tail-recursive dialect of the Lisp pr
 
 Scheme was one of the first programming languages to incorporate first class procedures as in the lambda calculus, thereby proving the usefulness of static scope rules and block structure in a dynamically typed language. Scheme was the first major dialect of Lisp to distinguish procedures from lambda expressions and symbols, to use a single lexical environment for all variables, and to evaluate the operator position of a procedure call in the same way as an operand position. By relying entirely on procedure calls to express iteration, Scheme emphasized the fact that tail-recursive procedure calls are essentially goto's that pass arguments. Scheme was the first widely used programming language to embrace first class escape procedures, from which all previously known sequential control structures can be synthesized. More recently, building upon the design of generic arithmetic in Common Lisp, Scheme introduced the concept of exact and inexact numbers. Scheme is also the first programming language to support hygienic macros, which permit the syntax of a block-structured language to be extended reliably.
 
+* DONE change to racket-6.7 
+
+  Brach newPicobit.
+  
+  Information on files, what change and the previous version.
 
 * DONE PICOBIT - pdf
 
@@ -140,7 +168,7 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 
 ** MODIFICAÇÕES
 
-- ast.rkt=> unstable/match -> racket/matck
+- ast.rkt=> unstable/match -> racket/match
 - primitives.rkt=> unstable/sequence -> unstable/sequence e racket/sequence, a biblioteca sequence foi mudado para racket/sequence com excessão: in-pairs, in-sequence-forever, sequence-lift. Então será feita a inclusão dos dois pacotes.
 
 * TODO ARM - livro
@@ -150,11 +178,398 @@ The mark-and-sweep algorithm consists of two phases: In the first phase, it find
 * TODO tanenbaum - book
   
   Operating systems.
-
+  
 * TODO Virtual machines
+  
+  As Máquinas virtual são dividas em 2 grandes grupos: System Virtual Machine e Process Virtual Machines. Essa subdivição é baseada no nível de ligação com o hardware no qual elas rodam.
+
+** System VM (Hardware virtual machines)
+   Simulam o completamento o hardware no qual executam e permitem a de um sistema operacional completo.
+
+** Process VM (Software virtual machines)
+   São programas que adicionam um "layer" acima do sistema operacional, possibilitando a simulação de um ambiente de programação para execução de processos específicos. São usadas para tornar o "programming environment" independente do hardware.
+   Two of the most popular examples of process VMs are Java Virtual Machine (JVM) and Common Language Runtime; used to virtualize the Java programming language & .NET Framework programming environment respectively.
+   What should a virtual machine generally implement? It should emulate the operations carried out by a physical CPU and thus should ideally encompass the following concepts:
+
+- Compilation of source language into VM specific bytecode
+- Data structures to contains instructions and operands (the data the instructions process)
+- A call stack for function call operations
+- An ‘Instruction Pointer’ (IP) pointing to the next instruction to execute
+- A virtual ‘CPU’ – the instruction dispatcher that
+- Fetches the next instruction (addressed by the instruction pointer)
+- Decodes the operands
+- Executes the instruction.
+  
+Divididas em 2 grandes grupos: Stack based e Register based.
+
+*** Stack Based
+    Implementação básica tudo o que é necessário para ser um VM, a memória é estruturado na forma de uma pilha - stack - LIFO(Last In First Out). Por exemplo, adição de dois números:
+
+- POP 20
+- POP 7
+- ADD 20, 7, result
+- PUSH result
+
+  São usadas as operações de PUSH e POP, as VM stack based apresentam como vantagem o endereçamente implícito provido pelo Stack Pointer (ST), mais simples que Register Based. Desvantagem as operações não são atômicas, para somar 2 números por exemplo, são necessárias 4 linhas.
+
+*** Register Based
+    Baseadas nos registros de uma CPU, não há operação de POP o PUSH, os endereçamento é explicíto na instrução. Soma de 2 números:
+- ADD R1, R2, R3 ;
+
+  Instrução de adição realiza em somente uma linha. Otimização difirentes devem ser feitas em cada um dos modelos. 
+  The problem with a register based model is that the average register instruction is larger than an average stack instruction, as we need to specify the operand addresses explicitly. Whereas the instructions for a stack machine is short due to the stack pointer, the respective register machine instructions need to contain operand locations, and results in larger register code compared to stack code.
+
+** Hypervisor
+   Limitador dos recursos disponíveis para os softwares.
+   The hypervisor that takes direct control of underlying hardware is known as native or bare-metal VM; while hosted VM is distinct software layer that runs with in operating system and hence have indirect association with the underlying hardware. The system VM abstracts Instruction Set Architecture (ISA), which is bit different from that of real hardware platform. 
 
 * TODO PICOBIT SCHEME COMPILER
+  
+  Utilizando o novo compilador do picobit, funcionando...
+
+  gpio-simple.scm -> gpio-simple.hex:
+
+- OLD: load size 14
+- NEW: load size 8
 
 * TODO PICOBIT VM
 
 * TODO SIXPIC C COMPILER
+* TODO Comparation picobit - picoufu
+** Analysis.rkt
+
+- require: +primitives.rkt
+- provide: -less things
+- mudou a forma de marcar variáveis mutáveis e não mutavéis
+
+- nada q implique em mudaças no assembly
+
+** Asm.rkt
+
+(if asm-big-endian?
+    ;;picobit
+    (print-line 3 0 (reverse le-bytes))
+    (print-line 3 0 le-bytes)
+    ;;picoufu
+    (print-line 4 0 (reverse le-bytes))
+    (print-line 4 0 le-bytes))
+
+(print-line type addr bytes) 
+
+;; pode ser esse o problema
+
+** Assemble.rkt
+
+- mais configurações, max-fixnum, min-rom-encoding, min-ram-encoding
+
+** Ast.rkt
+
+- require: syntax/parse, racket/match, racket/syntax
+- AST: abstract syntax tree.
+- Compilador, nao tem ligação direta com o assebly
+
+** Back-end.rkt
+
+- nenhuma mudança.
+
+** Code-gen.rkt
+
+- nenhuma mudança.
+
+** Comp.rkt
+
+- mudanças fruto das mudanças no analysis.rkt, pricipalmente nome de funções.
+
+** Env.rkt
+
+- mudanças organizacionais do environment.
+- nao implica em mudança no assembly (diretamente).
+
+** Front-end.rkt
+
+- mudou mto, pelo nome e analise superficial, são mudanças no comp, redução beta e tals.
+- não afeta diretamento o assembly.
+
+** Gen.config.rkt
+
+- tiraram coisa e colocaram no assemble.rkt.
+- max-fix-num igual
+
+;;picoufu
+- code-start #x8000
+- min-rom-encoding 261
+- max-rom-encoding 6220
+- min-ram-encoding 6221
+
+;;picobit 
+- code-start #x8008000
+- min-ram-encoding 1280
+- min-rom-encoding (+ min-fixnum-encoding (- max-fixnum min-fixnum) 1)
+
+- isso também pode ser responsável por não funcionar.
+
+** Gen.library.rkt
+
+- mudou o caminho, mas ta certo.
+
+** Gen.primitives.rkt
+
+- funções geradas diferentes, normal.
+
+** Ir.rkt
+
+- arquivos identicos.
+
+** Library.scm
+
+- arquivos identicos.
+
+** Parser.rkt
+
+- mudou mto, afeta compilador.
+- acho q não é o problema.
+
+** Picobit.rkt
+
+- reflete as mudanças no compilador causada pelos arquivos anteriores.
+
+** Primitives.rkt
+
+- mudou mto.
+
+** Reader.rkt
+
+- mudanças de organização.
+
+** Scheduling.rkt
+
+- arquivos iguais.
+
+** Tree-shaker.rkt
+
+- arquivos identicos.
+
+** Utilities.rkt
+
+- mudou a forma de imprimir os erros do picobit.
+
+
+* DONE Problemas
+
+- kconfig, não ta funcionando para o cortex-m3-CMSIS. Não gera o .config e o include/auto.conf correto, falta gcc e placa.
+Resolvido com:
+tirei o cortex-m3 do Kconfig, esta somente o cortex-m3-CMSIS == Problema resolvido corretamte olhar modificacoes feitas perto do HAL.
+
+* ADC main using adc.h
+
+/*
+  int c=0;
+  ADC1->CR2  |= ADON;
+  while(c!=2)
+    c++;
+
+  ADC1->CR2  |= RSTCAL;
+  ADC1->CR2  |= CAL;
+  c=0;
+  while(c!=4)
+    c++;
+  
+  //while cal==set wait
+  
+  ADC1->CR2  |= EXTTRIG;
+  ADC1->CR2  |= EXTSEL(7);
+  
+  ADC1->CR2  |= CONT;
+
+  //temp
+  ADC1->CR2  |= TSVREFE;
+  
+  ADC1->SQR3 |= SQ1(16);
+
+  ADC1->CR2  |= SWSTART;
+  */
+  
+
+
+* ADC main using adc.h
+
+  /*
+  int c=0;
+  ADC1->CR2  |= ADON;
+  while(c!=2)
+    c++;
+
+  ADC1->CR2  |= RSTCAL;
+  ADC1->CR2  |= CAL;
+  c=0;
+  while(c!=4)
+    c++;
+  
+  //while cal==set wait
+  
+  ADC1->CR2  |= EXTTRIG;
+  ADC1->CR2  |= EXTSEL(7);
+  
+  ADC1->CR2  |= CONT;
+
+  //temp
+  ADC1->CR2  |= TSVREFE;
+  
+  ADC1->SQR3 |= SQ1(16);
+
+  ADC1->CR2  |= SWSTART;
+  */
+* Datasheet = en.CD00251732.pdf
+* Manual = en.CD00246267.pdf
+* ARM Code and Size
+** Site
+  https://mcuoneclipse.com/2013/04/14/text-data-and-bss-code-and-data-size-explained/
+  
+  Informação segundo o site acima, podem mudar caso ocorra mudanças no linker.
+
+** .text
+   Coisas que serão alocadas na flash, por exemplo, funcões, constantes, vetor de interrupção.
+
+** .data
+   Variáveis inicializadas.
+
+** .bss
+   (Block Started by Symbol)
+   variáveis nao inicializadas.
+
+| Language structure                     | Binary file section   | Memory region at run-time |
+| Global un-initialized variables        | .common               | Data (SRAM)               |
+| Global initialized variables           | .data                 | Data (SRAM+Flash)         |
+| Global static un-initialized variables | .bss                  | Data (SRAM)               |
+| Global static initialized variables    | .data                 | Data (SRAM+Flash)         |
+| Local variables                        | <no specific section> | Stack or Heap (SRAM)      |
+| Local static un-initialized variables  | .bss                  | Data (SRAM)               |
+| Local static initialized variables     | .data                 | Data (SRAM+Flash)         |
+| Const data types                       | .rodata               | Code (Flash)              |
+| Const strings                          | .rodata.1             | Code (Flash)              |
+| Routines                               | .text                 | Code (Flash)              |
+
+* Comparacao startup e linker
+
+- Startup
+  init.s =\= startup_stm32f10x_md_vl.s
+
+- linker
+
+  mto diferentes, no picobit nao tem o vetor de interrupção
+  areas diferentes
+
+
+* Comparacao stm32f10x.h(STM32F1) e stmf100xb.h(picobit)
+  
+- HSI_VALUE
+- HSE_VALUE
+- RESET
+- FLASH_ACR_PRFTBE
+- FLASH_ACR_LATENCY
+- FLASH_ACR_LATENCY_2
+- RCC_CFGR_PLLSRC_HSE
+
+* 6 RCC
+** 6.1 Reset
+
+  A STM32f100rb é 3 tipos de Reset, system Reset, power Reset and backup domain
+Reset.
+
+*** System reset
+
+   O reset do sistema coloca todos os registro em nivel de Reset, exceto as flags de reset.
+
+   A system reset is generated when one of the following events occurs:
+1. A low level on the NRST pin (external reset)
+2. Window watchdog end of count condition (WWDG reset)
+3. Independent watchdog end of count condition (IWDG reset)
+4. A software reset (SW reset) (see Software reset)
+5. Low-power management reset (see Low-power management reset)
+
+*** Power reset
+
+   A power reset is generated when one of the following events occurs:
+1. Power-on/power-down reset (POR/PDR reset)
+2. When exiting Standby mode
+
+A power reset sets all registers to their reset values except the Backup domain
+
+*** Backup domain reset
+
+   Reset somente os registros de backup.
+
+** 6.2 Clocks
+
+   Existem 3 diferentes fontes de clock que podem ser usadas como clock do sistema (SYSCLK), são elas:
+
+- HSI oscillator clock
+- HSE oscillator clock
+- PLL clock
+
+  Além desses, há também duas formas secundárias:
+
+- 40 kHz low speed internal, watchdog, auto-wakeup.
+- 32.768 kHz low external clock, real time
+
+== Figure 8. STM32F100xx clock tree (low and medium-density devices) - pag 71
+
+O clock da memoria flash é sempre o HSI.
+
+Clock máximo nos barramentos 24 MHz.
+
+*** 6.2.1 HSE clock
+
+    Pode vim de duas fontes:
+
+- HSE external cristal/ceramic resonator
+- HSE user external clock.
+  
+  Caso esteja interessado nessa opção buscar mais informações, pág 73.
+
+*** 6.2.2 HSI clock
+
+    É gerado por um oscilador RC de 8 MHz, pode ser usado diretamente como system clock, ou dividido por 2 para ser usado na entrado do PLL.
+
+    Essa fonte de clock tem vantagens como: 
+- low cost: não usa componentes externos
+- faster startup time: quando comparado ao HSE
+
+  Mas possue desvantagens:
+- mesmo calibrado é menos "correto" que um cristal externo ou um resonador de ceramica.
+
+*** 6.2.3 PLL
+
+    O PLL pode ser usado para multiplicar o HSI RC.
+
+OBS: The PLL output frequency must be in the range of 16-24 MHz.
+
+*** 6.2.4 LSE
+
+    O LSE é um cristal com frequencia de 32.768 kHz, tem a vantagem de prover um clock de baixa potência mas alta eficácia, proprio para real-time clock.
+
+*** 6.2.5 LSI
+
+    Low power clock que continua "batendo" no modo stop and standby, frequência por volta de 40 kHz.
+
+
+* HAL
+
+- vm/arch/arm/cortex-m3-HAL/Makefile = arch-config-arm-board (system_stm32f1xx.c)
+- vm/arch/arm/cortex-m3-HAL/include/stm32 = stm32f1xx.h
+- changed Makefile, vm/Makefile, CFLAGS.
+- symbolic link from stm32f100xb.h to stm32f1x.h
+- stm32f100xb.h, assert_param - exported macro - line 73
+- stm32-hal/inc/stm32f10x.h, assert_param - exported macro - line 110
+- arm/cortex-m3-HAL/Makefile CFLAGS+= -lm
+** DONE vm/Makefile
+
+   Usar o gawk e o Kconfig para arrumar o cflags corretamente. (ja estava feito, usei a variavel arch - $(arch))
+
+
+
+ 
+** TODO Kconfig
+
+- LINKER_path, arrumado em tds os makefiles.
+

@@ -1,6 +1,10 @@
 #lang racket
 
-(require racket/mpair unstable/sequence racket/sequence racket/syntax)
+;;I changed here, unstable/sequence racket/sequence
+;;And (require sequence) to the exceptions
+(require racket/mpair racket/sequence racket/syntax)
+(require "sequence.rkt")
+
 (require srfi/4)
 (require "env.rkt" "ast.rkt") ; to build the eta-expansions
 
