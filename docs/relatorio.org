@@ -573,3 +573,28 @@ OBS: The PLL output frequency must be in the range of 16-24 MHz.
 
 - LINKER_path, arrumado em tds os makefiles.
 
+* ADC_config
+
+  Antigo:
+
+#+BEGIN_SRC scheme
+  ;;(ADC1_clock)
+  ;;(DMA1_clock)
+
+  ;;(#%DMA_config DMA1_Channel1 0)
+
+  ;;(ADC_config enable disable enable 1 ADC_Channel_14)
+
+  ;;(#%ADC_config enable enable disable 2)
+  ;;(#%ADC_config disable disable disable 2)
+  ;;(ADC_channelConfig ADC_Channel_14 ADC_SampleTime_55Cycles5)
+  ;;(ADC_channelConfig ADC_Channel_15 ADC_SampleTime_55Cycles5)
+  ;;(ADC_startConversion)
+  
+  (let loop ( (var-teste (ADC_readValue disable)) )
+    (if (< var-teste 2000)
+        (IO_write GPIOC Pin_8 #f)
+        (IO_write GPIOC Pin_8 #t))
+    (loop (ADC_readValue disable)) )
+
+#+END_SRC

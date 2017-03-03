@@ -100,6 +100,12 @@
 (define (IO_write gpiox pin value)
   (#%IO_write gpiox pin value))
 
+;;Set-led, gpioC, pin8 and pin9
+(define (led! pin)
+  (GPIO_init GPIOC 'Output 'Push-pull SPEED_50 pin)
+  ;;#f or #t
+  (lambda(value)
+    (IO_write GPIOC pin value)) )
 
 ;;ADC
 ;;ADC-defines
@@ -202,13 +208,53 @@
 (define ADC_FLAG_JSTRT                             #x08)
 (define ADC_FLAG_STRT                              #x10)
 
-(define (ADC_config scanConv contMode externalTrig nChannels)
-  (#%ADC_config scanConv contMode externalTrig nChannels) )
+;;ADC_configSingle, configure a single channel AD, nroChannels = 1
+(define (ADC_configSingle scanMode contMode dma? channel sampleTime)
+  (if (= dma? enable)
+      (begin (ADC1_clock) (DMA1_clock) (#%DMA_config) )
+      (ADC1_clock) )
+  (#%ADC_config scanMode contMode dma? 1)
+  (ADC_configChannel channel sampleTime)
+  (cond ( (= contMode enable) (ADC_startConversion) ))
+  (lambda ()
+    (if (= dma? enable)
+        (ADC_readValue-DMA contMode)
+        (ADC_readValue contMode)) ) )
 
-(define (ADC_testando)
-  (let loop ( (ab (ADC_read)) )
-    (if (< ab 2000)
-        (IO_write GPIOC Pin_8 #f)
-        (IO_write GPIOC Pin_8 #t))
-    (loop (ADC_read)) ))
+;;ADC_configMulti, configure a multi channel AD
+(define (ADC_configMulti scanMode contMode channels sampleTimes names)
+  (let ( (nroChannels (length channels)) )
+    (ADC1_clock)
+    (#%ADC_config scanMode contMode disable nroChannels)
+
+    (let loop ( (channel-list    channels)
+                (sampleTime-list sampleTimes) )
+      (cond ( (null? channel-list) '() )
+            (else
+             (let ( (channel    (car channel-list))
+                    (sampleTime (car sampleTime-list)) )
+               (ADC_configChannel channel sampleTime) ) ) )
+      (loop (cdr channel-list) (cdr sampleTime-list)) )
+    (lambda ()
+      (let loop ( (name-list names) (values-ad '()) )
+        (cond ( (null? name-list) values-ad )
+              (else
+               (loop (cdr name-list)
+                     (cons (list (car name-list) (ADC_readValue contMode))
+                           values-ad)) ) ) )) ))
+
+;;DMA
+;;DMA-channels
+(define DMA1_Channel1       0)
+(define DMA1_Channel2       1)
+(define DMA1_Channel3       2)
+(define DMA1_Channel4       3)
+(define DMA1_Channel5       4)
+(define DMA1_Channel6       5)
+(define DMA1_Channel7       6)
+(define DMA2_Channel1       7)
+(define DMA2_Channel2       8)
+(define DMA2_Channel3       9)
+(define DMA2_Channel4       10)
+(define DMA2_Channel5       11)
 
