@@ -214,34 +214,38 @@
       (begin (ADC1_clock) (DMA1_clock) (#%DMA_config) )
       (ADC1_clock) )
   (#%ADC_config scanMode contMode dma? 1)
-  (ADC_configChannel channel sampleTime)
+  (ADC_configChannel channel sampleTime 1)
   (cond ( (= contMode enable) (ADC_startConversion) ))
   (lambda ()
     (if (= dma? enable)
         (ADC_readValue-DMA contMode)
         (ADC_readValue contMode)) ) )
 
+;;erro aq
 ;;ADC_configMulti, configure a multi channel AD
 (define (ADC_configMulti scanMode contMode channels sampleTimes names)
   (let ( (nroChannels (length channels)) )
     (ADC1_clock)
     (#%ADC_config scanMode contMode disable nroChannels)
-
+    
     (let loop ( (channel-list    channels)
-                (sampleTime-list sampleTimes) )
+                (sampleTime-list sampleTimes)
+                (pos 1) )
       (cond ( (null? channel-list) '() )
-            (else
-             (let ( (channel    (car channel-list))
-                    (sampleTime (car sampleTime-list)) )
-               (ADC_configChannel channel sampleTime) ) ) )
-      (loop (cdr channel-list) (cdr sampleTime-list)) )
+            ( else
+              (let ( (channel    (car channel-list))
+                     (sampleTime (car sampleTime-list)) )
+                (ADC_configChannel channel sampleTime pos) )
+              (loop (cdr channel-list) (cdr sampleTime-list) (+ pos 1)) )) )
+    (ADC_startConversion)
     (lambda ()
       (let loop ( (name-list names) (values-ad '()) )
         (cond ( (null? name-list) values-ad )
               (else
                (loop (cdr name-list)
                      (cons (list (car name-list) (ADC_readValue contMode))
-                           values-ad)) ) ) )) ))
+                           values-ad)) )) )) ) )
+      
 
 ;;DMA
 ;;DMA-channels

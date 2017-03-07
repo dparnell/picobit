@@ -4,14 +4,12 @@
 
   (IO_write GPIOC Pin_8 #t)
 
-  (let ( (readValues (ADC_configMulti disable disable '(ADC_Channel_14) '(ADC_SampleTime_55Cycles5) '(ad1))) )
-    (readValues)
-    (let loop ( (value-ad (assoc 'ad1 (readValues))) )
+  (let ( (readValues (ADC_configMulti disable disable (list ADC_Channel_14) (list ADC_SampleTime_55Cycles5) '(ad1))) )
+    (let loop ( (value-ad (cadr (assoc 'ad1 (readValues)))) )
       (if (< value-ad 2000)
           (IO_write GPIOC Pin_8 #f)
           (IO_write GPIOC Pin_8 #t))
-      (loop (assoc 'ad1 (readValues))) )
-    ))
+      (loop (cadr (assoc 'ad1 (readValues)))) )) )
 
 (main)
 

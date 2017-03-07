@@ -77,14 +77,15 @@ PRIMITIVE_UNSPEC(#%ADC_config, arch_ADC_config, 4)
   while(ADC_GetCalibrationStatus(ADC1));
 }
 
-PRIMITIVE(ADC_configChannel, arch_ADC_configChannel, 2)
+PRIMITIVE(ADC_configChannel, arch_ADC_configChannel, 3)
 {
-  uint16_t u16_channel, u16_sampleTime;
+  uint16_t u16_channel, u16_sampleTime, u16_pos;
 
   u16_channel    = decode_int(arg1);
   u16_sampleTime = decode_int(arg2);
+  u16_pos        = decode_int(arg3);
   
-  ADC_RegularChannelConfig(ADC1, u16_channel, 1, u16_sampleTime);
+  ADC_RegularChannelConfig(ADC1, u16_channel, u16_pos, u16_sampleTime);
 }  
 
 PRIMITIVE(ADC_startConversion, arch_ADC_startConversion, 0)
@@ -98,7 +99,7 @@ PRIMITIVE(ADC_readValue-DMA, arch_ADC_readValue_DMA, 1)
   
   u16_cont = decode_int(arg1);
 
-  if(u16_cont == 0){
+  if(u16_cont == DISABLE){
     ADC_SoftwareStartConvCmd(ADC1, ENABLE);
   }
   
@@ -107,11 +108,12 @@ PRIMITIVE(ADC_readValue-DMA, arch_ADC_readValue_DMA, 1)
 
 PRIMITIVE(ADC_readValue, arch_ADC_readValue, 1)
 {
+  
   uint16_t u16_cont;
   
   u16_cont = decode_int(arg1);
-
-  if(u16_cont == 0){
+ 
+  if(u16_cont == DISABLE){
     ADC_SoftwareStartConvCmd(ADC1, ENABLE);
   }
   

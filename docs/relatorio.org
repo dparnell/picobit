@@ -4,7 +4,8 @@
 
 * TODO FAZERRRR
 
-  Arrumar ou decode_int(return is uint16) ou arithmetic-sthif(fazer) descolar nos dois lados.
+- DONE  Arrumar ou decode_int(return is uint16) ou arithmetic-sthif(fazer) descolar nos dois lados.
+- tentar usar key, nos argumentos das funcoes.
 
 * AVISO
   
