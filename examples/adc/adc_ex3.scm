@@ -1,5 +1,5 @@
 ;;Olhar STM32f1-workarea projects/adc/main2.c
-
+;;nao funciona ainda
 (define (main)
   (GPIO_init GPIOC 'Input 'Analog SPEED_in Pin_4)
   (GPIO_init GPIOC 'Output 'Push-pull SPEED_50 Pin_8)
@@ -21,6 +21,7 @@
       (if (< value-ad2 2000)
           (IO_write GPIOC Pin_9 #t)
           (IO_write GPIOC Pin_9 #f))
+          
       (loop (cadr (assoc 'ad1 (readValues))) (cadr (assoc 'ad2 (readValues)))) )) )
 
 (main)

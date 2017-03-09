@@ -9,7 +9,8 @@
 
 #define ADC1_DR_Address    ((uint32_t)0x4001244C)
 
-__IO uint16_t ADCConvertedValue;
+__IO uint16_t ADCConvertedValue[16];
+
 
 PRIMITIVE_UNSPEC(ADC1_clock, arch_ADC1_clock, 0)
 {
@@ -21,17 +22,21 @@ PRIMITIVE_UNSPEC(DMA1_clock, arch_DMA1_clock, 0)
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 }
 
-PRIMITIVE_UNSPEC(#%DMA_config, arch_DMA_config, 0)
+PRIMITIVE_UNSPEC(#%DMA_config, arch_DMA_config, 1)
 {
   DMA_InitTypeDef DMA_InitStructure;
+  uint16_t u16_bufSize;
+
+  u16_bufSize = decode_int(arg1);
   
   DMA_DeInit(DMA1_Channel1);
-  DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
-  DMA_InitStructure.DMA_MemoryBaseAddr     = (uint32_t)&ADCConvertedValue;
+
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
+  DMA_InitStructure.DMA_MemoryBaseAddr     = (uint32_t)ADCConvertedValue;
   DMA_InitStructure.DMA_DIR                = DMA_DIR_PeripheralSRC;
-  DMA_InitStructure.DMA_BufferSize         = 1;
+  DMA_InitStructure.DMA_BufferSize         = u16_bufSize;
   DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
-  DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
   DMA_InitStructure.DMA_MemoryDataSize     = DMA_MemoryDataSize_HalfWord;
   DMA_InitStructure.DMA_Mode               = DMA_Mode_Circular;
@@ -53,8 +58,6 @@ PRIMITIVE_UNSPEC(#%ADC_config, arch_ADC_config, 4)
   u32_dma          = decode_int(arg3);
   u32_nChannel     = decode_int(arg4);
 
-  //u32_dma = u32_dma;
-  
   ADC_InitStructure.ADC_Mode               = u32_mode;
   ADC_InitStructure.ADC_ScanConvMode       = u32_scanMode;
   ADC_InitStructure.ADC_ContinuousConvMode = u32_contMode;
@@ -75,6 +78,8 @@ PRIMITIVE_UNSPEC(#%ADC_config, arch_ADC_config, 4)
   ADC_StartCalibration(ADC1);
 
   while(ADC_GetCalibrationStatus(ADC1));
+
+  ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
 
 PRIMITIVE(ADC_configChannel, arch_ADC_configChannel, 3)
@@ -93,22 +98,22 @@ PRIMITIVE(ADC_startConversion, arch_ADC_startConversion, 0)
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
 
-PRIMITIVE(ADC_readValue-DMA, arch_ADC_readValue_DMA, 1)
+PRIMITIVE(ADC_readValue-DMA, arch_ADC_readValue_DMA, 2)
 {
-  uint16_t u16_cont;
+  uint16_t u16_cont, u16_pos;
   
   u16_cont = decode_int(arg1);
+  u16_pos  = decode_int(arg2);
 
   if(u16_cont == DISABLE){
     ADC_SoftwareStartConvCmd(ADC1, ENABLE);
   }
-  
-  arg1 = encode_int(ADCConvertedValue);
+
+  arg1 = encode_int(ADCConvertedValue[u16_pos]);
 }
 
 PRIMITIVE(ADC_readValue, arch_ADC_readValue, 1)
-{
-  
+{  
   uint16_t u16_cont;
   
   u16_cont = decode_int(arg1);

@@ -211,14 +211,14 @@
 ;;ADC_configSingle, configure a single channel AD, nroChannels = 1
 (define (ADC_configSingle scanMode contMode dma? channel sampleTime)
   (if (= dma? enable)
-      (begin (ADC1_clock) (DMA1_clock) (#%DMA_config) )
+      (begin (ADC1_clock) (DMA1_clock) (#%DMA_config 1) )
       (ADC1_clock) )
   (#%ADC_config scanMode contMode dma? 1)
   (ADC_configChannel channel sampleTime 1)
   (cond ( (= contMode enable) (ADC_startConversion) ))
   (lambda ()
     (if (= dma? enable)
-        (ADC_readValue-DMA contMode)
+        (ADC_readValue-DMA contMode 0)
         (ADC_readValue contMode)) ) )
 
 ;;erro aq
@@ -226,8 +226,10 @@
 (define (ADC_configMulti scanMode contMode channels sampleTimes names)
   (let ( (nroChannels (length channels)) )
     (ADC1_clock)
-    (#%ADC_config scanMode contMode disable nroChannels)
-    
+    (#%ADC_config scanMode contMode enable nroChannels)
+
+    (DMA1_clock)
+    (#%DMA_config nroChannels)
     (let loop ( (channel-list    channels)
                 (sampleTime-list sampleTimes)
                 (pos 1) )
@@ -239,12 +241,15 @@
               (loop (cdr channel-list) (cdr sampleTime-list) (+ pos 1)) )) )
     (ADC_startConversion)
     (lambda ()
-      (let loop ( (name-list names) (values-ad '()) )
+      (let loop ( (name-list names)
+                  (values-ad '())
+                  (pos 0) )
         (cond ( (null? name-list) values-ad )
               (else
                (loop (cdr name-list)
-                     (cons (list (car name-list) (ADC_readValue contMode))
-                           values-ad)) )) )) ) )
+                     (cons (list (car name-list) (ADC_readValue-DMA contMode pos))
+                           values-ad)
+                     (+ pos 1) ) )) )) ) )
       
 
 ;;DMA
