@@ -106,6 +106,12 @@
   ;;#f or #t
   (lambda(value)
     (IO_write GPIOC pin value)) )
+;;Button-user, botao da placa
+(define (BUTTON-user)
+  (GPIO_init GPIOA 'Input  'Pull-down SPEED_in Pin_0)
+  (lambda ()
+    (IO_read GPIOA Pin_0)) )
+
 
 ;;ADC
 ;;ADC-defines
