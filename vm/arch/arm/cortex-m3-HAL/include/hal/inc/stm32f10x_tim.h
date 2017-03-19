@@ -231,7 +231,7 @@ typedef struct
                                       ((PERIPH) == TIM5) || \
                                       ((PERIPH) == TIM8) || \
                                       ((PERIPH) == TIM9) || \
-									  ((PERIPH) == TIM12)|| \
+				      ((PERIPH) == TIM12)|| \
                                       ((PERIPH) == TIM15))
 
 /* LIST7: TIM 1, 2, 3, 4, 5, 6, 7, 8, 9, 12 and 15 */

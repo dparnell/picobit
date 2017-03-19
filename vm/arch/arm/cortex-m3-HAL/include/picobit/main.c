@@ -36,6 +36,7 @@ PRIMITIVE_UNSPEC(#%sleep, arch_sleep, 1)
   arg1 = OBJ_FALSE;
 }
 
+/*
 PRIMITIVE_UNSPEC(#%set-led!, arch_set_led, 2)
 {
   int led;
@@ -50,6 +51,7 @@ PRIMITIVE_UNSPEC(#%set-led!, arch_set_led, 2)
     }
   }
 }
+*/
 
 void Delay(__IO uint32_t nCount) {
   while(nCount--) {

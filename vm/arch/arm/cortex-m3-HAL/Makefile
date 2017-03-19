@@ -53,10 +53,12 @@ HAL-sources = include/hal/src/misc.c \
 HAL-files = include/hal/src/stm32f10x_rcc.c \
 	include/hal/src/stm32f10x_gpio.c \
 	include/hal/src/stm32f10x_adc.c \
-	include/hal/src/stm32f10x_dma.c
+	include/hal/src/stm32f10x_dma.c \
+	include/hal/src/stm32f10x_tim.c
 
 PICOBIT-files = include/picobit/periph/gpio.c \
-	include/picobit/periph/adc.c
+	include/picobit/periph/adc.c \
+	include/picobit/periph/tim.c
 
 arch-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY)   += include/picobit/main.c \
 	include/cmsis/device/system_stm32f10x.c \

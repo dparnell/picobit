@@ -19,7 +19,7 @@
 ;;Direction
 (define DIR_output 'Output)
 (define DIR_input  'Input)
-(define DIR_af     'Af)
+(define DIR_af     'Alternative-function)
 ;;Mode
 (define MODE_pp        'Push-pull)
 (define MODE_od        'Open-drain)
@@ -111,7 +111,6 @@
   (GPIO_init GPIOA 'Input  'Pull-down SPEED_in Pin_0)
   (lambda ()
     (IO_read GPIOA Pin_0)) )
-
 
 ;;ADC
 ;;ADC-defines
@@ -273,3 +272,50 @@
 (define DMA2_Channel4       10)
 (define DMA2_Channel5       11)
 
+;;TIM
+(define TIM_2   2)
+(define TIM_3   3)
+(define TIM_4   4)
+(define TIM_5   5)
+;;Capture Prescaler Input
+(define TIM_ICPSC_DIV1                     #x0000) 
+(define TIM_ICPSC_DIV2                     #x0004) 
+(define TIM_ICPSC_DIV4                     #x0008) 
+(define TIM_ICPSC_DIV8                     #x000C)
+;;Counter Mode
+(define TIM_CounterMode_Up                 #x0000)
+(define TIM_CounterMode_Down               #x0010)
+(define TIM_CounterMode_CenterAligned1     #x0020)
+(define TIM_CounterMode_CenterAligned2     #x0040)
+(define TIM_CounterMode_CenterAligned3     #x0060)
+
+;;CHANNELS config
+;;Channels
+(define TIM_Channel_1                      #x0000)
+(define TIM_Channel_2                      #x0004)
+(define TIM_Channel_3                      #x0008)
+(define TIM_Channel_4                      #x000C)
+;;Operations modes
+(define TIM_OCMode_Timing                  #x0000)
+(define TIM_OCMode_Active                  #x0010)
+(define TIM_OCMode_Inactive                #x0020)
+(define TIM_OCMode_Toggle                  #x0030)
+(define TIM_OCMode_PWM1                    #x0060)
+(define TIM_OCMode_PWM2                    #x0070)
+;;Polarity
+(define TIM_OCPolarity_High                #x0000)
+(define TIM_OCPolarity_Low                 #x0002)
+
+;;TIM_config
+(define (TIM_config TIMx prescaler period counterMode)
+  (cond ( (eq? TIMx TIM_2) (TIM2_clock) )
+        ( (eq? TIMx TIM_3) (TIM3_clock) )
+        ( (eq? TIMx TIM_4) (TIM4_clock) )
+        ( (eq? TIMx TIM_5) (TIM5_clock) ) )
+  (#%TIM_config TIMx prescaler period counterMode) )
+;;PWM_config
+(define (PWM_config TIMx channel OCMode OCPolarity)
+  (#%PWM_config   TIMx channel OCMode OCPolarity)
+  (#%PWM_set_duty TIMx channel 0)
+  (lambda (dutyValue)
+    (#%PWM_set_duty TIMx channel dutyValue)) )

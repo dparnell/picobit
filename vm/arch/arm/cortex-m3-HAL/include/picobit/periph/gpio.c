@@ -125,3 +125,12 @@ PRIMITIVE_UNSPEC(#%IO_write, arch_IO_write, 3)
     GPIOx->ODR |= u16_pin;
   }
 }
+
+PRIMITIVE_UNSPEC(#%AFIO_remap, arch_AFIO_remap, 0)
+{
+  //uint32_t gpio_remap;
+
+  //gpio_remap = decode_int(arg1);
+
+  GPIO_PinRemapConfig(GPIO_FullRemap_TIM3, ENABLE);
+}

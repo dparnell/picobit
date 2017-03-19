@@ -521,13 +521,14 @@ integer divnonneg (integer x, integer y)
 
   // x and y end up pointing to newly allocated bignums, so we need
   // to register them with the GC.
-  uint16 lx = integer_length (bignum_tmp4);
-  uint16 ly = integer_length (bignum_tmp5);
-  obj tmp;
+    obj tmp;
 
   bignum_tmp3 = ZERO;
   bignum_tmp4 = x;
   bignum_tmp5 = y;
+
+  uint16 lx = integer_length (bignum_tmp4);
+  uint16 ly = integer_length (bignum_tmp5);
 
   if (lx >= ly) {
     lx = lx - ly;

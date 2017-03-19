@@ -50,23 +50,24 @@ PRIMITIVE_UNSPEC(#%ADC_config, arch_ADC_config, 4)
 {
   ADC_InitTypeDef ADC_InitStructure;
  
-  uint32_t u32_scanMode, u32_contMode, u32_dma, u32_nChannel;
-  uint32_t u32_mode = ADC_Mode_Independent, u32_dataAlign = ADC_DataAlign_Right, u32_externalTrig = ADC_ExternalTrigConv_None;
+  uint16_t u16_scanMode, u16_contMode, u16_dma, u16_nChannel;
+  uint16_t u16_mode = ADC_Mode_Independent, u16_dataAlign = ADC_DataAlign_Right;
+  uint32_t u32_externalTrig = ADC_ExternalTrigConv_None;
   
-  u32_scanMode     = decode_int(arg1);
-  u32_contMode     = decode_int(arg2);
-  u32_dma          = decode_int(arg3);
-  u32_nChannel     = decode_int(arg4);
+  u16_scanMode     = decode_int(arg1);
+  u16_contMode     = decode_int(arg2);
+  u16_dma          = decode_int(arg3);
+  u16_nChannel     = decode_int(arg4);
 
-  ADC_InitStructure.ADC_Mode               = u32_mode;
-  ADC_InitStructure.ADC_ScanConvMode       = u32_scanMode;
-  ADC_InitStructure.ADC_ContinuousConvMode = u32_contMode;
+  ADC_InitStructure.ADC_Mode               = u16_mode;
+  ADC_InitStructure.ADC_ScanConvMode       = u16_scanMode;
+  ADC_InitStructure.ADC_ContinuousConvMode = u16_contMode;
   ADC_InitStructure.ADC_ExternalTrigConv   = u32_externalTrig;
-  ADC_InitStructure.ADC_DataAlign          = u32_dataAlign;
-  ADC_InitStructure.ADC_NbrOfChannel       = u32_nChannel;
+  ADC_InitStructure.ADC_DataAlign          = u16_dataAlign;
+  ADC_InitStructure.ADC_NbrOfChannel       = u16_nChannel;
   ADC_Init(ADC1, &ADC_InitStructure);
 
-  if(u32_dma == ENABLE){
+  if(u16_dma == ENABLE){
     ADC_DMACmd(ADC1, ENABLE);
   }
  
