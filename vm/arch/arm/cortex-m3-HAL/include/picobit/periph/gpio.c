@@ -6,28 +6,6 @@
 #include <stm32f10x.h>
 #include <stm32f10x_gpio.h>
 
-/* GPIOx clock enable */
-PRIMITIVE_UNSPEC(GPIOA_clock, arch_GPIOA_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-}
-PRIMITIVE_UNSPEC(GPIOB_clock, arch_GPIOB_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-}
-PRIMITIVE_UNSPEC(GPIOC_clock, arch_GPIOC_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-}
-PRIMITIVE_UNSPEC(GPIOD_clock, arch_GPIOD_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-}
-PRIMITIVE_UNSPEC(GPIOE_clock, arch_GPIOE_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-}
-
 PRIMITIVE_UNSPEC(GPIO_config, arch_GPIO_config, 4)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -131,6 +109,6 @@ PRIMITIVE_UNSPEC(#%AFIO_remap, arch_AFIO_remap, 0)
   //uint32_t gpio_remap;
 
   //gpio_remap = decode_int(arg1);
-
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
   GPIO_PinRemapConfig(GPIO_FullRemap_TIM3, ENABLE);
 }

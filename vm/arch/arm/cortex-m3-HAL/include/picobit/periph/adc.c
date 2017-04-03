@@ -11,17 +11,6 @@
 
 __IO uint16_t ADCConvertedValue[16];
 
-
-PRIMITIVE_UNSPEC(ADC1_clock, arch_ADC1_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
-}
-
-PRIMITIVE_UNSPEC(DMA1_clock, arch_DMA1_clock, 0)
-{
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-}
-
 PRIMITIVE_UNSPEC(#%DMA_config, arch_DMA_config, 1)
 {
   DMA_InitTypeDef DMA_InitStructure;

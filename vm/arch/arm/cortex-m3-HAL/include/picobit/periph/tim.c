@@ -8,28 +8,6 @@
 
 #include <stm32f10x_gpio.h>
 
-/* TIM2 to TIM5 */
-
-PRIMITIVE_UNSPEC(TIM2_clock, arch_TIM2_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-}
-
-PRIMITIVE_UNSPEC(TIM3_clock, arch_TIM3_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-}
-
-PRIMITIVE_UNSPEC(TIM4_clock, arch_TIM4_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-}
-
-PRIMITIVE_UNSPEC(TIM5_clock, arch_TIM5_clock, 0)
-{
-  RCC_APB2PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
-}
-
 PRIMITIVE_UNSPEC(#%TIM_config, arch_TIM_config, 4)
 {
   uint16_t u16_prescaler, u16_period, u16_instance, u16_counterMode;

@@ -1,5 +1,3 @@
-;;Olhar STM32f1-workarea projects/adc/main2.c
-;;nao funciona ainda
 (define (main)
   (GPIO_init GPIOC 'Input 'Analog SPEED_in Pin_4)
   (GPIO_init GPIOC 'Output 'Push-pull SPEED_50 Pin_8)
