@@ -96,14 +96,15 @@ PRIMITIVE_UNSPEC(#%PWM_config, arch_PWM_config, 4)
   }
 }
 
-PRIMITIVE_UNSPEC(#%PWM_set_duty, arch_PWM_set_duty, 3)
+PRIMITIVE_UNSPEC(#%PWM_set_duty, arch_PWM_set_duty, 4)
 {
-  uint16_t u16_instance, u16_channel, u16_value;
+  uint16_t u16_instance, u16_channel, u16_value, u16_period;
   TIM_TypeDef* TIMx = TIM2;
   
   u16_instance = decode_int(arg1);
   u16_channel  = decode_int(arg2);
   u16_value    = decode_int(arg3);
+  u16_period   = decode_int(arg4);
 
   if(u16_instance == 2){
     TIMx = TIM2;
@@ -118,6 +119,9 @@ PRIMITIVE_UNSPEC(#%PWM_set_duty, arch_PWM_set_duty, 3)
     TIMx = TIM5;
   }
 
+  u16_period = u16_period;  
+  u16_value = ((u16_value * u16_period) / 100);
+  
   if(u16_channel == TIM_Channel_1){
     TIMx->CCR1 = u16_value;
   }

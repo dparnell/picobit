@@ -104,11 +104,14 @@ PRIMITIVE_UNSPEC(#%IO_write, arch_IO_write, 3)
   }
 }
 
-PRIMITIVE_UNSPEC(#%AFIO_remap, arch_AFIO_remap, 0)
+PRIMITIVE_UNSPEC(AFIO_remap, arch_AFIO_remap, 2)
 {
-  //uint32_t gpio_remap;
+  uint16_t u16_afioH, u16_afioL;
+  uint32_t u32_afio;
 
-  //gpio_remap = decode_int(arg1);
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-  GPIO_PinRemapConfig(GPIO_FullRemap_TIM3, ENABLE);
+  u16_afioH = decode_int(arg1);
+  u16_afioL = decode_int(arg2);
+  u32_afio = (u16_afioH << 16) + u16_afioL;
+  
+  GPIO_PinRemapConfig(u32_afio, ENABLE);
 }
