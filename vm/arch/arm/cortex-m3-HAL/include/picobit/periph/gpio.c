@@ -115,3 +115,4 @@ PRIMITIVE_UNSPEC(AFIO_remap, arch_AFIO_remap, 2)
   
   GPIO_PinRemapConfig(u32_afio, ENABLE);
 }
+

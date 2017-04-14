@@ -26,40 +26,36 @@ LDFLAGS  += -T$(ldscript)
 arch-y += startup_stm32f10x_md_vl.s
 
 # I changed here
-HAL-sources = include/hal/src/misc.c \
-	include/hal/src/stm32f10x_adc.c \
-	include/hal/src/stm32f10x_bkp.c \
+HAL-sources = include/hal/src/stm32f10x_bkp.c \
 	include/hal/src/stm32f10x_can.c \
 	include/hal/src/stm32f10x_cec.c \
 	include/hal/src/stm32f10x_crc.c \
 	include/hal/src/stm32f10x_dac.c \
 	include/hal/src/stm32f10x_dbgmcu.c \
-	include/hal/src/stm32f10x_dma.c \
 	include/hal/src/stm32f10x_exti.c \
 	include/hal/src/stm32f10x_flash.c \
 	include/hal/src/stm32f10x_fsmc.c \
-	include/hal/src/stm32f10x_gpio.c \
 	include/hal/src/stm32f10x_i2c.c \
 	include/hal/src/stm32f10x_iwdg.c \
 	include/hal/src/stm32f10x_pwr.c \
-	include/hal/src/stm32f10x_rcc.c \
 	include/hal/src/stm32f10x_rtc.c \
 	include/hal/src/stm32f10x_sdio.c \
 	include/hal/src/stm32f10x_spi.c \
-	include/hal/src/stm32f10x_tim.c \
-	include/hal/src/stm32f10x_usart.c \
 	include/hal/src/stm32f10x_wwdg.c
 
 HAL-files = include/hal/src/stm32f10x_rcc.c \
 	include/hal/src/stm32f10x_gpio.c \
 	include/hal/src/stm32f10x_adc.c \
 	include/hal/src/stm32f10x_dma.c \
-	include/hal/src/stm32f10x_tim.c
+	include/hal/src/stm32f10x_tim.c \
+	include/hal/src/stm32f10x_usart.c \
+	include/hal/src/misc.c 
 
 PICOBIT-files =	include/picobit/periph/rcc.c  \
 	include/picobit/periph/gpio.c \
 	include/picobit/periph/adc.c  \
-	include/picobit/periph/tim.c 
+	include/picobit/periph/tim.c  \
+	include/picobit/periph/usart.c
 
 arch-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY)   += include/picobit/main.c \
 	include/cmsis/device/system_stm32f10x.c \

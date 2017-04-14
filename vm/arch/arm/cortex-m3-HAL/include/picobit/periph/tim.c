@@ -6,8 +6,6 @@
 #include <stm32f10x.h>
 #include <stm32f10x_tim.h>
 
-#include <stm32f10x_gpio.h>
-
 PRIMITIVE_UNSPEC(#%TIM_config, arch_TIM_config, 4)
 {
   uint16_t u16_prescaler, u16_period, u16_instance, u16_counterMode;
