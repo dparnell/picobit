@@ -6,9 +6,12 @@
 #include <stm32f10x.h>
 #include <stm32f10x_usart.h>
 #include <misc.h>
+#include "usart.h"
 
-#define MAX_STRLEN 12 // this is the maximum string length of our string in characters
-volatile char received_string[MAX_STRLEN+1]; // this will hold the recieved string
+#define FRAME_FLAG   0x7E
+#define FRAME_MAX    12
+volatile uint8_t frame[FRAME_MAX+1];
+volatile uint8_t frame_response[FRAME_MAX+1];
 
 void init_USART1(uint32_t baudrate)
 {
@@ -48,33 +51,122 @@ void init_USART1(uint32_t baudrate)
   USART_Cmd(USART1, ENABLE);
 }
 
-void USART_puts(USART_TypeDef* USARTx, volatile char *s){
-
-  while(*s){
-    // wait until data register is empty
+void USART_puts(USART_TypeDef* USARTx, volatile uint8_t *s)
+{
+  while(*s != FRAME_FLAG){
     while( !(USARTx->SR & 0x00000040) ); 
-    USART_SendData(USARTx, *s);
-    *s++;
+    //USART_SendData(USARTx, *s);
+    USARTx->DR = *s;
+    s++;
   }
+  //USART_SendData(USARTx, FRAME_FLAG);
 }
 
-void USART1_IRQHandler(void){
+void decode_io()
+{
+  GPIO_TypeDef* GPIOx; 
+  uint8_t gpiox, pinH, pinL, in_out;
+  uint16_t pinx;
+ 
+  gpiox  = frame[3];
+  pinH   = frame[4];
+  pinL   = frame[5];
+  in_out = frame[6];
+
+  frame_response[3] = gpiox;
+  frame_response[4] = pinH;
+  frame_response[5] = pinL;
+
+  pinx = (pinH << 8) + pinL;
+  
+  GPIOx = GPIOA;
+  if(gpiox == 0){
+    GPIOx = GPIOA;
+  }
+  else if(gpiox == 1){
+    GPIOx = GPIOB;
+  }
+  else if(gpiox == 2){
+    GPIOx = GPIOC;
+  }
+  else if(gpiox == 3){
+    GPIOx = GPIOD;
+  }
+  else if(gpiox == 4){
+    GPIOx = GPIOE;
+  }
+  
+  if(in_out == p_IN){
+    frame_response[6] = ((GPIOx->IDR & pinx) != 0) ? 1 : 0;
+  }
+  else{
+    frame_response[6] = ((GPIOx->ODR & pinx) != 0) ? 1 : 0;
+  }
+
+  frame_response[7] = FRAME_FLAG;
+}
+
+uint8_t decode_frame()
+{
+  uint8_t src, dst, periph;
+
+  src    = frame[0];
+  dst    = frame[1];
+  periph = frame[2];
+
+  if(dst != my_add){
+    return 0;
+  }
+
+  frame_response[0] = my_add;
+  frame_response[1] = src;
+  frame_response[2] = periph;
+  
+  switch(periph){
+  case f_IO:
+    decode_io();
+    break;
+    
+  case f_ADC:
+    //decode_adc();
+    break;
+
+  case f_PWM:
+    //decode_pwm();
+    break;
+
+  case f_DAC:
+    //decode_dac();
+    break;
+
+  default:
+    return 0;    
+  }
+
+  return 1;
+}
+
+void USART1_IRQHandler(void)
+{
   if( USART_GetITStatus(USART1, USART_IT_RXNE) ){
     
     static uint8_t cnt = 0;
-    char t = USART1->DR;
+    uint8_t t = USART1->DR;
     
-    if( (t != '\n') && (cnt < MAX_STRLEN) ){ 
-      received_string[cnt] = t;
+    if( (t != 0x7e) && (cnt < FRAME_MAX) ){ 
+      frame[cnt] = t;
       cnt++;
     }
     else{ 
       cnt = 0;
-      USART_puts(USART1, received_string);
+      if (decode_frame()){
+	USART_puts(USART1, frame_response);
+      }
     }
   }
 }
 
-void usart_init(uint32_t baudrate) {
+void usart_init(uint32_t baudrate)
+{
   init_USART1(baudrate); 
 }
