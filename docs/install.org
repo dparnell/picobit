@@ -98,3 +98,25 @@ sudo service udev restart
     $ sudo make install
 #+END_SRC
     
+*** LibSerialPort
+
+http://sigrok.org/wiki/Libserialport
+
+https://docs.racket-lang.org/libserialport/index.html?q=serial
+
+https://pkgs.racket-lang.org/
+
+https://github.com/mordae/racket-libserialport
+
+#+BEGIN_SRC shell
+
+$ git clone git://sigrok.org/libserialport
+$ cd libserialport/
+
+$ ./autogen.sh
+$ ./configure
+$ make
+$ sudo make install
+
+$ raco pkg install libserialport
+#+END_SRC
