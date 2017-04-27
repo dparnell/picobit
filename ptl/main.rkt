@@ -3,7 +3,7 @@
 (require libserialport)
 (require "defs.rkt")
 
-(define (device port-name device-name)
+(define (device port-name)
   (let ( (port-list (serial-ports))
          (baudrate "9600") )
     (let ( (port (port-exists? port-list port-name)) )
@@ -13,7 +13,8 @@
                     (in  (open-input-file  port #:mode 'binary))
                     (buffer '())
                     (read-thread null)
-                    (IO_hash (make-hash)) )
+                    (IO_hash (make-hash))
+                    (decode-key '()) )
 
                (define (read-begin)
                  (set! read-thread (thread (lambda() (read-frame))) )
@@ -34,10 +35,22 @@
                (define (decode-frame frame)
                  ;;(displayln (list->bytes frame))
                  (match frame
-                   ( (list source destination config periph_config gpiox pinH pinL in_out)
-                     (hash-set! IO_hash (number->string (random 100)) (lambda() (GPIO_request source gpiox pinH pinL in_out out)))
-                     )
-                   (_ (displayln "entreiii"))
+                   ( (list source master_add f_config f_gpio gpiox pinH pinL in_out)
+                     (let ( (frame-key (string-join (list (number->string gpiox)
+                                                   (number->string pinH)
+                                                   (number->string pinL)
+                                                   (number->string in_out)) ",")) )
+                       (if (not (hash-has-key? IO_hash frame-key))
+                           (hash-set! IO_hash
+                                      frame-key
+                                      (lambda() (GPIO_request source gpiox pinH pinL in_out out)))
+                           (displayln "You already registered this peripheral!"))
+                       ) )
+                   ( (list source master_add f_IO gpiox pinH pinL value)
+                     (displayln pinH)
+                     (displayln pinL)
+                     (displayln value)
+                     (displayln "entreiii") )
                    )
                  )
                
@@ -49,9 +62,20 @@
                      (read-begin)
                      )
                    "System Call Error.")
-               (lambda(ab)
-                 (displayln buffer)
-                 IO_hash
+               (lambda(option [periph ""])
+                 ;;(displayln buffer)
+                 (cond ( (or (equal? option 'config) (equal? option "config"))
+                         (let ( (keys (hash-keys IO_hash)) )
+                           (for ( (key (in-list keys)) )
+                             ;;(displayln key)
+                             (display "Digite o nome do periferico ")
+                             (displayln (GPIO_code->string key))
+                             (set! decode-key (cons (list (read) key) decode-key))
+                             )
+                           )
+                         decode-key
+                         )
+                       ( (equal? option 'use) (apply (hash-ref IO_hash (cadr (assoc periph decode-key)) ) '())  ) )
                  ;;(cond ( (equal? ab "teste")
                  ;;        (apply (hash-ref IO_hash ab) '()) ))
                  ;;(write-bytes (list->bytes (append (map char->integer (string->list "oi mundo\r\n")) '(#x7E))) out)
@@ -70,13 +94,38 @@
         #f
         (car port)) ))
 
+(define (GPIO_code->string code)
+  (let ( (code-match (string-split code ",")) )
+    (match code-match
+      ( (list gpiox pinH pinL in_out)
+        (let ( (gpiox-n  (string->number gpiox))
+               (pinH-n   (string->number pinH))
+               (pinL-n   (string->number pinL)) 
+               (in_out-n (string->number in_out)) )
+          (string-join
+           (list
+            (cond ( (= gpiox-n GPIOA) "GPIOA" )
+                  ( (= gpiox-n GPIOB) "GPIOB" )
+                  ( (= gpiox-n GPIOC) "GPIOC" )
+                  ( (= gpiox-n GPIOD) "GPIOD" )
+                  ( (= gpiox-n GPIOE) "GPIOE" )
+                  (else "notFound" ) )
+            (number->string (+ (arithmetic-shift pinH-n 8) pinL-n)) ;;decodificar com GPIO_Pin_x
+            (cond ( (= in_out-n p_IN) "input" )
+                  ( (= in_out-n p_OUT) "output" )
+                  (else "notFound" ) ) )
+           "_") )   )
+      (_ "ERROR"))
+    ) )
+               
+
 (define (GPIO_request dst gpiox pinH pinL in_out out)
   (let ( (source       master_add)
          (destination  dst)
          (periph       f_IO) )
     (let ( (frame (bytes source destination periph gpiox pinH pinL in_out FRAME_FLAG)) )
-      (write-bytes frame out)
-      ;;(write-bytes (bytes #x00 #x01 #x00 #x02 #x01 #x00 #x01 #x7e) out)
+      ;;(write-bytes frame out)
+      (write-bytes (bytes #x00 #x01 #x00 #x02 #x01 #x00 #x01 #x7e) out)
       )) )
 
 #|(define (get-port)

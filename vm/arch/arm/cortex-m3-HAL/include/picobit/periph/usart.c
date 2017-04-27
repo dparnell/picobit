@@ -84,7 +84,8 @@ void decode_io()
   frame_response[3] = gpiox;
   frame_response[4] = pinH;
   frame_response[5] = pinL;
-
+  frame_response[6] = 9;
+  
   pinx = (pinH << 8) + pinL;
   
   GPIOx = GPIOA;
@@ -110,8 +111,9 @@ void decode_io()
   else{
     frame_response[6] = ((GPIOx->ODR & pinx) != 0) ? 1 : 0;
   }
-
-  frame_response[7] = FRAME_FLAG;
+  
+  frame_response[7] = 0;
+  frame_response[8] = FRAME_FLAG;
 }
 
 uint8_t decode_frame()
