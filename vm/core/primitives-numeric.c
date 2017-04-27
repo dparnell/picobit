@@ -170,10 +170,6 @@ PRIMITIVE(bitwise-and, bitwise_and, 2)
   arg1 = encode_int (a1 & a2);
 #endif
   arg2 = OBJ_FALSE;
-
-  decode_2_int_args ();
-  arg1 = encode_int (a1 & a2);
-  arg2 = OBJ_FALSE;
 }
 
 PRIMITIVE(arithmetic-shift-left, arithmetic_shift_left, 2)

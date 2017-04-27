@@ -608,8 +608,7 @@ integer bitwise_xor (integer x, integer y)   // TODO similar to ior (only diff i
 //bitwise-and
 integer bitwise_and (integer x, integer y)   // TODO similar to ior (only diff is the test), abstract ?
 {
-  /* returns the bitwise inclusive or of x and y */
-
+  /* returns the bitwise and of x and y */
   bignum_tmp1 = OBJ_FALSE;
 
   for (;;) {
@@ -630,11 +629,6 @@ integer bitwise_and (integer x, integer y)   // TODO similar to ior (only diff i
     x = integer_hi(x);
     y = integer_hi(y);
   }
-}
-
-uint32_t u32_arithmetic_shift_left(uint16_t arg1, uint16_t arg2)
-{
-  return (arg1 << arg2);
 }
 
 // supports up to 16 bits

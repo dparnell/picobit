@@ -477,3 +477,39 @@
           ( (or (or (= channel TIM_channel_1) (= channel TIM_channel_2))
                 (or (= channel TIM_channel_3) (= channel TIM_channel_4)) )
             (PWM_config TIMx period channel OCMode OCPolarity) )) ))
+
+;;USART_config
+(define master_add #x00)
+(define my_add     #x01)
+
+(define FRAME_FLAG #x7E)
+
+(define f_IO      0)
+(define f_ADC     1)
+(define f_PWM     2)
+(define f_DAC     3)
+(define f_config 10)
+
+(define  p_IN     0)
+(define  p_OUT    1)
+
+
+(define (UART_GPIO gpiox pinx in_out)
+  (let ( (source        my_add)
+         (destination   master_add)
+         (config        f_config)
+         (periph_config f_IO) )
+    (#%UART_putByte source)
+    (#%UART_putByte destination)
+    (#%UART_putByte config)
+    (#%UART_putByte periph_config)
+    (#%UART_putByte gpiox)
+    (let ( (pinH
+            (if (> pinx Pin_7)
+                (bitwise-and (arithmetic-shift-right pinx 8) #xFF)
+                #x00)) )
+      (#%UART_putByte pinH) )
+    (#%UART_putByte (bitwise-and pinx #xFF)) ;;pinL
+    (#%UART_putByte in_out)
+    (#%UART_putByte FRAME_FLAG) ))
+         

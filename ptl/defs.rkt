@@ -1,11 +1,16 @@
 #lang racket
 
+(provide (all-defined-out))
+
 (define master_add 0)
 
-(define f_IO   0)
-(define f_ADC  1)
-(define f_PWM  2)
-(define f_DAC  3)
+(define FRAME_FLAG #x7E)
+
+(define f_IO      0)
+(define f_ADC     1)
+(define f_PWM     2)
+(define f_DAC     3)
+(define f_config 10)
 
 ;;GPIO
 (define GPIOA   0)

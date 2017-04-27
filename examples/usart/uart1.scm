@@ -1,0 +1,18 @@
+(define (main)
+  (GPIO_init GPIOA 'Input  'Pull-down SPEED_in Pin_0)
+  (let ( (led-verde (led! Pin_9))
+         (led-azul  (led! Pin_8))
+         (ledd (led! Pin_4)) )
+    (ledd #t)
+    (led-azul #t)
+    (let loop ( (pressionado? (IO_read  GPIOA Pin_0)) )
+      (if pressionado?
+          (begin (led-verde #t) (UART_GPIO GPIOA Pin_4 p_IN) (UART_GPIO GPIOC Pin_8 p_OUT))
+          (led-verde #f))
+      (bitwise-and 1 2)
+      (sleep 10000)
+      (led-verde #f)
+      (sleep 10000)
+      (loop (IO_read  GPIOA Pin_0)) )) )
+
+(main)

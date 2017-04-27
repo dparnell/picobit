@@ -12,6 +12,14 @@
 #define FRAME_MAX    12
 volatile uint8_t frame[FRAME_MAX+1];
 volatile uint8_t frame_response[FRAME_MAX+1];
+volatile uint8_t cnt = 0;
+
+PRIMITIVE_UNSPEC(#%UART_putByte, arch_UART_putByte, 1)
+{
+  uint8_t u8_byte = decode_int(arg1);
+  while( !(USART1->SR & 0x00000040) ); 
+  USART1->DR = u8_byte;
+}
 
 void init_USART1(uint32_t baudrate)
 {
@@ -59,7 +67,7 @@ void USART_puts(USART_TypeDef* USARTx, volatile uint8_t *s)
     USARTx->DR = *s;
     s++;
   }
-  //USART_SendData(USARTx, FRAME_FLAG);
+  USART_SendData(USARTx, FRAME_FLAG);
 }
 
 void decode_io()
@@ -149,11 +157,10 @@ uint8_t decode_frame()
 void USART1_IRQHandler(void)
 {
   if( USART_GetITStatus(USART1, USART_IT_RXNE) ){
-    
-    static uint8_t cnt = 0;
+ 
     uint8_t t = USART1->DR;
     
-    if( (t != 0x7e) && (cnt < FRAME_MAX) ){ 
+    if( (t != FRAME_FLAG) && (cnt < FRAME_MAX) ){ 
       frame[cnt] = t;
       cnt++;
     }
