@@ -16,6 +16,7 @@ INCLUDE_path := -I$(arch)/include/cmsis/core/ \
 	-I$(arch)/include/cmsis/device/ \
 	-I$(arch)/include/hal/inc/ \
 	-I$(arch)/include/picobit/ \
+	-I$(arch)/include/picobit/periph/inc/ \
 	-I$(arch)/include/cmsis/bkp/
 
 CPPFLAGS += -DARCH_CPU_RAM_BYTES=$(ram_bytes) \
@@ -51,11 +52,12 @@ HAL-files = include/hal/src/stm32f10x_rcc.c \
 	include/hal/src/stm32f10x_usart.c \
 	include/hal/src/misc.c 
 
-PICOBIT-files =	include/picobit/periph/rcc.c  \
-	include/picobit/periph/gpio.c \
-	include/picobit/periph/adc.c  \
-	include/picobit/periph/tim.c  \
-	include/picobit/periph/usart.c
+PICOBIT-files =	include/picobit/periph/src/rcc.c  \
+	include/picobit/periph/src/gpio.c \
+	include/picobit/periph/src/adc.c  \
+	include/picobit/periph/src/tim.c  \
+	include/picobit/periph/src/usart.c \
+	include/picobit/periph/src/crc16.c
 
 arch-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY)   += include/picobit/main.c \
 	include/cmsis/device/system_stm32f10x.c \
