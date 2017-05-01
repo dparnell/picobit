@@ -23,7 +23,7 @@
 
                     (read-thread null)
                     (config_hash (make-hash))
-                    (decode-key  '((none "default"))) )
+                    (decode-key  '()) )
 
                (define (read-begin)
                  (set! read-thread (thread (lambda() (read-frame))) )
@@ -40,10 +40,10 @@
                           (loop (cons u8-byte frame) (read-byte in)) )) ))
 
                (define (decode-frame frame)
-                 ;;(displayln (list->bytes frame))
+                 (displayln frame)
                  (match frame
                    ;;GPIO_config
-                   ( (list source master_add f_config operation f_gpio gpiox pinH pinL in_out)
+                   ( (list source master_add 10 #|f_config = 10|# operation f_IO gpiox pinH pinL in_out)
                      (let ( (frame-key (string-join (list
                                                      (number->string operation)
                                                      (number->string gpiox)
@@ -58,8 +58,19 @@
                                             ( (= operation o_WRITE)
                                               (lambda(v) (GPIO_request o_WRITE source gpiox pinH pinL in_out out v)) )
                                             ) )
-                           (displayln "You already registered this peripheral!"))
+                           (displayln "You already registered this peripheral! - GPIO"))
                        ) )
+
+                   ;;AD_config
+                   ( (list source master_add f_config f_ADC channel)
+                     (let ( (frame-key (string-join (list
+                                                     (number->string f_ADC)
+                                                     (number->string channel)) ","))  )
+                       (if (not (hash-has-key? config_hash frame-key))
+                           (hash-set! config_hash
+                                      frame-key
+                                      (lambda() (ADC_request source f_ADC channel out)) )
+                           (displayln "You already registered this peripheral! - ADC"))  )   )
 
                    ;;GPIO
                    ( (list source master_add operation f_IO gpiox pinH pinL in_out valueWrite valueH valueL crcH crcL)
@@ -73,6 +84,14 @@
                            (displayln (~a "Value of " (symbol->name symbol decode-key) " is " valueL))
                            (displayln (~a "You wrote " valueWrite " in " (symbol->name symbol decode-key) ))  ) )   )
 
+                   ( (list source master_add operation 1 channel valueH valueL crcH crcL)
+                     (let ( (symbol (string-join (list
+                                                  (number->string f_ADC)
+                                                  (number->string channel)) ",")) )
+                       (displayln (~a "ADC - channel " (symbol->name symbol decode-key) " value is "
+                                      (+ (arithmetic-shift valueH 8)
+                                         valueL))) ) )
+                   
                    (a (displayln "displayln nao decodificavel!")
                       (displayln a) )
                    )
@@ -135,6 +154,8 @@
                   ( (= in_out-n p_OUT) "output" )
                   (else "notFound" ) ) )
            "_") )   )
+      ( (list adc channel)
+        (string-join (list "ADC_channel" channel)) )
       (_ "ERROR"))
     ) )
                
@@ -144,6 +165,19 @@
          (destination  dst)
          (periph       f_IO) )
     (let* ( (frame_list (list source destination operation periph gpiox pinH pinL in_out value))
+            (crc        (crc16_calc frame_list (length frame_list)))
+            (crcH       (arithmetic-shift crc -8))
+            (crcL       (bitwise-and crc #xff))
+            (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
+      (write-bytes frame out)
+      ))
+  )
+
+(define (ADC_request operation dst channel out)
+  (let ( (source       master_add)
+         (destination  dst)
+         (periph       f_ADC) )
+    (let* ( (frame_list (list source destination operation periph channel))
             (crc        (crc16_calc frame_list (length frame_list)))
             (crcH       (arithmetic-shift crc -8))
             (crcL       (bitwise-and crc #xff))

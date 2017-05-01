@@ -75,7 +75,7 @@ void USART_puts(USART_TypeDef* USARTx, volatile uint8_t *s)
 void USART_frame_response(USART_TypeDef* USARTx)
 {
   uint8_t buffer_out[FRAME_MAX+1];
-  uint8_t cnt_out = 0;
+  uint8_t cnt_out = 0, u8_size = 0;
   
   while( !(USARTx->SR & 0x00000040) );
   USARTx->DR = frame_response.src;
@@ -124,6 +124,12 @@ void USART_frame_response(USART_TypeDef* USARTx)
     buffer_out[cnt_out] = frame_response.point.t_IO.value;
   }
 
+  else if(frame_response.periph == f_ADC){
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = frame_response.point.t_ADC.channel;
+    cnt_out += 1;
+    buffer_out[cnt_out] = frame_response.point.t_ADC.channel;
+  }
   //others peripherals
 
   while( !(USARTx->SR & 0x00000040) );
@@ -136,8 +142,15 @@ void USART_frame_response(USART_TypeDef* USARTx)
   cnt_out += 1;
   buffer_out[cnt_out] = frame_response.valueL;
 
-  //IO_size + 2 => valueH and valueL
-  frame_response.crc = crc16_calc(buffer_out, (IO_size+2));
+  if(frame_response.periph == f_IO){
+    //IO_size + 2 => valueH and valueL
+    u8_size = (IO_size+2);
+  }
+  else if(frame_response.periph == f_ADC){
+    u8_size = (AD_size+2);
+  }
+  
+  frame_response.crc = crc16_calc(buffer_out, (u8_size));
   
   while( !(USARTx->SR & 0x00000040) );
   USARTx->DR = (frame_response.crc >> 8);
@@ -145,7 +158,6 @@ void USART_frame_response(USART_TypeDef* USARTx)
   //aux = frame_response.crc & 0xFF;
   while( !(USARTx->SR & 0x00000040) );
   USARTx->DR = frame_response.crc & 0xFF;
-  
 
   while( !(USARTx->SR & 0x00000040) );
   USARTx->DR = FRAME_FLAG;
@@ -307,6 +319,41 @@ uint8_t decode_io_write()
 }
 
 
+uint8_t decode_adc()
+{
+  uint8_t buffer_in[FRAME_MAX+1], i;
+  
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_ADC.channel = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.crc = (buffer[frame.pos] << 8);
+
+  frame.pos = buffer_next(frame.pos);
+  frame.crc |= (buffer[frame.pos]);
+  
+  for(i = 0; i < AD_size; i++){
+    buffer_in[i] = buffer[i];
+  }
+  
+  crc = crc16_calc(buffer_in, AD_size);
+  if(frame.crc != crc)
+  {
+    return 0;
+   }
+  
+  frame_response.point.t_ADC.channel  = frame.point.t_ADC.channel;
+
+  frame_response.valueL = 10;
+
+  frame_response.valueH = 10;
+
+  USART_frame_response(USART1);
+
+  return 1;
+}
+
+
 uint8_t decode_frame()
 {
   frame.pos = 0;
@@ -345,7 +392,7 @@ uint8_t decode_frame()
     break;
     
   case f_ADC:
-    //decode_adc();
+    decode_adc();
     break;
 
   case f_PWM:
