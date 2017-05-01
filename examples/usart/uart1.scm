@@ -7,14 +7,10 @@
     (led-azul #t)
     (let loop ( (pressionado? (IO_read  GPIOA Pin_0)) )
       (if pressionado?
-          (begin (led-verde #t) (UART_GPIO GPIOA Pin_4 p_IN) (UART_GPIO GPIOC Pin_8 p_OUT)
-                 ;;(#%UART_putByte #x77)
-                 ;;(#%UART_putByte #x88)
+          (begin (led-azul #t) (UART_GPIO 'read GPIOA Pin_4 p_IN) (UART_GPIO "read" GPIOC Pin_8 p_OUT)
+                 (UART_GPIO "write" GPIOC Pin_9 p_OUT)
                  )
-          (led-verde #f))
-      (bitwise-and 1 2)
-      (sleep 10000)
-      (led-verde #f)
+          (led-azul #f))
       (sleep 10000)
       (loop (IO_read  GPIOA Pin_0)) )) )
 

@@ -12,6 +12,9 @@
 (define f_DAC     3)
 (define f_config 10)
 
+(define o_READ    0)
+(define o_WRITE   1)
+
 ;;GPIO
 (define GPIOA   0)
 (define GPIOB   1)

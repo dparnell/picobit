@@ -2,7 +2,7 @@
 #define __FRAMES__
 
 #define FRAME_FLAG   0x7E
-#define FRAME_MAX    12
+#define FRAME_MAX    14
 
 #define buffer_next(pos) ( (pos) + 1)
 #define buffer_prev(pos) ( (pos) - 1)
@@ -12,6 +12,7 @@ typedef struct s_IO_point{
   uint8_t pinH;
   uint8_t pinL;
   uint8_t in_out;  
+  uint8_t value;
 }IO_point;
 
 typedef struct s_ADC_point{
@@ -35,6 +36,7 @@ typedef struct s_frame{
   
   uint8_t src;
   uint8_t dst;
+  uint8_t read_write;
   uint8_t periph;
 
   t_point point;
@@ -47,6 +49,7 @@ typedef struct s_frame_response{
   
   uint8_t src;
   uint8_t dst;
+  uint8_t read_write;
   uint8_t periph;
 
   t_point point;

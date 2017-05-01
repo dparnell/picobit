@@ -87,6 +87,11 @@ void USART_frame_response(USART_TypeDef* USARTx)
   buffer_out[cnt_out] = frame_response.dst;
 
   while( !(USARTx->SR & 0x00000040) );
+  USARTx->DR = frame_response.read_write;
+  cnt_out += 1;
+  buffer_out[cnt_out] = frame_response.read_write;
+  
+  while( !(USARTx->SR & 0x00000040) );
   USARTx->DR = frame_response.periph;
   cnt_out += 1;
   buffer_out[cnt_out] = frame_response.periph;
@@ -112,6 +117,11 @@ void USART_frame_response(USART_TypeDef* USARTx)
     USARTx->DR = frame_response.point.t_IO.in_out;
     cnt_out += 1;
     buffer_out[cnt_out] = frame_response.point.t_IO.in_out;
+
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = frame_response.point.t_IO.value;
+    cnt_out += 1;
+    buffer_out[cnt_out] = frame_response.point.t_IO.value;
   }
 
   //others peripherals
@@ -141,7 +151,7 @@ void USART_frame_response(USART_TypeDef* USARTx)
   USARTx->DR = FRAME_FLAG;
 }
 
-uint8_t decode_io()
+uint8_t decode_io_read()
 {
   GPIO_TypeDef* GPIOx; 
   uint16_t pinx;
@@ -158,6 +168,9 @@ uint8_t decode_io()
 
   frame.pos = buffer_next(frame.pos);
   frame.point.t_IO.in_out = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_IO.value = buffer[frame.pos];
 
   frame.pos = buffer_next(frame.pos);
   frame.crc = (buffer[frame.pos] << 8);
@@ -179,6 +192,7 @@ uint8_t decode_io()
   frame_response.point.t_IO.pinH   = frame.point.t_IO.pinH;
   frame_response.point.t_IO.pinL   = frame.point.t_IO.pinL;
   frame_response.point.t_IO.in_out = frame.point.t_IO.in_out;
+  frame_response.point.t_IO.value  = frame.point.t_IO.value;
   
   pinx = (frame.point.t_IO.pinH << 8) + frame.point.t_IO.pinL;
 
@@ -213,6 +227,86 @@ uint8_t decode_io()
   return 1;
 }
 
+uint8_t decode_io_write()
+{
+  GPIO_TypeDef* GPIOx; 
+  uint16_t pinx;
+  uint8_t buffer_in[FRAME_MAX+1], i;
+  
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_IO.gpiox = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_IO.pinH = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_IO.pinL = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_IO.in_out = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_IO.value = buffer[frame.pos];
+  
+  frame.pos = buffer_next(frame.pos);
+  frame.crc = (buffer[frame.pos] << 8);
+
+  frame.pos = buffer_next(frame.pos);
+  frame.crc |= (buffer[frame.pos]);
+  
+  for(i = 0; i < IO_size; i++){
+    buffer_in[i] = buffer[i];
+  }
+  
+  crc = crc16_calc(buffer_in, IO_size);
+  if(frame.crc != crc)
+  {
+    return 0;
+  }
+  
+  frame_response.point.t_IO.gpiox  = frame.point.t_IO.gpiox;
+  frame_response.point.t_IO.pinH   = frame.point.t_IO.pinH;
+  frame_response.point.t_IO.pinL   = frame.point.t_IO.pinL;
+  frame_response.point.t_IO.in_out = frame.point.t_IO.in_out;
+  frame_response.point.t_IO.value  = frame.point.t_IO.value;
+  
+  pinx = (frame.point.t_IO.pinH << 8) + frame.point.t_IO.pinL;
+
+  GPIOx = GPIOA;
+  if(frame.point.t_IO.gpiox == 0){
+    GPIOx = GPIOA;
+  }
+  else if(frame.point.t_IO.gpiox == 1){
+    GPIOx = GPIOB;
+  }
+  else if(frame.point.t_IO.gpiox == 2){
+    GPIOx = GPIOC;
+  }
+  else if(frame.point.t_IO.gpiox == 3){
+    GPIOx = GPIOD;
+  }
+  else if(frame.point.t_IO.gpiox == 4){
+    GPIOx = GPIOE;
+  }
+
+  if(frame.point.t_IO.in_out == p_OUT){
+    if(frame.point.t_IO.value == 0){
+      GPIOx->ODR &= ~pinx;
+    }
+    else{
+      GPIOx->ODR |= pinx;
+    }
+    frame_response.valueL = ((GPIOx->ODR & pinx) != 0) ? 1 : 0;
+  }
+
+  frame_response.valueH = 0;
+
+  USART_frame_response(USART1);
+
+  return 1;
+}
+
+
 uint8_t decode_frame()
 {
   frame.pos = 0;
@@ -220,6 +314,9 @@ uint8_t decode_frame()
   
   frame.pos = buffer_next(frame.pos);
   frame.dst = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.read_write = buffer[frame.pos];
   
   frame.pos = buffer_next(frame.pos);
   frame.periph = buffer[frame.pos];
@@ -228,14 +325,23 @@ uint8_t decode_frame()
     return 0;
   }
 
-  frame_response.pos    = 0;
-  frame_response.src    = my_add;
-  frame_response.dst    = frame.src;
-  frame_response.periph = frame.periph;
+  frame_response.pos        = 0;
+  frame_response.src        = my_add;
+  frame_response.dst        = frame.src;
+  frame_response.read_write = frame.read_write;
+  frame_response.periph     = frame.periph;
   
   switch(frame.periph){
   case f_IO:
-    decode_io();
+    if(frame.read_write == o_READ)
+    {
+      decode_io_read();
+    }
+    else if(frame.read_write == o_WRITE)
+    {
+      decode_io_write();
+    }
+    
     break;
     
   case f_ADC:

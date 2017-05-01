@@ -9,8 +9,11 @@
 #define  p_IN     0
 #define  p_OUT    1
 
+#define  o_READ   0
+#define  o_WRITE  1
+
 #define CMD_HDR_SIZE 4
 
-#define IO_size  7
+#define IO_size  9
 #define AD_size  4
-#define PWM_size 6
+#define PWM_size 7

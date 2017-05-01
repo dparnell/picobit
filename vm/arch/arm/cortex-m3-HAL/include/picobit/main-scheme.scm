@@ -493,8 +493,10 @@
 (define  p_IN     0)
 (define  p_OUT    1)
 
+(define o_READ    0)
+(define o_WRITE   1)
 
-(define (UART_GPIO gpiox pinx in_out)
+(define (UART_GPIO operation gpiox pinx in_out)
   (let ( (source        my_add)
          (destination   master_add)
          (config        f_config)
@@ -502,6 +504,12 @@
     (#%UART_putByte source)
     (#%UART_putByte destination)
     (#%UART_putByte config)
+    (cond ( (or (equal? operation 'read)
+                (equal? operation "read"))
+            (#%UART_putByte o_READ) )
+          ( (or (equal? operation 'write)
+                (equal? operation "write"))
+            (#%UART_putByte o_WRITE) )  )
     (#%UART_putByte periph_config)
     (#%UART_putByte gpiox)
     (let ( (pinH
