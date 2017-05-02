@@ -40,7 +40,7 @@
                           (loop (cons u8-byte frame) (read-byte in)) )) ))
 
                (define (decode-frame frame)
-                 (displayln frame)
+                 ;;(displayln frame)
                  (match frame
                    ;;GPIO_config
                    ( (list source master_add 10 #|f_config = 10|# operation f_IO gpiox pinH pinL in_out)
@@ -62,14 +62,14 @@
                        ) )
 
                    ;;AD_config
-                   ( (list source master_add f_config f_ADC channel)
+                   ( (list source master_add f_config f_ADC channel posDMA)
                      (let ( (frame-key (string-join (list
                                                      (number->string f_ADC)
                                                      (number->string channel)) ","))  )
                        (if (not (hash-has-key? config_hash frame-key))
                            (hash-set! config_hash
                                       frame-key
-                                      (lambda() (ADC_request source f_ADC channel out)) )
+                                      (lambda() (ADC_request source f_ADC channel posDMA out)) )
                            (displayln "You already registered this peripheral! - ADC"))  )   )
 
                    ;;GPIO
@@ -84,12 +84,13 @@
                            (displayln (~a "Value of " (symbol->name symbol decode-key) " is " valueL))
                            (displayln (~a "You wrote " valueWrite " in " (symbol->name symbol decode-key) ))  ) )   )
 
-                   ( (list source master_add operation 1 channel valueH valueL crcH crcL)
+                   ;;ADC
+                   ( (list source master_add operation 1 channel posDMA valueH valueL crcH crcL)
                      (let ( (symbol (string-join (list
                                                   (number->string f_ADC)
                                                   (number->string channel)) ",")) )
-                       (displayln (~a "ADC - channel " (symbol->name symbol decode-key) " value is "
-                                      (+ (arithmetic-shift valueH 8)
+                       (displayln (~a "The value of " (symbol->name symbol decode-key) " - ADC - is "
+                                      (bitwise-ior (arithmetic-shift valueH 8)
                                          valueL))) ) )
                    
                    (a (displayln "displayln nao decodificavel!")
@@ -173,11 +174,11 @@
       ))
   )
 
-(define (ADC_request operation dst channel out)
+(define (ADC_request operation dst channel posDMA out)
   (let ( (source       master_add)
          (destination  dst)
          (periph       f_ADC) )
-    (let* ( (frame_list (list source destination operation periph channel))
+    (let* ( (frame_list (list source destination operation periph channel posDMA))
             (crc        (crc16_calc frame_list (length frame_list)))
             (crcH       (arithmetic-shift crc -8))
             (crcL       (bitwise-and crc #xff))

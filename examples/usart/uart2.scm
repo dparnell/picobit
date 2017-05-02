@@ -4,8 +4,7 @@
 
   (IO_write GPIOC Pin_8 #t)
 
-  (UART_AD 14)
-  (let ( (readValue_ch14 (ADC_config 14)) )
+  (let ( (readValue_ch14 (ADC_single 14 #t)) )
     (let loop ( (value-ad (readValue_ch14)) )
       (if (< value-ad 2000)
           (IO_write GPIOC Pin_8 #f)

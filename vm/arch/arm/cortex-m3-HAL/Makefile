@@ -31,7 +31,6 @@ HAL-sources = include/hal/src/stm32f10x_bkp.c \
 	include/hal/src/stm32f10x_can.c \
 	include/hal/src/stm32f10x_cec.c \
 	include/hal/src/stm32f10x_crc.c \
-	include/hal/src/stm32f10x_dac.c \
 	include/hal/src/stm32f10x_dbgmcu.c \
 	include/hal/src/stm32f10x_exti.c \
 	include/hal/src/stm32f10x_flash.c \
@@ -50,6 +49,7 @@ HAL-files = include/hal/src/stm32f10x_rcc.c \
 	include/hal/src/stm32f10x_dma.c \
 	include/hal/src/stm32f10x_tim.c \
 	include/hal/src/stm32f10x_usart.c \
+	include/hal/src/stm32f10x_dac.c \
 	include/hal/src/misc.c 
 
 PICOBIT-files =	include/picobit/periph/src/rcc.c  \
@@ -57,7 +57,8 @@ PICOBIT-files =	include/picobit/periph/src/rcc.c  \
 	include/picobit/periph/src/adc.c  \
 	include/picobit/periph/src/tim.c  \
 	include/picobit/periph/src/usart.c \
-	include/picobit/periph/src/crc16.c
+	include/picobit/periph/src/crc16.c \
+	include/picobit/periph/src/dac.c
 
 arch-$(CONFIG_ARM_BOARD_STM32_VLDISCOVERY)   += include/picobit/main.c \
 	include/cmsis/device/system_stm32f10x.c \

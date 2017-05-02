@@ -3,8 +3,18 @@ Codigo internet = https://www.mikrocontroller.net/topic/233745
 Testar e tentar usar
 */
 
+#include <stdint.h>
+#include <picobit.h>
+#include <dispatch.h>
+#include <primitives.h>
+#include <bignum.h>
+#include <stm32f10x.h>
+#include <stm32f10x_dac.h>
+#include <misc.h>
+
+
 #define DAC1_VOLT  1.2f
-#define DAC2_VOLT  1.58f
+#define DAC2_VOLT  3.0f
 #define REF_VOLT  3.3f
 #define DAC_ACC    4096.0f
 const uint16_t _DAC1_DATA = (uint16_t)(((DAC1_VOLT / REF_VOLT) * DAC_ACC) + 0.5f);
@@ -20,7 +30,7 @@ void DacOn(void)
 
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_DAC1 | GPIO_Pin_DAC2;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     DAC_InitStructure.DAC_Trigger = DAC_Trigger_None;

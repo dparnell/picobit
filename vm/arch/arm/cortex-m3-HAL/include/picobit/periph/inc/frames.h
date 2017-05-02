@@ -17,6 +17,7 @@ typedef struct s_IO_point{
 
 typedef struct s_ADC_point{
   uint8_t channel;
+  uint8_t pos_dma;
 }ADC_point;
 
 typedef struct s_PWM_point{

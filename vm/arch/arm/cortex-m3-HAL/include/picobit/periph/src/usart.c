@@ -15,6 +15,7 @@ uint16_t crc;
 volatile uint8_t buffer[12+1];
 volatile t_frame frame;
 volatile t_frame_response frame_response;
+extern __IO uint16_t ADCConvertedValue[16];
 
 PRIMITIVE_UNSPEC(#%UART_putByte, arch_UART_putByte, 1)
 {
@@ -129,6 +130,11 @@ void USART_frame_response(USART_TypeDef* USARTx)
     USARTx->DR = frame_response.point.t_ADC.channel;
     cnt_out += 1;
     buffer_out[cnt_out] = frame_response.point.t_ADC.channel;
+
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = frame_response.point.t_ADC.pos_dma;
+    cnt_out += 1;
+    buffer_out[cnt_out] = frame_response.point.t_ADC.pos_dma;
   }
   //others peripherals
 
@@ -322,9 +328,13 @@ uint8_t decode_io_write()
 uint8_t decode_adc()
 {
   uint8_t buffer_in[FRAME_MAX+1], i;
+  uint16_t adc_value = 0;
   
   frame.pos = buffer_next(frame.pos);
   frame.point.t_ADC.channel = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_ADC.pos_dma = buffer[frame.pos];
 
   frame.pos = buffer_next(frame.pos);
   frame.crc = (buffer[frame.pos] << 8);
@@ -343,10 +353,14 @@ uint8_t decode_adc()
    }
   
   frame_response.point.t_ADC.channel  = frame.point.t_ADC.channel;
+  frame_response.point.t_ADC.pos_dma  = frame.point.t_ADC.pos_dma;
 
-  frame_response.valueL = 10;
+  if(frame.point.t_ADC.pos_dma < 16){
+    adc_value = ADCConvertedValue[frame.point.t_ADC.pos_dma];
+  }
+  frame_response.valueH = (uint8_t) (adc_value >> 8);
 
-  frame_response.valueH = 10;
+  frame_response.valueL = (adc_value & 0x00FF);
 
   USART_frame_response(USART1);
 

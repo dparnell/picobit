@@ -138,23 +138,23 @@
 (define SPEED_50 1)
 (define SPEED_in 0)
 ;;Pin
-(define Pin_0           #x0001)
-(define Pin_1           #x0002)
-(define Pin_2           #x0004)
-(define Pin_3           #x0008)
-(define Pin_4           #x0010)
-(define Pin_5           #x0020)
-(define Pin_6           #x0040)
-(define Pin_7           #x0080)
-(define Pin_8           #x0100)
-(define Pin_9           #x0200)
-(define Pin_10          #x0400)
-(define Pin_11          #x0800)
-(define Pin_12          #x1000)
-(define Pin_13          #x2000)
-(define Pin_14          #x4000)
-(define Pin_15          #x8000)
-(define Pin_All         #xFFFF)
+(define Pin_0           #x0001) 
+(define Pin_1           #x0002) 
+(define Pin_2           #x0004) 
+(define Pin_3           #x0008) 
+(define Pin_4           #x0010) 
+(define Pin_5           #x0020) 
+(define Pin_6           #x0040) 
+(define Pin_7           #x0080) 
+(define Pin_8           #x0100) 
+(define Pin_9           #x0200) 
+(define Pin_10          #x0400) 
+(define Pin_11          #x0800) 
+(define Pin_12          #x1000) 
+(define Pin_13          #x2000) 
+(define Pin_14          #x4000) 
+(define Pin_15          #x8000) 
+(define Pin_All         #xFFFF) 
 ;;configure mode_direction
 (define GPIO_Mode_AIN         #x0)
 (define GPIO_Mode_IN_FLOATING #x04)
@@ -178,12 +178,12 @@
          (GPIOD_clock)]
         [(equal? GPIOx GPIOE)
          (GPIOE_clock)])
-  ;;configure
+  ;;configure 
   (cond [(equal? direction DIR_output)
          (if (equal? mode MODE_pp)
              (GPIO_config GPIOx GPIO_Mode_Out_PP pin speed)
              (GPIO_config GPIOx GPIO_Mode_Out_OD pin speed))]
-
+        
         [(equal? direction DIR_af)
          (if (equal? mode MODE_pp)
              (GPIO_config GPIOx GPIO_Mode_AF_PP pin speed)
@@ -216,16 +216,17 @@
   (GPIO_init GPIOA 'Input  'Pull-down SPEED_in Pin_0)
   (lambda ()
     (IO_read GPIOA Pin_0)) )
+
 ;;IO_output
 (define (IO_output gpiox pin uart?)
   (GPIO_init gpiox 'Output 'Push-pull SPEED_50 pin)
-  (if uart? (UART_GPIO 'write gpiox pin p_OUT) "")
+  (cond ( (uart? (UART_GPIO 'write gpiox pinx p_OUT)) ))
   (lambda (value)
     (IO_write gpiox pin value)) )
 ;;IO_input
 (define (IO_input gpiox pin uart?)
   (GPIO_init gpiox 'Input  'Pull-down SPEED_in pin)
-  (if uart? (UART_GPIO 'read gpiox pin p_IN) "")
+  (cond ( (uart? (UART_GPIO 'read gpiox pinx p_IN)) ))
   (lambda ()
     (IO_read gpiox pin)) )
 ;;AD_input
@@ -283,11 +284,11 @@
 (define ADC_Mode_AlterTrig                         (arithmetic-shift-right #x00090000 12))
 
 ;;ADC-trigger (only ADC1) (uint32_t)
-(define ADC_ExternalTrigConv_T1_CC1                (arithmetic-shift-right #x00000000 12))
-(define ADC_ExternalTrigConv_T1_CC2                (arithmetic-shift-right #x00020000 12))
-(define ADC_ExternalTrigConv_T2_CC2                (arithmetic-shift-right #x00060000 12))
-(define ADC_ExternalTrigConv_T3_TRGO               (arithmetic-shift-right #x00080000 12))
-(define ADC_ExternalTrigConv_T4_CC4                (arithmetic-shift-right #x000A0000 12))
+(define ADC_ExternalTrigConv_T1_CC1                (arithmetic-shift-right #x00000000 12)) 
+(define ADC_ExternalTrigConv_T1_CC2                (arithmetic-shift-right #x00020000 12)) 
+(define ADC_ExternalTrigConv_T2_CC2                (arithmetic-shift-right #x00060000 12)) 
+(define ADC_ExternalTrigConv_T3_TRGO               (arithmetic-shift-right #x00080000 12)) 
+(define ADC_ExternalTrigConv_T4_CC4                (arithmetic-shift-right #x000A0000 12)) 
 (define ADC_ExternalTrigConv_Ext_IT11_TIM8_TRGO    (arithmetic-shift-right #x000C0000 12))
 (define ADC_ExternalTrigConv_T1_CC3                (arithmetic-shift-right #x00040000 12))
 (define ADC_ExternalTrigConv_None                  (arithmetic-shift-right #x000E0000 12))
@@ -332,13 +333,13 @@
 (define ADC_SampleTime_239Cycles5                  #x07)
 
 ;;ADC-externalTrig (uint32_t)
-(define ADC_ExternalTrigInjecConv_T2_TRGO           #x00002000)
-(define ADC_ExternalTrigInjecConv_T2_CC1            #x00003000)
-(define ADC_ExternalTrigInjecConv_T3_CC4            #x00004000)
-(define ADC_ExternalTrigInjecConv_T4_TRGO           #x00005000)
-(define ADC_ExternalTrigInjecConv_Ext_IT15_TIM8_CC4 #x00006000)
-(define ADC_ExternalTrigInjecConv_T1_TRGO           #x00000000)
-(define ADC_ExternalTrigInjecConv_T1_CC4            #x00001000)
+(define ADC_ExternalTrigInjecConv_T2_TRGO           #x00002000) 
+(define ADC_ExternalTrigInjecConv_T2_CC1            #x00003000) 
+(define ADC_ExternalTrigInjecConv_T3_CC4            #x00004000) 
+(define ADC_ExternalTrigInjecConv_T4_TRGO           #x00005000) 
+(define ADC_ExternalTrigInjecConv_Ext_IT15_TIM8_CC4 #x00006000) 
+(define ADC_ExternalTrigInjecConv_T1_TRGO           #x00000000) 
+(define ADC_ExternalTrigInjecConv_T1_CC4            #x00001000) 
 (define ADC_ExternalTrigInjecConv_None              #x00007000)
 
 ;;ADC-injectedSelection (uint8_t)
@@ -386,13 +387,9 @@
          (contMode   enable)
          (dma?       enable)
          (sampleTime ADC_SampleTime_55Cycles5) )
-    (if uart?
-        (begin
-          (UART_AD channel 0) 
-          (ADC_configSingle scanMode contMode dma? channel sampleTime)
-          )
-        (ADC_configSingle scanMode contMode dma? channel sampleTime) ) ))
-
+    (cond ( (uart? (UART_AD channel 0)) ))
+    (ADC_configSingle scanMode contMode dma? channel sampleTime) ))
+#|
 (define (ADC_multi channels names uart?)
   (let ( (scanMode   disable)
          (contMode   enable)
@@ -402,7 +399,7 @@
       (if (null? chs)
           (ADC_configMulti scanMode contMode channels sampleTimes names)
           (begin
-            (if uart? (UART_AD (car chs) posDMA) "")
+            (cond ( (uart? (UART_AD (car chs) posDMA)) ))
             (loop (cdr chs) (cons sampleTime sampleTimes) (+ posDMA 1)) )  )
       ))
   )
@@ -435,7 +432,7 @@
                      (cons (list (car name-list) (ADC_readValue-DMA contMode pos))
                            values-ad)
                      (+ pos 1) ) )) )) ) )
-
+|#
 
 ;;DMA
 ;;DMA-channels
@@ -458,9 +455,9 @@
 (define TIM_4   4)
 (define TIM_5   5)
 ;;Capture Prescaler Input
-(define TIM_ICPSC_DIV1                     #x0000)
-(define TIM_ICPSC_DIV2                     #x0004)
-(define TIM_ICPSC_DIV4                     #x0008)
+(define TIM_ICPSC_DIV1                     #x0000) 
+(define TIM_ICPSC_DIV2                     #x0004) 
+(define TIM_ICPSC_DIV4                     #x0008) 
 (define TIM_ICPSC_DIV8                     #x000C)
 ;;Counter Mode
 (define TIM_CounterMode_Up                 #x0000)

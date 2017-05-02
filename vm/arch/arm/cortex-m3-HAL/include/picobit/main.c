@@ -43,5 +43,8 @@ void Delay(__IO uint32_t nCount) {
 void main ()
 {
   usart_init(9600);  
+
+  DacOn();
+  
   interpreter();
 }
