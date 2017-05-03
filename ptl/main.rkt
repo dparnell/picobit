@@ -117,8 +117,14 @@
                            (hash-set! config_hash "default"
                                       (lambda ( (x null) ) (displayln "Not configured use: (<device-name> 'config) or name wrong")))
                            ))
-                       ( (equal? option 'read)  (apply (hash-ref config_hash (name->symbol name decode-key) ) '())  )
-                       ( (equal? option 'write) (apply (hash-ref config_hash (name->symbol name decode-key) ) (list value))  ) )
+                       ( (equal? option 'read)
+                         (with-handlers ([string? (lambda(v) v)]
+                                         [exn:fail? (lambda(v) (displayln "I can't understand, please configure and/or check if the operation is correct."))])
+                           (apply (hash-ref config_hash (name->symbol name decode-key) ) '()) )   )
+                       ( (equal? option 'write)
+                         (with-handlers ([string? (lambda(v) v)]
+                                         [exn:fail? (lambda(v) (displayln "I can't understand, please configure and/or check if the operation is correct."))])
+                           (apply (hash-ref config_hash (name->symbol name decode-key) ) (list value)) )   ) )
                  ))   )
             (else ;;port doesn't exists or the device isn't connected
              (displayln "Port doesn't exists or your microcontroller isn't plugged correctly!") ))

@@ -44,7 +44,5 @@ void main ()
 {
   usart_init(9600);  
 
-  DacOn();
-  
   interpreter();
 }

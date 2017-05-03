@@ -394,7 +394,7 @@
         (ADC_configSingle scanMode contMode dma? channel sampleTime) ) ))
 
 (define (ADC_multi channels names uart?)
-  (let ( (scanMode   disable)
+  (let ( (scanMode   enable)
          (contMode   enable)
          (dma?       enable)
          (sampleTime ADC_SampleTime_55Cycles5) )
@@ -571,3 +571,43 @@
     (#%UART_putByte channel)
     (#%UART_putByte posDMA)
     (#%UART_putByte FRAME_FLAG) ))
+
+
+;;DAC
+;;DAC-trigger
+(define DAC_Trigger_None                   #x00000000) 
+(define DAC_Trigger_T6_TRGO                #x00000004) 
+(define DAC_Trigger_T8_TRGO                #x0000000C)                                                        
+(define DAC_Trigger_T3_TRGO                #x0000000C)                                                        
+(define DAC_Trigger_T7_TRGO                #x00000014) 
+(define DAC_Trigger_T5_TRGO                #x0000001C) 
+(define DAC_Trigger_T15_TRGO               #x0000001C) 
+(define DAC_Trigger_T2_TRGO                #x00000024) 
+(define DAC_Trigger_T4_TRGO                #x0000002C) 
+(define DAC_Trigger_Ext_IT9                #x00000034) 
+(define DAC_Trigger_Software               #x0000003C) 
+
+;;DAC-WaveGeneration
+(define DAC_WaveGeneration_None            #x00000000)
+(define DAC_WaveGeneration_Noise           #x00000040)
+(define DAC_WaveGeneration_Triangle        #x00000080)
+
+;;DAC-OutputBuffer
+(define DAC_OutputBuffer_Enable            #x00000000)
+(define DAC_OutputBuffer_Disable           #x00000002)
+
+;;DAC-Channel
+(define DAC_Channel_1                      #x00000000)
+(define DAC_Channel_2                      #x00000010)
+
+(define (DAC_config trigger waveGeneration outputBuffer channel)
+  (DAC_clock)
+  (#%DAC_config trigger waveGeneration outputBuffer channel) )
+
+(define (DAC_single channel)
+  (let ( (trigger        DAC_Trigger_None)
+         (waveGeneration DAC_WaveGeneration_None)
+         (outputBuffer   DAC_OutputBuffer_Enable) )
+  (DAC_config trigger waveGeneration outputBuffer channel)
+  (lambda (value)
+    (DAC_writeValue channel value)) ))
