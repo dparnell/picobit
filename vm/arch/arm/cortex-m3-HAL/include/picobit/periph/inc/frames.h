@@ -23,7 +23,7 @@ typedef struct s_ADC_point{
 typedef struct s_PWM_point{
   uint8_t timx;
   uint8_t channel;
-  uint8_t period_duty;
+  uint16_t value_write;
 }PWM_point;
 
 typedef union s_point{

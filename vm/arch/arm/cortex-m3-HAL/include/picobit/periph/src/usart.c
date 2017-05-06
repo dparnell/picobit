@@ -15,7 +15,6 @@ uint16_t crc;
 volatile uint8_t buffer[12+1];
 volatile t_frame frame;
 volatile t_frame_response frame_response;
-extern __IO uint16_t ADCConvertedValue[16];
 
 PRIMITIVE_UNSPEC(#%UART_putByte, arch_UART_putByte, 1)
 {
@@ -136,6 +135,28 @@ void USART_frame_response(USART_TypeDef* USARTx)
     cnt_out += 1;
     buffer_out[cnt_out] = frame_response.point.t_ADC.pos_dma;
   }
+
+  if(frame_response.periph == f_PWM){
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = frame_response.point.t_PWM.timx;
+    cnt_out += 1;
+    buffer_out[cnt_out] = frame_response.point.t_PWM.timx;
+
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = frame_response.point.t_PWM.channel;
+    cnt_out += 1;
+    buffer_out[cnt_out] = frame_response.point.t_PWM.channel;
+
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = (frame_response.point.t_PWM.value_write >> 8);
+    cnt_out += 1;
+    buffer_out[cnt_out] = (frame_response.point.t_PWM.value_write >> 8);
+
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = (frame_response.point.t_PWM.value_write & 0xFF);
+    cnt_out += 1;
+    buffer_out[cnt_out] = (frame_response.point.t_PWM.value_write & 0xFF);
+  }
   //others peripherals
 
   while( !(USARTx->SR & 0x00000040) );
@@ -155,9 +176,12 @@ void USART_frame_response(USART_TypeDef* USARTx)
   else if(frame_response.periph == f_ADC){
     u8_size = (AD_size+2);
   }
+  else if(frame_response.periph == f_PWM){
+    u8_size = (PWM_size+2);
+  }  
   
   frame_response.crc = crc16_calc(buffer_out, (u8_size));
-  
+
   while( !(USARTx->SR & 0x00000040) );
   USARTx->DR = (frame_response.crc >> 8);
 
@@ -356,7 +380,7 @@ uint8_t decode_adc()
   frame_response.point.t_ADC.pos_dma  = frame.point.t_ADC.pos_dma;
 
   if(frame.point.t_ADC.pos_dma < 16){
-    adc_value = ADCConvertedValue[frame.point.t_ADC.pos_dma];
+    adc_value = read_value(frame.point.t_ADC.pos_dma);
   }
   frame_response.valueH = (uint8_t) (adc_value >> 8);
 
@@ -367,6 +391,159 @@ uint8_t decode_adc()
   return 1;
 }
 
+uint8_t decode_pwm_read()
+{
+  TIM_TypeDef* TIMx = TIM2; 
+  uint8_t buffer_in[FRAME_MAX+1], i;
+  
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_PWM.timx = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_PWM.channel = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_PWM.value_write  = (buffer[frame.pos] << 8);
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_PWM.value_write |= buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.crc = (buffer[frame.pos] << 8);
+
+  frame.pos = buffer_next(frame.pos);
+  frame.crc |= (buffer[frame.pos]);
+  
+  for(i = 0; i < PWM_size; i++){
+    buffer_in[i] = buffer[i];
+  }
+  
+  crc = crc16_calc(buffer_in, PWM_size);
+  if(frame.crc != crc)
+  {
+    return 0;
+  }
+  
+  frame_response.point.t_PWM.timx        = frame.point.t_PWM.timx;
+  frame_response.point.t_PWM.channel     = frame.point.t_PWM.channel;
+  frame_response.point.t_PWM.value_write = frame.point.t_PWM.value_write;
+  
+  if(frame.point.t_PWM.timx == 0){
+    TIMx = TIM2;
+  }
+  else if(frame.point.t_PWM.timx == 1){
+    TIMx = TIM3;
+  }
+  else if(frame.point.t_PWM.timx == 2){
+    TIMx = TIM4;
+  }
+  else if(frame.point.t_PWM.timx == 3){
+    TIMx = TIM5;
+  }
+
+  if(frame.point.t_PWM.channel == 1){
+    frame_response.valueH = (TIMx->CCR1 >> 8);
+    frame_response.valueL = (TIMx->CCR1 &  0x00FF);
+  }
+  
+  else if(frame.point.t_PWM.channel == 2){
+    frame_response.valueH = (TIMx->CCR2 >> 8);
+    frame_response.valueL = (TIMx->CCR2 &  0x00FF);
+  }
+  
+  else if(frame.point.t_PWM.channel == 3){
+    frame_response.valueH = (TIMx->CCR3 >> 8);
+    frame_response.valueL = (TIMx->CCR3 &  0x00FF);
+  }
+  
+  else if(frame.point.t_PWM.channel == 4){
+    frame_response.valueH = (TIMx->CCR4 >> 8);
+    frame_response.valueL = (TIMx->CCR4 &  0x00FF);
+  }
+    
+  USART_frame_response(USART1);
+
+  return 1;
+}
+
+uint8_t decode_pwm_write()
+{
+  TIM_TypeDef* TIMx = TIM2; 
+  uint8_t buffer_in[FRAME_MAX+1], i;
+  
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_PWM.timx = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_PWM.channel = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_PWM.value_write  = (buffer[frame.pos] << 8);
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_PWM.value_write |= buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.crc = (buffer[frame.pos] << 8);
+
+  frame.pos = buffer_next(frame.pos);
+  frame.crc |= (buffer[frame.pos]);
+  
+  for(i = 0; i < PWM_size; i++){
+    buffer_in[i] = buffer[i];
+  }
+  
+  crc = crc16_calc(buffer_in, PWM_size);
+  if(frame.crc != crc)
+  {
+    return 0;
+  }
+  
+  frame_response.point.t_PWM.timx        = frame.point.t_PWM.timx;
+  frame_response.point.t_PWM.channel     = frame.point.t_PWM.channel;
+  frame_response.point.t_PWM.value_write = frame.point.t_PWM.value_write;
+  
+  if(frame.point.t_PWM.timx == 0){
+    TIMx = TIM2;
+  }
+  else if(frame.point.t_PWM.timx == 1){
+    TIMx = TIM3;
+  }
+  else if(frame.point.t_PWM.timx == 2){
+    TIMx = TIM4;
+  }
+  else if(frame.point.t_PWM.timx == 3){
+    TIMx = TIM5;
+  }
+
+  if(frame.point.t_PWM.channel == 1){
+    TIMx->CCR1 = frame.point.t_PWM.value_write;
+    frame_response.valueH = (TIMx->CCR1 >> 8);
+    frame_response.valueL = (TIMx->CCR1 &  0x00FF);
+  }
+  
+  else if(frame.point.t_PWM.channel == 2){
+    TIMx->CCR2 = frame.point.t_PWM.value_write;
+    frame_response.valueH = (TIMx->CCR2 >> 8);
+    frame_response.valueL = (TIMx->CCR2 &  0x00FF);
+  }
+  
+  else if(frame.point.t_PWM.channel == 3){
+    TIMx->CCR3 = frame.point.t_PWM.value_write;
+    frame_response.valueH = (TIMx->CCR3 >> 8);
+    frame_response.valueL = (TIMx->CCR3 &  0x00FF);
+  }
+  
+  else if(frame.point.t_PWM.channel == 4){
+    TIMx->CCR4 = frame.point.t_PWM.value_write;
+    frame_response.valueH = (TIMx->CCR4 >> 8);
+    frame_response.valueL = (TIMx->CCR4 &  0x00FF);
+  }
+    
+  USART_frame_response(USART1);
+
+  return 1;
+}
 
 uint8_t decode_frame()
 {
@@ -394,12 +571,10 @@ uint8_t decode_frame()
   
   switch(frame.periph){
   case f_IO:
-    if(frame.read_write == o_READ)
-    {
+    if(frame.read_write == o_READ){
       decode_io_read();
     }
-    else if(frame.read_write == o_WRITE)
-    {
+    else if(frame.read_write == o_WRITE){
       decode_io_write();
     }
     
@@ -410,7 +585,12 @@ uint8_t decode_frame()
     break;
 
   case f_PWM:
-    //decode_pwm();
+    if(frame.read_write == o_READ){
+      decode_pwm_read();
+    }
+    else if(frame.read_write == o_WRITE){
+      decode_pwm_write();
+    }
     break;
 
   case f_DAC:

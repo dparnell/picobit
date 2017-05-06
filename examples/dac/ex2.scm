@@ -8,19 +8,19 @@
   (IO_write GPIOC Pin_8 #t)
   (IO_write GPIOC Pin_9 #t)
 
-  (DAC_config DAC_Trigger_None DAC_WaveGeneration_None DAC_OutputBuffer_Enable DAC_Channel_1)
-  
-  (let ( (readValues (ADC_configMulti enable enable (list ADC_Channel_14 ADC_Channel_15)
-                                      (list ADC_SampleTime_55Cycles5 ADC_SampleTime_55Cycles5)
-                                      '(ad2 ad1))) )
-    (let loop ( (value-ad  (cadr (assoc 'ad1 (readValues))))
-                (value-ad2 (cadr (assoc 'ad2 (readValues)))) )
+  ;;(DAC_config DAC_Trigger_None DAC_WaveGeneration_None DAC_OutputBuffer_Enable DAC_Channel_1)
 
-      (DAC_writeValue DAC_Channel_1 value-ad2)
-      (if (< value-ad 2000)
-          (IO_write GPIOC Pin_8 #f)
-          (IO_write GPIOC Pin_8 #t))
-          
-      (loop (cadr (assoc 'ad1 (readValues))) (cadr (assoc 'ad2 (readValues)))) )) )
+  ;;(UART_GPIO "read" GPIOC Pin_9 p_OUT)
+  
+  (let ( (readValues (ADC_single ADC_Channel_14 #t )) )
+    (let loop ( (values (readValues)) )
+      (let ( (value-ad  values) )
+        
+        ;;(DAC_writeValue DAC_Channel_1 value-ad2)
+        (if (< value-ad 2000)
+            (IO_write GPIOC Pin_8 #f)
+            (IO_write GPIOC Pin_8 #t))
+        )
+      (loop (readValues) ) )) )
 
 (main)

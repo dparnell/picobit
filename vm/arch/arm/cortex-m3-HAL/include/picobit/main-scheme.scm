@@ -402,7 +402,7 @@
       (if (null? chs)
           (ADC_configMulti scanMode contMode channels sampleTimes names)
           (begin
-            (if uart? (UART_AD (car chs) posDMA) "")
+            (if uart? (UART_AD (car chs) posDMA) #f)
             (loop (cdr chs) (cons sampleTime sampleTimes) (+ posDMA 1)) )  )
       ))
   )
@@ -417,7 +417,7 @@
     (#%DMA_config nroChannels)
     (let loop ( (channel-list    channels)
                 (sampleTime-list sampleTimes)
-                (pos 1) )
+                (pos 1) );;registro
       (cond ( (null? channel-list) '() )
             ( else
               (let ( (channel    (car channel-list))
@@ -428,7 +428,7 @@
     (lambda ()
       (let loop ( (name-list names)
                   (values-ad '())
-                  (pos 0) )
+                  (pos 0) );;buffer
         (cond ( (null? name-list) values-ad )
               (else
                (loop (cdr name-list)
@@ -570,6 +570,25 @@
     (#%UART_putByte periph_config)
     (#%UART_putByte channel)
     (#%UART_putByte posDMA)
+    (#%UART_putByte FRAME_FLAG) ))
+
+(define (UART_PWM timx channel operation)
+  (let ( (source        my_add)
+         (destination   master_add)
+         (config        f_config)
+         (periph_config f_PWM) )
+    (#%UART_putByte source)
+    (#%UART_putByte destination)
+    (#%UART_putByte config)
+    (cond ( (or (equal? operation 'read)
+                (equal? operation "read"))
+            (#%UART_putByte o_READ) )
+          ( (or (equal? operation 'write)
+                (equal? operation "write"))
+            (#%UART_putByte o_WRITE) )  )
+    (#%UART_putByte periph_config)
+    (#%UART_putByte timx)
+    (#%UART_putByte channel)
     (#%UART_putByte FRAME_FLAG) ))
 
 

@@ -50,7 +50,8 @@ HAL-files = include/hal/src/stm32f10x_rcc.c \
 	include/hal/src/stm32f10x_tim.c \
 	include/hal/src/stm32f10x_usart.c \
 	include/hal/src/stm32f10x_dac.c \
-	include/hal/src/misc.c 
+	include/hal/src/misc.c \
+	include/picobit/stm32f10x_it.c
 
 PICOBIT-files =	include/picobit/periph/src/rcc.c  \
 	include/picobit/periph/src/gpio.c \

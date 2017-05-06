@@ -9,7 +9,7 @@
 
 #define ADC1_DR_Address    ((uint32_t)0x4001244C)
 
-__IO uint16_t ADCConvertedValue[16];
+volatile uint16_t ADCConvertedValue[16];
 
 PRIMITIVE_UNSPEC(#%DMA_config, arch_DMA_config, 1)
 {
@@ -113,4 +113,9 @@ PRIMITIVE(ADC_readValue, arch_ADC_readValue, 1)
   }
   
   arg1 = encode_int(ADC_GetConversionValue(ADC1));
+}
+
+uint16_t read_value (uint8_t pos)
+{
+  return ADCConvertedValue[pos];
 }

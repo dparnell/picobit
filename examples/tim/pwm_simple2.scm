@@ -1,22 +1,29 @@
 (define (main)
   (setup)
-  
-  (let ( (readValue (ADC_configSingle enable disable enable ADC_Channel_14  ADC_SampleTime_55Cycles5))
-         (led-duty (PWM_config TIM_3 (- 20000 1) TIM_Channel_3 TIM_OCMode_PWM1 TIM_OCPolarity_High)) )
-    (let loop ( (value (readValue)) )
-      (led-duty value 4095)
-      (loop (readValue)) )
-    )
   )
 
 (define (setup)
-  (AFIO_clock)
-  
   (GPIO_init GPIOC 'Input 'Analog SPEED_in Pin_4)
   (GPIO_init GPIOC 'Alternative-function 'Push-pull SPEED_50 Pin_8)
   (GPIO_init GPIOC 'Output 'Push-pull SPEED_50 Pin_9)
   
+  (AFIO_clock)
   (GPIO_FullRemap_TIM3)
-  (TIM_config TIM_3 (- 24 1) (- 20000 1) TIM_CounterMode_Up) )
+  (TIM_config TIM_3 (- 24 1) (- 20000 1) TIM_CounterMode_Up)
+
+  (IO_write GPIOC Pin_9 #t)
+  (let ( (led-duty (PWM_config TIM_3 (- 20000 1) TIM_Channel_3 TIM_OCMode_PWM1 TIM_OCPolarity_High))
+         (readValue_ch14 (ADC_single 14 #f)) )
+    (let loop2 ( (value-ad (readValue_ch14)) )
+      (led-duty 1000 4096)
+      (if (< value-ad 2000)
+          (IO_write GPIOC Pin_9 #f)
+          (IO_write GPIOC Pin_9 #t))
+
+      (sleep 1000)
+      (loop2 (readValue_ch14) )
+      )
+    )
+  )
 
 (main)

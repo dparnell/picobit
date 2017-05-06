@@ -35,12 +35,13 @@
                    (cond ( (equal? u8-byte FRAME_FLAG) ;end of the frame
                            (decode-frame (reverse frame))
                            (set! read-thread (thread (lambda() (read-frame))))
-                           (flush-output) )
+                           (flush-output out)
+                           )
                          (else 
                           (loop (cons u8-byte frame) (read-byte in)) )) ))
 
                (define (decode-frame frame)
-                 ;;(displayln frame)
+                 (displayln frame)
                  (match frame
                    ;;GPIO_config
                    ( (list source master_add 10 #|f_config = 10|# operation f_IO gpiox pinH pinL in_out)
@@ -62,16 +63,33 @@
                        ) )
 
                    ;;AD_config
-                   ( (list source master_add f_config f_ADC channel posDMA)
+                   ( (list source master_add 10 #|f_config = 10|# f_ADC channel posDMA)
                      (let ( (frame-key (string-join (list
                                                      (number->string f_ADC)
                                                      (number->string channel)) ","))  )
                        (if (not (hash-has-key? config_hash frame-key))
                            (hash-set! config_hash
                                       frame-key
-                                      (lambda() (ADC_request source f_ADC channel posDMA out)) )
+                                      (lambda() (ADC_request o_READ source channel posDMA out)) )
                            (displayln "You already registered this peripheral! - ADC"))  )   )
 
+                   ;;PWM_config
+                   ( (list source master_add 10 #|f_config = 10|# operation f_PWM timx channel)
+                     (let ( (frame-key (string-join (list
+                                                     (number->string operation)
+                                                     (number->string timx)
+                                                     (number->string channel)) ",")) )
+                       (if (not (hash-has-key? config_hash frame-key))
+                           (hash-set! config_hash
+                                      frame-key
+                                      (cond ( (= operation o_READ)
+                                              (lambda() (PWM_request o_READ source timx channel out 0)) )
+                                            ( (= operation o_WRITE)
+                                              (lambda(v) (PWM_request o_WRITE source timx channel out v)) )
+                                            ) )
+                           (displayln "You already registered this peripheral! - PWM"))
+                       ) )
+                   
                    ;;GPIO
                    ( (list source master_add operation f_IO gpiox pinH pinL in_out valueWrite valueH valueL crcH crcL)
                      (let ( (symbol (string-join (list
@@ -92,6 +110,17 @@
                        (displayln (~a "The value of " (symbol->name symbol decode-key) " - ADC - is "
                                       (bitwise-ior (arithmetic-shift valueH 8)
                                          valueL))) ) )
+
+                   ;;PWM
+                   ( (list source master_add operation f_PWM timx channel valueWriteH valueWriteL valueH valueL crcH crcL)
+                     (let ( (symbol (string-join (list
+                                                     (number->string operation)
+                                                     (number->string timx)
+                                                     (number->string channel)) ",")) )
+                       (if (= operation o_READ)
+                           (displayln (~a "Value of " symbol " is " (bitwise-ior (arithmetic-shift valueH 8) valueL)))
+                           (displayln (~a "You wrote " (bitwise-ior (arithmetic-shift valueWriteH 8) valueWriteL) " in " symbol ))  ) )   )
+
                    
                    (a (displayln "displayln nao decodificavel!")
                       (displayln a) )
@@ -117,6 +146,8 @@
                            (hash-set! config_hash "default"
                                       (lambda ( (x null) ) (displayln "Not configured use: (<device-name> 'config) or name wrong")))
                            ))
+                       ( (equal? option 'show) config_hash )
+                       ( (equal? option 'clean) (flush-output out) )
                        ( (equal? option 'read)
                          (with-handlers ([string? (lambda(v) v)]
                                          [exn:fail? (lambda(v) (displayln "I can't understand, please configure and/or check if the operation is correct."))])
@@ -163,6 +194,10 @@
            "_") )   )
       ( (list adc channel)
         (string-join (list "ADC_channel" channel)) )
+
+      ( (list operation timx channel)
+        (string-join (list operation timx channel) "_") )
+      
       (_ "ERROR"))
     ) )
                
@@ -176,6 +211,7 @@
             (crcH       (arithmetic-shift crc -8))
             (crcL       (bitwise-and crc #xff))
             (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
+      (displayln (~a "GPIO " (bytes->list frame)))
       (write-bytes frame out)
       ))
   )
@@ -189,9 +225,27 @@
             (crcH       (arithmetic-shift crc -8))
             (crcL       (bitwise-and crc #xff))
             (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
+      (displayln (~a "ADC " (bytes->list frame)))
       (write-bytes frame out)
       ))
   )
+
+(define (PWM_request operation dst timx channel out value)
+  (let ( (source       master_add)
+         (destination  dst)
+         (periph       f_PWM) )
+    (let* ( (frame_list (list source destination operation periph timx (arithmetic-shift value -8)
+                              (bitwise-and value #x00ff)
+                              ))
+            (crc        (crc16_calc frame_list (length frame_list)))
+            (crcH       (arithmetic-shift crc -8))
+            (crcL       (bitwise-and crc #xff))
+            (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
+      (displayln (~a "PWM " (bytes->list frame)))
+      (write-bytes frame out)
+      ))
+  )
+
 
 (define (name->symbol name decode-key)
   (let ( (symbol (filter-map (lambda(x)

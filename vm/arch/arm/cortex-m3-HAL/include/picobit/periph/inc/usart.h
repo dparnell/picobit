@@ -9,6 +9,9 @@
 #define  p_IN     0
 #define  p_OUT    1
 
+#define p_period  0
+#define p_duty    1
+
 #define  o_READ   0
 #define  o_WRITE  1
 
@@ -16,4 +19,4 @@
 
 #define IO_size  9
 #define AD_size  6
-#define PWM_size 7
+#define PWM_size 8

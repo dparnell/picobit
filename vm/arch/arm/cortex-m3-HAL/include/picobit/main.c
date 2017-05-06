@@ -9,6 +9,8 @@
 #include <stm32f10x.h>
 #include <system_stm32f10x.h>
 
+#include <stm32f10x_it.h>
+
 void halt_with_error ()
 {
   //GPIOC->ODR |= BIT(8);
@@ -19,11 +21,11 @@ void halt_with_error ()
 
 PRIMITIVE_UNSPEC(#%sleep, arch_sleep, 1)
 {
-  static int a, b;
+  static uint32_t a, b, c;
 
-  a1 = decode_int (arg1);
+  c = decode_int (arg1);
 
-  for(a = 0; a < a1; a++) {
+  for(a = 0; a < c; a++) {
     for(b = 0; b < 100; b++) {
 #if defined(CONFIG_ARM_COMPILER_GCC)
       __asm__ __volatile__("nop");
@@ -32,7 +34,7 @@ PRIMITIVE_UNSPEC(#%sleep, arch_sleep, 1)
     }
   }
 
-  arg1 = OBJ_FALSE;
+  //arg1 = OBJ_FALSE;
 }
 
 void Delay(__IO uint32_t nCount) {
