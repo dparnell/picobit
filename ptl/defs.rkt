@@ -41,4 +41,15 @@
 (define Pin_13          #x2000) 
 (define Pin_14          #x4000) 
 (define Pin_15          #x8000) 
-(define Pin_All         #xFFFF) 
+(define Pin_All         #xFFFF)
+
+;;TIM
+(define TIM_2   2)                                                                                                                                
+(define TIM_3   3)                                                                                                                                
+(define TIM_4   4)                                                                                                                                
+(define TIM_5   5)
+
+(define TIM_Channel_1                      #x0000)                                                                                                
+(define TIM_Channel_2                      #x0004)                                                                                                
+(define TIM_Channel_3                      #x0008)                                                                                                
+(define TIM_Channel_4                      #x000C)

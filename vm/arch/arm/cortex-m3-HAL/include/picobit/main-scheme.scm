@@ -500,8 +500,15 @@
   (lambda (duty-value duty-max)
     (#%PWM_set_duty TIMx channel (/ (* duty-value 100) duty-max) period) ))
 ;;PWM_simple = PWM_config with default configuration
-(define (PWM_simple TIMx prescaler period channel)
+(define (PWM_simple TIMx prescaler period channel uart?)
   (TIM_config TIMx prescaler period TIM_CounterMode_Up)
+
+  (if uart?
+      (begin
+        (UART_PWM TIMx channel period "read")
+        (UART_PWM TIMx channel period "write") )
+      0 )
+  
   (let ( (OCMode TIM_OCMode_PWM1)
          (OCPolarity TIM_CounterMode_Up) )
     (cond ( (= channel 1)
@@ -572,7 +579,7 @@
     (#%UART_putByte posDMA)
     (#%UART_putByte FRAME_FLAG) ))
 
-(define (UART_PWM timx channel operation)
+(define (UART_PWM timx channel period operation)
   (let ( (source        my_add)
          (destination   master_add)
          (config        f_config)
@@ -589,6 +596,8 @@
     (#%UART_putByte periph_config)
     (#%UART_putByte timx)
     (#%UART_putByte channel)
+    (#%UART_putByte (arithmetic-shift-right period 8))
+    (#%UART_putByte (bitwise-and period #xFF))
     (#%UART_putByte FRAME_FLAG) ))
 
 

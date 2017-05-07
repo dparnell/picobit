@@ -21,6 +21,8 @@
                     (out (open-output-file port #:mode 'binary #:exists 'append))
                     (in  (open-input-file  port #:mode 'binary))
 
+                    (period_hash (make-hash))
+                    
                     (read-thread null)
                     (config_hash (make-hash))
                     (decode-key  '()) )
@@ -41,10 +43,10 @@
                           (loop (cons u8-byte frame) (read-byte in)) )) ))
 
                (define (decode-frame frame)
-                 (displayln frame)
+                 ;;(displayln frame)
                  (match frame
                    ;;GPIO_config
-                   ( (list source master_add 10 #|f_config = 10|# operation f_IO gpiox pinH pinL in_out)
+                   ( (list source master_add 10 #|f_config = 10|# operation 0 #|f_IO = 0|# gpiox pinH pinL in_out)
                      (let ( (frame-key (string-join (list
                                                      (number->string operation)
                                                      (number->string gpiox)
@@ -74,11 +76,16 @@
                            (displayln "You already registered this peripheral! - ADC"))  )   )
 
                    ;;PWM_config
-                   ( (list source master_add 10 #|f_config = 10|# operation f_PWM timx channel)
+                   ( (list source master_add 10 #|f_config = 10|# operation 2 #|f_PWM = 2|# timx channel periodH periodL)
                      (let ( (frame-key (string-join (list
                                                      (number->string operation)
                                                      (number->string timx)
                                                      (number->string channel)) ",")) )
+                       (when (not (hash-has-key? period_hash frame-key))
+                         (hash-set! period_hash
+                                    frame-key
+                                    (bitwise-ior (arithmetic-shift periodH 8) periodL) ))
+                       
                        (if (not (hash-has-key? config_hash frame-key))
                            (hash-set! config_hash
                                       frame-key
@@ -118,8 +125,8 @@
                                                      (number->string timx)
                                                      (number->string channel)) ",")) )
                        (if (= operation o_READ)
-                           (displayln (~a "Value of " symbol " is " (bitwise-ior (arithmetic-shift valueH 8) valueL)))
-                           (displayln (~a "You wrote " (bitwise-ior (arithmetic-shift valueWriteH 8) valueWriteL) " in " symbol ))  ) )   )
+                           (displayln (~a "Value of " (symbol->name symbol decode-key) " is " (bitwise-ior (arithmetic-shift valueH 8) valueL)))
+                           (displayln (~a "You wrote " (bitwise-ior (arithmetic-shift valueWriteH 8) valueWriteL) " in " (symbol->name symbol decode-key) ))  ) )   )
 
                    
                    (a (displayln "displayln nao decodificavel!")
@@ -135,7 +142,7 @@
                      (read-begin)
                      )
                    "System Call Error.")
-               (lambda(option [name 'none] [value null])
+               (lambda(option [name 'none] [value null] [max-duty #f])
                  (cond ( (or (equal? option 'config) (equal? option "config"))
                          (let ( (keys (hash-keys config_hash)) )
                            (for ( (key (in-list keys)) )
@@ -146,8 +153,9 @@
                            (hash-set! config_hash "default"
                                       (lambda ( (x null) ) (displayln "Not configured use: (<device-name> 'config) or name wrong")))
                            ))
-                       ( (equal? option 'show) config_hash )
+                       ( (equal? option 'show) period_hash )
                        ( (equal? option 'clean) (flush-output out) )
+                       ( (equal? option 'kill) (kill-thread read-thread) )
                        ( (equal? option 'read)
                          (with-handlers ([string? (lambda(v) v)]
                                          [exn:fail? (lambda(v) (displayln "I can't understand, please configure and/or check if the operation is correct."))])
@@ -155,7 +163,25 @@
                        ( (equal? option 'write)
                          (with-handlers ([string? (lambda(v) v)]
                                          [exn:fail? (lambda(v) (displayln "I can't understand, please configure and/or check if the operation is correct."))])
-                           (apply (hash-ref config_hash (name->symbol name decode-key) ) (list value)) )   ) )
+
+                           (let ( (symbol (name->symbol name decode-key)) )
+                             (if (hash-has-key? period_hash symbol)
+                                 (let ( (period (hash-ref period_hash symbol)) )
+                                   (let ( (value-duty (/ (* period value)
+                                                         (if max-duty max-duty 100))) )
+                                     (cond ( (> value-duty period)
+                                             (apply (hash-ref config_hash (name->symbol name decode-key) ) (list period)) )
+                                           ( (< value-duty 0)
+                                             (apply (hash-ref config_hash (name->symbol name decode-key) ) (list 0)) )
+                                           ( else
+                                             (apply (hash-ref config_hash (name->symbol name decode-key) )
+                                                    (list (inexact->exact (floor value-duty)))) ) )
+                                     )
+                                   )
+                                 (apply (hash-ref config_hash (name->symbol name decode-key) ) (list value))
+                                 )
+                             ))
+                         ) )
                  ))   )
             (else ;;port doesn't exists or the device isn't connected
              (displayln "Port doesn't exists or your microcontroller isn't plugged correctly!") ))
@@ -196,7 +222,26 @@
         (string-join (list "ADC_channel" channel)) )
 
       ( (list operation timx channel)
-        (string-join (list operation timx channel) "_") )
+        (let ( (operation-n (string->number operation))
+               (timx-n      (string->number timx))
+               (channel-n   (string->number channel)) )
+          (string-join
+           (list
+            (cond ( (= timx-n TIM_2) "TIM2" )
+                  ( (= timx-n TIM_3) "TIM3" )
+                  ( (= timx-n TIM_4) "TIM4" )
+                  ( (= timx-n TIM_5) "TIM5" )
+                  ( else "notFound" ))
+            (cond ( (= channel-n TIM_Channel_1) "ch1" )
+                  ( (= channel-n TIM_Channel_2) "ch2" )
+                  ( (= channel-n TIM_Channel_3) "ch3" )
+                  ( (= channel-n TIM_Channel_4) "ch4" )
+                  ( else "notFound" ))
+            (cond ( (= operation-n o_READ) "READ" )
+                  ( (= operation-n o_WRITE) "WRITE" )
+                  (else "notFound" )) )
+           "_")
+            ) )
       
       (_ "ERROR"))
     ) )
@@ -211,7 +256,7 @@
             (crcH       (arithmetic-shift crc -8))
             (crcL       (bitwise-and crc #xff))
             (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
-      (displayln (~a "GPIO " (bytes->list frame)))
+      ;;(displayln (~a "GPIO " (bytes->list frame)))
       (write-bytes frame out)
       ))
   )
@@ -225,7 +270,7 @@
             (crcH       (arithmetic-shift crc -8))
             (crcL       (bitwise-and crc #xff))
             (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
-      (displayln (~a "ADC " (bytes->list frame)))
+      ;;(displayln (~a "ADC " (bytes->list frame)))
       (write-bytes frame out)
       ))
   )
@@ -234,14 +279,14 @@
   (let ( (source       master_add)
          (destination  dst)
          (periph       f_PWM) )
-    (let* ( (frame_list (list source destination operation periph timx (arithmetic-shift value -8)
-                              (bitwise-and value #x00ff)
-                              ))
+    (let* ( (frame_list (list source destination operation periph timx channel
+                              (arithmetic-shift value -8)
+                              (bitwise-and value #x00FF)))
             (crc        (crc16_calc frame_list (length frame_list)))
             (crcH       (arithmetic-shift crc -8))
             (crcL       (bitwise-and crc #xff))
             (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
-      (displayln (~a "PWM " (bytes->list frame)))
+      ;;(displayln (~a "PWM " (bytes->list frame)))
       (write-bytes frame out)
       ))
   )

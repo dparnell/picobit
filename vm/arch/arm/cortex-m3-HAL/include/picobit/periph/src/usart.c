@@ -11,6 +11,7 @@
 #include <frames.h>
 #include <crc16.h>
 
+uint16_t abc;
 uint16_t crc;
 volatile uint8_t buffer[12+1];
 volatile t_frame frame;
@@ -428,35 +429,37 @@ uint8_t decode_pwm_read()
   frame_response.point.t_PWM.channel     = frame.point.t_PWM.channel;
   frame_response.point.t_PWM.value_write = frame.point.t_PWM.value_write;
   
-  if(frame.point.t_PWM.timx == 0){
+  if(frame.point.t_PWM.timx == 2){
     TIMx = TIM2;
   }
-  else if(frame.point.t_PWM.timx == 1){
+  else if(frame.point.t_PWM.timx == 3){
     TIMx = TIM3;
   }
-  else if(frame.point.t_PWM.timx == 2){
+  else if(frame.point.t_PWM.timx == 4){
     TIMx = TIM4;
   }
-  else if(frame.point.t_PWM.timx == 3){
+  else if(frame.point.t_PWM.timx == 5){
     TIMx = TIM5;
   }
 
-  if(frame.point.t_PWM.channel == 1){
+  abc = TIMx->CCR3;
+  
+  if(frame.point.t_PWM.channel == TIM_Channel_1){
     frame_response.valueH = (TIMx->CCR1 >> 8);
     frame_response.valueL = (TIMx->CCR1 &  0x00FF);
   }
   
-  else if(frame.point.t_PWM.channel == 2){
+  else if(frame.point.t_PWM.channel == TIM_Channel_2){
     frame_response.valueH = (TIMx->CCR2 >> 8);
     frame_response.valueL = (TIMx->CCR2 &  0x00FF);
   }
   
-  else if(frame.point.t_PWM.channel == 3){
+  else if(frame.point.t_PWM.channel == TIM_Channel_3){
     frame_response.valueH = (TIMx->CCR3 >> 8);
     frame_response.valueL = (TIMx->CCR3 &  0x00FF);
   }
   
-  else if(frame.point.t_PWM.channel == 4){
+  else if(frame.point.t_PWM.channel == TIM_Channel_4){
     frame_response.valueH = (TIMx->CCR4 >> 8);
     frame_response.valueL = (TIMx->CCR4 &  0x00FF);
   }
@@ -503,38 +506,39 @@ uint8_t decode_pwm_write()
   frame_response.point.t_PWM.channel     = frame.point.t_PWM.channel;
   frame_response.point.t_PWM.value_write = frame.point.t_PWM.value_write;
   
-  if(frame.point.t_PWM.timx == 0){
+  if(frame.point.t_PWM.timx == 2){
     TIMx = TIM2;
   }
-  else if(frame.point.t_PWM.timx == 1){
+  else if(frame.point.t_PWM.timx == 3){
     TIMx = TIM3;
   }
-  else if(frame.point.t_PWM.timx == 2){
+  else if(frame.point.t_PWM.timx == 4){
     TIMx = TIM4;
   }
-  else if(frame.point.t_PWM.timx == 3){
+  else if(frame.point.t_PWM.timx == 5){
     TIMx = TIM5;
   }
 
-  if(frame.point.t_PWM.channel == 1){
+  if(frame.point.t_PWM.channel == TIM_Channel_1){
     TIMx->CCR1 = frame.point.t_PWM.value_write;
     frame_response.valueH = (TIMx->CCR1 >> 8);
     frame_response.valueL = (TIMx->CCR1 &  0x00FF);
   }
   
-  else if(frame.point.t_PWM.channel == 2){
+  else if(frame.point.t_PWM.channel == TIM_Channel_2){
     TIMx->CCR2 = frame.point.t_PWM.value_write;
     frame_response.valueH = (TIMx->CCR2 >> 8);
     frame_response.valueL = (TIMx->CCR2 &  0x00FF);
   }
   
-  else if(frame.point.t_PWM.channel == 3){
+  else if(frame.point.t_PWM.channel == TIM_Channel_3){
+    abc = frame.point.t_PWM.value_write;
     TIMx->CCR3 = frame.point.t_PWM.value_write;
     frame_response.valueH = (TIMx->CCR3 >> 8);
     frame_response.valueL = (TIMx->CCR3 &  0x00FF);
   }
   
-  else if(frame.point.t_PWM.channel == 4){
+  else if(frame.point.t_PWM.channel == TIM_Channel_4){
     TIMx->CCR4 = frame.point.t_PWM.value_write;
     frame_response.valueH = (TIMx->CCR4 >> 8);
     frame_response.valueL = (TIMx->CCR4 &  0x00FF);
