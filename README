@@ -1,5 +1,10 @@
 * Dev Branch
 
+  Dev Version working: GPIO, ADC, TIM, USART and DAC.
+  Date: 08/05/2017
+
+* Old
+
 This is a very small Scheme system designed to run on small
 microcontrollers, currently PIC18 and ARM.
 
