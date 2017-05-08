@@ -53,3 +53,7 @@
 (define TIM_Channel_2                      #x0004)                                                                                                
 (define TIM_Channel_3                      #x0008)                                                                                                
 (define TIM_Channel_4                      #x000C)
+
+;;DAC-Channel                                                                                                                                     
+(define DAC_Channel_1                      #x00000000)                                                                                            
+(define DAC_Channel_2                      #x00000010)   

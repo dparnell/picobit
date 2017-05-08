@@ -10,7 +10,7 @@
 
   ;;(DAC_config DAC_Trigger_None DAC_WaveGeneration_None DAC_OutputBuffer_Enable DAC_Channel_1)
 
-  ;;(UART_GPIO "read" GPIOC Pin_9 p_OUT)
+  (UART_GPIO "read" GPIOC Pin_9 p_OUT)
   
   (let ( (readValues (ADC_single ADC_Channel_14 #t )) )
     (let loop ( (values (readValues)) )

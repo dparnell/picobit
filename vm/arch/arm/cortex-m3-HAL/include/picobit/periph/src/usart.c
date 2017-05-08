@@ -137,7 +137,7 @@ void USART_frame_response(USART_TypeDef* USARTx)
     buffer_out[cnt_out] = frame_response.point.t_ADC.pos_dma;
   }
 
-  if(frame_response.periph == f_PWM){
+  else if(frame_response.periph == f_PWM){
     while( !(USARTx->SR & 0x00000040) );
     USARTx->DR = frame_response.point.t_PWM.timx;
     cnt_out += 1;
@@ -157,6 +157,23 @@ void USART_frame_response(USART_TypeDef* USARTx)
     USARTx->DR = (frame_response.point.t_PWM.value_write & 0xFF);
     cnt_out += 1;
     buffer_out[cnt_out] = (frame_response.point.t_PWM.value_write & 0xFF);
+  }
+
+  else if(frame_response.periph == f_DAC){
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = frame_response.point.t_DAC.channel;
+    cnt_out += 1;
+    buffer_out[cnt_out] = frame_response.point.t_DAC.channel;
+
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = (frame_response.point.t_DAC.value_write >> 8);
+    cnt_out += 1;
+    buffer_out[cnt_out] = (frame_response.point.t_DAC.value_write >> 8);
+
+    while( !(USARTx->SR & 0x00000040) );
+    USARTx->DR = (frame_response.point.t_DAC.value_write & 0xFF);
+    cnt_out += 1;
+    buffer_out[cnt_out] = (frame_response.point.t_DAC.value_write & 0xFF);
   }
   //others peripherals
 
@@ -179,7 +196,10 @@ void USART_frame_response(USART_TypeDef* USARTx)
   }
   else if(frame_response.periph == f_PWM){
     u8_size = (PWM_size+2);
-  }  
+  }
+  else if(frame_response.periph == f_DAC){
+    u8_size = (DAC_size+2);
+  }
   
   frame_response.crc = crc16_calc(buffer_out, (u8_size));
 
@@ -549,6 +569,53 @@ uint8_t decode_pwm_write()
   return 1;
 }
 
+uint8_t decode_dac_write()
+{
+  uint8_t buffer_in[FRAME_MAX+1], i;
+  
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_DAC.channel = buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_DAC.value_write  = (buffer[frame.pos] << 8);
+
+  frame.pos = buffer_next(frame.pos);
+  frame.point.t_DAC.value_write |= buffer[frame.pos];
+
+  frame.pos = buffer_next(frame.pos);
+  frame.crc = (buffer[frame.pos] << 8);
+
+  frame.pos = buffer_next(frame.pos);
+  frame.crc |= (buffer[frame.pos]);
+  
+  for(i = 0; i < DAC_size; i++){
+    buffer_in[i] = buffer[i];
+  }
+  
+  crc = crc16_calc(buffer_in, DAC_size);
+  if(frame.crc != crc)
+  {
+    return 0;
+  }
+  
+  frame_response.point.t_DAC.channel     = frame.point.t_DAC.channel;
+  frame_response.point.t_DAC.value_write = frame.point.t_DAC.value_write;
+  
+  if(frame.point.t_DAC.channel == DAC_Channel_1){
+    DAC_SetChannel1Data(DAC_Align_12b_R, frame.point.t_DAC.value_write);
+  }
+
+  else if(frame.point.t_DAC.channel == DAC_Channel_2){
+    DAC_SetChannel2Data(DAC_Align_12b_R, frame.point.t_DAC.value_write);
+  }
+
+  frame_response.valueH = 0;
+  frame_response.valueL = 0;
+  USART_frame_response(USART1);
+
+  return 1;
+}
+
 uint8_t decode_frame()
 {
   frame.pos = 0;
@@ -585,7 +652,9 @@ uint8_t decode_frame()
     break;
     
   case f_ADC:
-    decode_adc();
+    if(frame.read_write == o_READ){
+      decode_adc();
+    }
     break;
 
   case f_PWM:
@@ -598,7 +667,9 @@ uint8_t decode_frame()
     break;
 
   case f_DAC:
-    //decode_dac();
+    if(frame.read_write == o_WRITE){
+      decode_dac_write();
+    }
     break;
 
   default:

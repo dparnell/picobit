@@ -8,22 +8,19 @@
   (IO_write GPIOC Pin_8 #t)
   (IO_write GPIOC Pin_9 #t)
 
-  ;;(DAC_config DAC_Trigger_None DAC_WaveGeneration_None DAC_OutputBuffer_Enable DAC_Channel_1)
+  (DAC_config DAC_Trigger_None DAC_WaveGeneration_None DAC_OutputBuffer_Enable DAC_Channel_1)
 
-  ;;(UART_GPIO "read" GPIOC Pin_9 p_OUT)
-  (sleep 100000)
-  
+
   (let ( (readValues (ADC_multi (list ADC_Channel_14 ADC_Channel_15)
                                 '(ad1 ad2) #t)) )
     (let loop ( (value-ad  (cadr (assoc 'ad1 (readValues))))
                 (value-ad2 (cadr (assoc 'ad2 (readValues)))) )
-
-      ;;(DAC_writeValue DAC_Channel_1 value-ad)
+      (sleep 10000)
+      (DAC_writeValue DAC_Channel_1 value-ad)
       (if (< value-ad 2000)
           (IO_write GPIOC Pin_8 #f)
           (IO_write GPIOC Pin_8 #t))
 
-      ;;(sleep 10000)
       (loop (cadr (assoc 'ad1 (readValues))) (cadr (assoc 'ad2 (readValues)))) ))
   (main)
   )

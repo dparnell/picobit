@@ -26,10 +26,16 @@ typedef struct s_PWM_point{
   uint16_t value_write;
 }PWM_point;
 
+typedef struct s_DAC_point{
+  uint8_t channel;
+  uint16_t value_write;
+}DAC_point;
+
 typedef union s_point{
   IO_point  t_IO;
   ADC_point t_ADC;
   PWM_point t_PWM;
+  DAC_point t_DAC;
 }t_point;
 
 typedef struct s_frame{

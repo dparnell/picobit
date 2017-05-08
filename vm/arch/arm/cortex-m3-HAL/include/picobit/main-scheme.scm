@@ -507,7 +507,8 @@
       (begin
         (UART_PWM TIMx channel period "read")
         (UART_PWM TIMx channel period "write") )
-      0 )
+      (UART_DAC 3) ;;case Default
+      )
   
   (let ( (OCMode TIM_OCMode_PWM1)
          (OCPolarity TIM_CounterMode_Up) )
@@ -574,6 +575,7 @@
     (#%UART_putByte source)
     (#%UART_putByte destination)
     (#%UART_putByte config)
+    (#%UART_putByte o_READ)
     (#%UART_putByte periph_config)
     (#%UART_putByte channel)
     (#%UART_putByte posDMA)
@@ -598,6 +600,19 @@
     (#%UART_putByte channel)
     (#%UART_putByte (arithmetic-shift-right period 8))
     (#%UART_putByte (bitwise-and period #xFF))
+    (#%UART_putByte FRAME_FLAG) ))
+
+(define (UART_DAC channel)
+  (let ( (source        my_add)
+         (destination   master_add)
+         (config        f_config)
+         (periph_config f_DAC) )
+    (#%UART_putByte source)
+    (#%UART_putByte destination)
+    (#%UART_putByte config)
+    (#%UART_putByte o_WRITE)
+    (#%UART_putByte periph_config)
+    (#%UART_putByte channel)
     (#%UART_putByte FRAME_FLAG) ))
 
 
@@ -632,10 +647,14 @@
   (DAC_clock)
   (#%DAC_config trigger waveGeneration outputBuffer channel) )
 
-(define (DAC_single channel)
+(define (DAC_single channel uart?)
   (let ( (trigger        DAC_Trigger_None)
          (waveGeneration DAC_WaveGeneration_None)
          (outputBuffer   DAC_OutputBuffer_Enable) )
   (DAC_config trigger waveGeneration outputBuffer channel)
+
+  (if uart?
+      (UART_DAC channel) (UART_DAC 3) )
+  
   (lambda (value)
     (DAC_writeValue channel value)) ))

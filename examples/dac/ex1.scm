@@ -8,13 +8,12 @@
   
   (let ( (readValue_ch14 (ADC_single 14 #t)) )
     (let loop ( (value-ad (readValue_ch14)) )
-
+      (sleep 10000)
       (DAC_writeValue DAC_Channel_1 value-ad)
       
       (if (< value-ad 2000)
           (IO_write GPIOC Pin_8 #f)
           (IO_write GPIOC Pin_8 #t))
-      (sleep 10000)
       (loop (readValue_ch14)) )) )
 
 (main)

@@ -43,7 +43,7 @@
                           (loop (cons u8-byte frame) (read-byte in)) )) ))
 
                (define (decode-frame frame)
-                 ;;(displayln frame)
+                 (displayln frame)
                  (match frame
                    ;;GPIO_config
                    ( (list source master_add 10 #|f_config = 10|# operation 0 #|f_IO = 0|# gpiox pinH pinL in_out)
@@ -65,7 +65,7 @@
                        ) )
 
                    ;;AD_config
-                   ( (list source master_add 10 #|f_config = 10|# f_ADC channel posDMA)
+                   ( (list source master_add 10 #|f_config = 10|# 0 #|o_READ = 0|# f_ADC channel posDMA)
                      (let ( (frame-key (string-join (list
                                                      (number->string f_ADC)
                                                      (number->string channel)) ","))  )
@@ -96,9 +96,21 @@
                                             ) )
                            (displayln "You already registered this peripheral! - PWM"))
                        ) )
+
+                    ;;DAC_config
+                   ( (list source master_add 10 #|f_config = 10|# 1 #|o_WRITE = 1|# 3 #|f_DAC = 3|# channel)
+                     (let ( (frame-key (string-join (list
+                                                     (number->string channel)) ",")) )
+                       (when (or (equal? channel DAC_Channel_1) (equal? channel DAC_Channel_2))
+                         (if (not (hash-has-key? config_hash frame-key))
+                             (hash-set! config_hash
+                                        frame-key
+                                        (lambda(v) (DAC_request o_WRITE source channel out v))  )
+                             (displayln "You already registered this peripheral! - PWM"))  )
+                       ) )
                    
                    ;;GPIO
-                   ( (list source master_add operation f_IO gpiox pinH pinL in_out valueWrite valueH valueL crcH crcL)
+                   ( (list source master_add operation 0 #|f_IO = 0|# gpiox pinH pinL in_out valueWrite valueH valueL crcH crcL)
                      (let ( (symbol (string-join (list
                                                      (number->string operation)
                                                      (number->string gpiox)
@@ -110,7 +122,7 @@
                            (displayln (~a "You wrote " valueWrite " in " (symbol->name symbol decode-key) ))  ) )   )
 
                    ;;ADC
-                   ( (list source master_add operation 1 channel posDMA valueH valueL crcH crcL)
+                   ( (list source master_add operation 1 #|f_ADC = 1|# channel posDMA valueH valueL crcH crcL)
                      (let ( (symbol (string-join (list
                                                   (number->string f_ADC)
                                                   (number->string channel)) ",")) )
@@ -119,7 +131,7 @@
                                          valueL))) ) )
 
                    ;;PWM
-                   ( (list source master_add operation f_PWM timx channel valueWriteH valueWriteL valueH valueL crcH crcL)
+                   ( (list source master_add operation 2 #|f_PWM = 2|# timx channel valueWriteH valueWriteL valueH valueL crcH crcL)
                      (let ( (symbol (string-join (list
                                                      (number->string operation)
                                                      (number->string timx)
@@ -127,6 +139,12 @@
                        (if (= operation o_READ)
                            (displayln (~a "Value of " (symbol->name symbol decode-key) " is " (bitwise-ior (arithmetic-shift valueH 8) valueL)))
                            (displayln (~a "You wrote " (bitwise-ior (arithmetic-shift valueWriteH 8) valueWriteL) " in " (symbol->name symbol decode-key) ))  ) )   )
+
+                   ;;DAC
+                   ( (list source master_add operation 3 #|f_DAC = 3|# channel valueWriteH valueWriteL valueH valueL crcH crcL)
+                     (let ( (symbol (string-join (list
+                                                  (number->string channel)) ",")) )
+                       (displayln (~a "You wrote " (bitwise-ior (arithmetic-shift valueWriteH 8) valueWriteL) " in " (symbol->name symbol decode-key) ))  ) )
 
                    
                    (a (displayln "displayln nao decodificavel!")
@@ -242,6 +260,12 @@
                   (else "notFound" )) )
            "_")
             ) )
+
+      ( (list channel)
+        (let ( (channel-n (string->number channel)) )
+          (cond ( (= channel-n DAC_Channel_1) "Channel1")
+                ( (= channel-n DAC_Channel_2) "Channel2")
+                ( else "notFound" )) )  )
       
       (_ "ERROR"))
     ) )
@@ -270,7 +294,7 @@
             (crcH       (arithmetic-shift crc -8))
             (crcL       (bitwise-and crc #xff))
             (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
-      ;;(displayln (~a "ADC " (bytes->list frame)))
+      (displayln (~a "ADC " (bytes->list frame)))
       (write-bytes frame out)
       ))
   )
@@ -291,6 +315,21 @@
       ))
   )
 
+(define (DAC_request operation dst channel out value)
+  (let ( (source       master_add)
+         (destination  dst)
+         (periph       f_DAC) )
+    (let* ( (frame_list (list source destination operation periph channel
+                              (arithmetic-shift value -8)
+                              (bitwise-and value #x00FF)))
+            (crc        (crc16_calc frame_list (length frame_list)))
+            (crcH       (arithmetic-shift crc -8))
+            (crcL       (bitwise-and crc #xff))
+            (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
+      ;;(displayln (~a "DAC " (bytes->list frame)))
+      (write-bytes frame out)
+      ))
+  )
 
 (define (name->symbol name decode-key)
   (let ( (symbol (filter-map (lambda(x)

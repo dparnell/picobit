@@ -26,27 +26,27 @@ void DacOn(void)
   DAC_InitTypeDef  DAC_InitStructure;
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA /*| RCC_APB2Periph_AFIO*/, ENABLE);
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
-
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-    DAC_InitStructure.DAC_Trigger = DAC_Trigger_None;
-    DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
-    DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
-    DAC_Init(DAC_Channel_1, &DAC_InitStructure);
-    DAC_Init(DAC_Channel_2, &DAC_InitStructure);
-
-    DAC_Cmd(DAC_Channel_1, ENABLE);
-    DAC_Cmd(DAC_Channel_2, ENABLE);
-
-    DAC_SetChannel1Data(DAC_Align_12b_R, _DAC1_DATA);
-    DAC_SetChannel2Data(DAC_Align_12b_R, _DAC2_DATA);
-
-    DAC_SoftwareTriggerCmd(DAC_Channel_1, ENABLE);
-    DAC_SoftwareTriggerCmd(DAC_Channel_2, ENABLE);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
+  
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  
+  DAC_InitStructure.DAC_Trigger = DAC_Trigger_None;
+  DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
+  DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
+  DAC_Init(DAC_Channel_1, &DAC_InitStructure);
+  DAC_Init(DAC_Channel_2, &DAC_InitStructure);
+  
+  DAC_Cmd(DAC_Channel_1, ENABLE);
+  DAC_Cmd(DAC_Channel_2, ENABLE);
+  
+  DAC_SetChannel1Data(DAC_Align_12b_R, _DAC1_DATA);
+  DAC_SetChannel2Data(DAC_Align_12b_R, _DAC2_DATA);
+  
+  DAC_SoftwareTriggerCmd(DAC_Channel_1, ENABLE);
+  DAC_SoftwareTriggerCmd(DAC_Channel_2, ENABLE);
 }
 
 PRIMITIVE_UNSPEC(#%DAC_config, arch_DAC_config, 4)

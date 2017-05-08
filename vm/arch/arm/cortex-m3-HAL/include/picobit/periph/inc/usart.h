@@ -17,6 +17,7 @@
 
 #define CMD_HDR_SIZE 4
 
-#define IO_size  9
-#define AD_size  6
-#define PWM_size 8
+#define IO_size    9
+#define AD_size    6
+#define PWM_size   8
+#define DAC_size   7
