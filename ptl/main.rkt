@@ -43,7 +43,7 @@
                           (loop (cons u8-byte frame) (read-byte in)) )) ))
 
                (define (decode-frame frame)
-                 (displayln frame)
+                 ;;(displayln frame)
                  (match frame
                    ;;GPIO_config
                    ( (list source master_add 10 #|f_config = 10|# operation 0 #|f_IO = 0|# gpiox pinH pinL in_out)
@@ -118,15 +118,15 @@
                                                      (number->string pinL)
                                                      (number->string in_out)) ",")) )
                        (if (= operation o_READ)
-                           (displayln (~a "Value of " (symbol->name symbol decode-key) " is " valueL))
-                           (displayln (~a "You wrote " valueWrite " in " (symbol->name symbol decode-key) ))  ) )   )
+                           (displayln (~a "IO - Value of " (symbol->name symbol decode-key) " is " valueL))
+                           (displayln (~a "IO - You wrote " valueWrite " in " (symbol->name symbol decode-key) ))  ) )   )
 
                    ;;ADC
                    ( (list source master_add operation 1 #|f_ADC = 1|# channel posDMA valueH valueL crcH crcL)
                      (let ( (symbol (string-join (list
                                                   (number->string f_ADC)
                                                   (number->string channel)) ",")) )
-                       (displayln (~a "The value of " (symbol->name symbol decode-key) " - ADC - is "
+                       (displayln (~a "ADC - The value of " (symbol->name symbol decode-key) " - ADC - is "
                                       (bitwise-ior (arithmetic-shift valueH 8)
                                          valueL))) ) )
 
@@ -137,14 +137,14 @@
                                                      (number->string timx)
                                                      (number->string channel)) ",")) )
                        (if (= operation o_READ)
-                           (displayln (~a "Value of " (symbol->name symbol decode-key) " is " (bitwise-ior (arithmetic-shift valueH 8) valueL)))
-                           (displayln (~a "You wrote " (bitwise-ior (arithmetic-shift valueWriteH 8) valueWriteL) " in " (symbol->name symbol decode-key) ))  ) )   )
+                           (displayln (~a "PWM - Value of " (symbol->name symbol decode-key) " is " (bitwise-ior (arithmetic-shift valueH 8) valueL)))
+                           (displayln (~a "PWM - You wrote " (bitwise-ior (arithmetic-shift valueWriteH 8) valueWriteL) " in " (symbol->name symbol decode-key) ))  ) )   )
 
                    ;;DAC
                    ( (list source master_add operation 3 #|f_DAC = 3|# channel valueWriteH valueWriteL valueH valueL crcH crcL)
                      (let ( (symbol (string-join (list
                                                   (number->string channel)) ",")) )
-                       (displayln (~a "You wrote " (bitwise-ior (arithmetic-shift valueWriteH 8) valueWriteL) " in " (symbol->name symbol decode-key) ))  ) )
+                       (displayln (~a "DAC - You wrote " (bitwise-ior (arithmetic-shift valueWriteH 8) valueWriteL) " in " (symbol->name symbol decode-key) ))  ) )
 
                    
                    (a (displayln "displayln nao decodificavel!")
@@ -216,11 +216,12 @@
   (let ( (code-match (string-split code ",")) )
     (match code-match
       ( (list operation gpiox pinH pinL in_out)
-        (let ( (operation-n (string->number operation))
-               (gpiox-n  (string->number gpiox))
-               (pinH-n   (string->number pinH))
-               (pinL-n   (string->number pinL)) 
-               (in_out-n (string->number in_out)) )
+        (let* ( (operation-n (string->number operation))
+                (gpiox-n  (string->number gpiox))
+                (pinH-n   (string->number pinH))
+                (pinL-n   (string->number pinL)) 
+                (in_out-n (string->number in_out))
+                (pin-n (bitwise-and (arithmetic-shift pinH-n 8) pinL-n)) )
           (string-join
            (list
             (cond ( (= operation-n o_READ) "READ")
@@ -231,7 +232,7 @@
                   ( (= gpiox-n GPIOD) "GPIOD" )
                   ( (= gpiox-n GPIOE) "GPIOE" )
                   (else "notFound" ) )
-            (number->string (+ (arithmetic-shift pinH-n 8) pinL-n)) ;;decodificar com GPIO_Pin_x
+            (number->string (number->GPIO_pin pin-n)) 
             (cond ( (= in_out-n p_IN) "input" )
                   ( (= in_out-n p_OUT) "output" )
                   (else "notFound" ) ) )
@@ -263,8 +264,8 @@
 
       ( (list channel)
         (let ( (channel-n (string->number channel)) )
-          (cond ( (= channel-n DAC_Channel_1) "Channel1")
-                ( (= channel-n DAC_Channel_2) "Channel2")
+          (cond ( (= channel-n DAC_Channel_1) "DAC_Channel_1")
+                ( (= channel-n DAC_Channel_2) "DAC_Channel_2")
                 ( else "notFound" )) )  )
       
       (_ "ERROR"))
@@ -294,7 +295,7 @@
             (crcH       (arithmetic-shift crc -8))
             (crcL       (bitwise-and crc #xff))
             (frame      (list->bytes (append frame_list (list crcH crcL FRAME_FLAG))))  )
-      (displayln (~a "ADC " (bytes->list frame)))
+      ;;(displayln (~a "ADC " (bytes->list frame)))
       (write-bytes frame out)
       ))
   )
@@ -346,5 +347,8 @@
                                  ( _ #f )))  decode-key))  )
     (if (not (null? name)) (car name)
         'none) ))
+
+(define (number->GPIO_pin number)
+  (+ (/ (log number) (log 2)) 1) )
                 
   
