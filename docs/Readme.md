@@ -1,34 +1,34 @@
-This is my version of Picobit, a small scheme system designed to run on small microcontrollers. I made the portability of PICOBIT to STM32F100RB.
-
+PICOBIT
 ------
 
-= Original description and documentation:
+This is my version of Picobit, a small Scheme System designed to run on small microcontrollers. I made the portability of PICOBIT to STM32F100RB.
 
-It consists of
+It consists of 2 parts, a scheme compiler and a VM.
 
-* a bytecode compiler which compiles Scheme source code to bytecode.
-  The bytecode compiler is run using Racket, usually on a
-  PC/workstation.
+  * The scheme compiler was written in Racket Language, it usually run
+  on a PC/workstation. Its function is compile the scheme code to
+  bytecode.
 
-* a bytecode interpreter which can be either compiled to run on a
-  microcontroller, or to be run on some common operating systems, at
-  least GNU/Linux (Windows support hasn't been tested in a while,
-  though, and especially the networking part might not work out of the
-  box). It is written in (mostly) portable C.
-
-See also:
-  * A paper describing PICOBIT has been presented to IFL 2009:
-    http://www.ccs.neu.edu/home/stamourv/papers/picobit.pdf
-    Slides from the presentation:
-    http://www.ccs.neu.edu/home/stamourv/slides/picobit-ifl09.pdf
-
-  * S3 (Small Scheme Stack) : A Scheme TCP/IP Stack Targeting Small
-    Embedded Applications
-    http://www.ccs.neu.edu/home/stamourv/papers/s3.pdf
-    Slides from the presentation:
-    http://www.ccs.neu.edu/home/stamourv/slides/s3-sw08.pdf
-
-  * PICOBIT is a descendant of the BIT and PICBIT systems. You can find
- papers describing these systems at: http://w3.ift.ulaval.ca/~dadub100/
+  * The Virtual Machine is a bytecode interpreter. In this case it is
+  compiled to run on a microcontroller(STM32F1-value line). The VM is
+  written in (mostly) portable C.
 
 
+Original description and documentation:
+------
+
+Folked from https://github.com/stamourv/picobit.
+
+History
+------
+
+ Marc Feeley originally wrote PICOBIT around 2006.
+ Vincent St-Amour took over development in 2008.
+ Jim Shargo worked on a port to Racket in 2011.
+ The Racket port was completed in June 2011.
+ Peter Zotov (whitequark) ported PICOBIT to ARM in August 2011.
+
+Licence
+------
+
+ PICOBIT is released under the GPLv3.
