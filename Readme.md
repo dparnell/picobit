@@ -13,6 +13,7 @@ It consists of 2 parts, a scheme compiler and a VM.
   compiled to run on a microcontroller(STM32F1-value line). The VM is
   written in (mostly) portable C.
 
+  Demos and infos: [[picobit][http://medicina.tips/picobit/picobit.html]]
 
 Original description and documentation:
 ------
