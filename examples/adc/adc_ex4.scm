@@ -4,7 +4,7 @@
 
   (IO_write GPIOC Pin_8 #f)
   (sleep 100000)
-  (let ( (readValue_ch14 (ADC_single 14 #f)) )
+  (let ( (readValue_ch14 (ADC_single Pin_14 #f)) )
     (let loop ( (value-ad (readValue_ch14)) )
       (if (< value-ad 2000)
           (IO_write GPIOC Pin_8 #f)
