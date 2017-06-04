@@ -15,6 +15,12 @@ It consists of 2 parts, a scheme compiler and a VM.
 
   Demos and infos: [picobit-docs](http://medicina.tips/picobit/picobit.html)
 
+OSX Installation steps
+----------------------
+
+  brew install racket gettext
+  brew link gettext --force
+
 Original description and documentation:
 ------
 
