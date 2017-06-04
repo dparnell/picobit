@@ -18,8 +18,8 @@ It consists of 2 parts, a scheme compiler and a VM.
 OSX Installation steps
 ----------------------
 
-  brew install racket gettext
-  brew link gettext --force
+    brew install racket gettext
+    brew link gettext --force
 
 Original description and documentation:
 ------
