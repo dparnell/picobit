@@ -40,22 +40,22 @@ config_generated:
 
 nconfig: config_generated FORCE
 	make -C kconfig nconf
-	./kconfig/nconf Kconfig
+	./kconfig/nconf Kconfig.dat
 
 config: config_generated FORCE
 	make -C kconfig conf
-	./kconfig/conf Kconfig
+	./kconfig/conf Kconfig.dat
 
 %config: config_generated FORCE
 	make -C kconfig conf
-	./kconfig/conf --$@ Kconfig
+	./kconfig/conf --$@ Kconfig.dat
 
 else
 # Build targets only -- generally all targets except *config targets.
 
 ifneq ($(dot-config),0)
 
-# Used to fix quoted Kconfig variables
+# Used to fix quoted Kconfig.dat variables
 unquote = $(patsubst "%,%,$(patsubst %",%,$(1)))
 
 # Read in config
@@ -80,7 +80,7 @@ include/arch: include/config/auto.conf
 	@ln -sf ../$(arch)/include/ include/arch
 
 CROSS    = $(call unquote,$(CONFIG_CROSS_COMPILER))
-CPPFLAGS = -Iinclude/ -DPICOBIT $(INCLUDE_path)
+CPPFLAGS = -I/usr/local/include -Iinclude/ -DPICOBIT $(INCLUDE_path)
 LDFLAGS  = -nostdlib -L$(arch)/$(LINKER_path)
 
 # I changed here.
@@ -158,7 +158,7 @@ mrproper: clean FORCE
 
 help:
 	@echo "Picobit Virtual Machine"
-	@echo "  Picobit uses Kconfig for configuring its VM build"
+	@echo "  Picobit uses Kconfig.dat for configuring its VM build"
 	@echo "  process. Configuration options are mostly same."
 	@echo
 	@echo "Configuration:"

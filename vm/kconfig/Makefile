@@ -1,6 +1,7 @@
-CC := gcc
-LDFLAGS := -s
-CFLAGS := -g -O2 --std=gnu99 -Wall 
+CC := clang
+LDFLAGS := -s -R/usr/local/lib/ -L/usr/local/lib
+CFLAGS := -g -O2 --std=gnu99 -Wall  -I/usr/local/include
+LIBS := -lintl
 
 all: conf nconf
 
@@ -8,7 +9,7 @@ conf: conf.o zconf.tab.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 nconf: nconf.o nconf.gui.o zconf.tab.o
-	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS) -lncurses -lmenu -lpanel
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS) -lncurses -lmenu -lpanel 
 
 zconf.tab.o: zconf.tab.c zconf.hash.c lex.zconf.c
 
