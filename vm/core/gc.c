@@ -19,8 +19,8 @@ void init_ram_heap ()
 	free_list = 0;
 
 	while (o > bound) {
-		// we don't want to add globals to the free list, and globals occupy the
-		// beginning of memory at the rate of 2 globals per word (car and cdr)
+		/* we don't want to add globals to the free list, and globals occupy the
+		   beginning of memory at the rate of 2 globals per word (car and cdr) */
 		ram_set_gc_tags (o, GC_TAG_UNMARKED);
 		ram_set_car (o, free_list);
 		free_list = o;
@@ -148,7 +148,7 @@ void sweep ()
 	free_list = 0;
 
 	while (visit >= (MIN_RAM_ENCODING + ((glovars + 1) >> 1))) {
-		// we don't want to sweep the global variables area
+		/* we don't want to sweep the global variables area */
 		if ((RAM_COMPOSITE_P(visit)
 		     && (ram_get_gc_tags (visit) == GC_TAG_UNMARKED)) // 2 mark bit
 		    || (!RAM_COMPOSITE_P(visit)
@@ -300,12 +300,12 @@ void compact ()
 			if (!ram_get_gc_tag0 (cur)) { // current is free too, merge free spaces
 				// advance cur, but prev stays in place
 				cur += cur_size;
-			} else { // prev is free, but not cur, move cur to start at prev
-				// fix header in the object heap to point to the data's new
-				// location
+			} else { /* prev is free, but not cur, move cur to start at prev
+				        fix header in the object heap to point to the data's new
+				        location */
 				ram_set_cdr(ram_get_cdr(cur), RAM_TO_VEC_OBJ(prev+1));
 
-				while(cur_size--) { // copy cur's data, which includes header
+				while(cur_size--) { /* copy cur's data, which includes header */
 					ram_set_field0(prev, ram_get_field0(cur));
 					ram_set_field1(prev, ram_get_field1(cur));
 					ram_set_field2(prev, ram_get_field2(cur));
@@ -314,8 +314,8 @@ void compact ()
 					prev++;
 				}
 
-				// set up a free block where the end of cur's data was
-				// (prev is already there from the iteration above)
+				/* set up a free block where the end of cur's data was
+				 (prev is already there from the iteration above) */
 				ram_set_gc_tag0(prev, 0);
 				// at this point, cur is after the new free space, where the
 				// next block is
@@ -348,7 +348,7 @@ obj alloc_vec_cell (uint16 n, obj from)
 
 	while ((VEC_TO_RAM_OBJ(MAX_RAM_ENCODING) - free_vec_pointer) < n) {
 		// free space too small, trigger gc
-		if (gc_done) { // we gc'd, but no space is big enough for the vector
+		if (gc_done) { /* we gc'd, but no space is big enough for the vector */
 			ERROR("alloc_vec_cell", "no room for vector");
 		}
 
