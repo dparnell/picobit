@@ -80,7 +80,7 @@ include/arch: include/config/auto.conf
 	@ln -sf ../$(arch)/include/ include/arch
 
 CROSS    = $(call unquote,$(CONFIG_CROSS_COMPILER))
-CPPFLAGS = -I/usr/local/include -Iinclude/ -DPICOBIT $(INCLUDE_path)
+CPPFLAGS = -Iinclude/ -I/usr/local/include -DPICOBIT $(INCLUDE_path)
 LDFLAGS  = -nostdlib -L$(arch)/$(LINKER_path)
 
 # I changed here.
