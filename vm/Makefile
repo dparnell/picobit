@@ -99,7 +99,7 @@ include arch/Makefile
 
 ifeq ($(no-gcc),)
 CFLAGS  += -Wall -Werror -Os $(LDFLAGS)
-LDFLAGS += -Wl,-warn-common -fno-hosted
+LDFLAGS += -Wl,-warn-common
 endif
 
 prim-gen = gawk -f scripts/scanner.awk -f scripts/prim-$(1).awk \
@@ -108,15 +108,15 @@ prim-gen = gawk -f scripts/scanner.awk -f scripts/prim-$(1).awk \
 .primitives.p: include/arch $(obj-y) .config
 	rm -f $@
 	for object in $(obj-y); do \
-		$(CROSS)cpp -DNO_PRIMITIVE_EXPAND $(CPPFLAGS) \
+		$(CROSS)cc -E -DNO_PRIMITIVE_EXPAND $(CPPFLAGS) \
 			$$object -o - >>$@; \
 	done
 	$(call prim-gen,headergen,include/gen.primitives.h)
 	$(call prim-gen,schemegen,../compiler/gen.primitives.rkt)
 	$(call prim-gen,dispatchgen,core/gen.dispatch.c)
 
-fetch-macro = $$(($$(echo "$(2)" | $(CROSS)cpp $(CPPFLAGS) \
-	--include include/$(1) | tail -n1)))
+fetch-macro = $$(($$(echo "$(2)" | $(CROSS)cc -E $(CPPFLAGS) \
+	--include include/$(1) - | tail -n1)))
 
 provide-macro = @echo "(define $(1) $(call fetch-macro,$(2),$(3)))" >>$@; \
 	echo "(provide $(1))" >>$@
